@@ -4,10 +4,10 @@ export type MutationType<T, U, V> = {
 
 // 메인 index
 export interface IndexMutationsPayloadMaps {
-  tokenSet: { ti: string };
+  setToken: { token: string };
 }
 export interface IndexMutationsReturnsMaps {
-  tokenSet: string;
+  setToken: void;
 }
 
 // 음식 채팅

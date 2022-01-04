@@ -8,26 +8,31 @@ import {
   MutationTree,
 } from "vuex";
 
+import FoodCaht, { IState as FoodCahtState } from "./modules/Foodchat";
+
 export interface State {
   token: string;
+  foodChat?: FoodCahtState;
 }
 
 export const key: InjectionKey<Store<State>> = Symbol();
 
+const state: State = {
+  token: "",
+};
+
 const mutations: MutationTree<State> & indexMutationsTypes = {
-  tokenSet: ({ token }, { ti }) => {
-    return ti;
-  },
+  setToken: ({ token }) => {},
 };
 
 //store 정의
 export const store = createStore<State>({
-  state: {
-    token: "",
-  },
+  state,
   mutations,
   // 모듈 사용 ,
-  modules: {},
+  modules: {
+    FoodCaht,
+  },
 });
 
 // Composition Api에서 접근할떄 이함수를 사용
