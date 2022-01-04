@@ -1,18 +1,18 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
-  </div>
+  <div>자기소개하기</div>
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
+import { defineComponent } from "vue";
+import { useStore } from "../store/index";
 
-@Options({
-  components: {
-    HelloWorld,
+export default defineComponent({
+  setup() {
+    const store = useStore();
+
+    return {};
   },
-})
-export default class Home extends Vue {}
+});
 </script>
+
+<style scoped></style>

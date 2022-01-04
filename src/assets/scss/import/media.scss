@@ -1,0 +1,61 @@
+$screen: (
+  xs: 475px,
+  sm: 640px,
+  md: 768px,
+  lg: 1024px,
+  xl: 1280px,
+  xxl: 1536px,
+);
+
+$device: (
+  tablet: 640px,
+  laptop: 1024px,
+  desktop: 1280px,
+);
+
+@mixin xs {
+  @media (max-width: map-get($screen,xs)) {
+    @content();
+  }
+}
+@mixin sm {
+  @media (min-width: calc(#{map-get($screen,xs)} + 1px)) and (max-width: map-get($screen,sm)) {
+    @content();
+  }
+}
+@mixin md {
+  @media (min-width: calc(#{map-get($screen,sm)} + 1px)) and (max-width: map-get($screen,md)) {
+    @content();
+  }
+}
+@mixin lg {
+  @media (min-width: calc(#{map-get($screen,md)} + 1px)) and (max-width: map-get($screen,lg)) {
+    @content();
+  }
+}
+@mixin xl {
+  @media (min-width: calc(#{map-get($screen,lg)} + 1px)) and (max-width: map-get($screen,xl)) {
+    @content();
+  }
+}
+@mixin xxl {
+  @media (min-width: calc(#{map-get($screen,xl)} + 1px)) {
+    @content();
+  }
+}
+
+@mixin tablet {
+  @media (min-width: calc(#{map-get($device,tablet)} + 1px)) and (max-width: map-get($device,laptop)) {
+    @content();
+  }
+}
+@mixin laptop {
+  @media (min-width: calc(#{map-get($device,laptop)} + 1px)) and (max-width: map-get($device,desktop)) {
+    @content();
+  }
+}
+@mixin desktop {
+  @media (min-width: calc(#{map-get($device,desktop)} + 1px)) {
+    @content();
+  }
+}

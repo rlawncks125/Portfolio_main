@@ -1,0 +1,10 @@
+{
+  "theme_color": "#4ae8db",
+  "background_color": "#4ae8db",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
+  "name": "포토폴리오",
+  "short_name": "포토폴리오 입니다.",
+  "description": "폴토폴리오 메인 화면입니다."
+}
