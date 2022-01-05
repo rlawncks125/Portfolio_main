@@ -22,7 +22,9 @@ const state: State = {
 };
 
 const mutations: MutationTree<State> & indexMutationsTypes = {
-  setToken: ({ token }) => {},
+  setToken: ({ token }) => {
+    return;
+  },
 };
 
 //store 정의

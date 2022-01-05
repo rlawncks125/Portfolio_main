@@ -24,12 +24,18 @@ const getters: GetterTree<IState, rootState> & GettersTypes = {
 };
 
 const mutations: MutationTree<IState> & MutationsTypes = {
-  test: (state, { name }) => {},
-  ds: () => {},
+  test: (state, { name }) => {
+    return;
+  },
+  ds: () => {
+    return;
+  },
 };
 
 const actions: ActionTree<IState, rootState> & ActionTypes = {
-  test: (context, { tile }) => {},
+  test: (context, { tile }) => {
+    return;
+  },
 };
 
 const module: Module<IState, rootState> = {
