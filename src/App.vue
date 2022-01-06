@@ -6,11 +6,11 @@
         <img src="@/assets/images/HOME.png" alt="" />
       </router-link>
     </div>
-    <div class="nav-wrap" @click="changePage">
+    <div class="nav-wrap text-three-dot" @click="changePage">
       <router-link to="/foodChat">음식 채팅방</router-link>
-      <router-link to="/ds">다른 포폴</router-link>
-      <router-link to="/ds">다른 포폴</router-link>
-      <router-link to="/ds">다른 포폴</router-link>
+      <router-link to="/ds">준비중</router-link>
+      <router-link to="/ds">준비중</router-link>
+      <router-link to="/ds">준비중</router-link>
     </div>
     <!-- <input class="in-checkd" type="checkbox" v-model="isCehckd" /> -->
   </div>
@@ -25,14 +25,13 @@ import { defineComponent, ref } from "vue";
 
 export default defineComponent({
   setup() {
-    // const isCehckd = ref();
+    const isCehckd = ref();
 
-    // const changePage = () => {
-    //   isCehckd.value = false;
-    //   console.log("cc");
-    // };
+    const changePage = () => {
+      isCehckd.value = false;
+    };
 
-    return {};
+    return { isCehckd, changePage };
   },
 });
 </script>
@@ -51,22 +50,17 @@ $checkd-height: 5rem;
 }
 
 html {
-  @include xs() {
+  @include mobile() {
     font-size: 12px;
   }
-  @include sm() {
-    font-size: 12px;
+
+  @include tablet() {
+    font-size: 14px;
   }
-  @include md() {
-    font-size: 16px;
+  @include laptop() {
+    font-size: 15px;
   }
-  @include lg() {
-    font-size: 18px;
-  }
-  @include xl() {
-    font-size: 18px;
-  }
-  @include xxl() {
+  @include desktop() {
     font-size: 18px;
   }
 }
@@ -84,14 +78,22 @@ body {
   color: #2c3e50;
 
   display: grid;
+
   grid-template:
-    "nav nav nav nav" 5rem
+    "nav nav nav nav" 4rem
     "render-view render-view render-view render-view" minmax(50px, auto)
-    / 1fr 2fr 2fr 1fr;
+    / 1fr 1fr 1fr 1fr;
   justify-items: center;
+
   @include mobile() {
     grid-template:
       ". nav nav ." 5rem
+      "render-view render-view render-view render-view" minmax(50px, auto)
+      / 1fr 1fr 1fr 1fr;
+  }
+  @include tablet() {
+    grid-template:
+      "nav nav nav nav" 8rem
       "render-view render-view render-view render-view" minmax(50px, auto)
       / 1fr 1fr 1fr 1fr;
   }
@@ -106,16 +108,7 @@ a:-webkit-any-link {
   width: 100%;
   max-width: $max-width;
   text-align: center;
-  background-color: $color-blue-2;
-
-  a {
-    height: 100%;
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+  // background-color: $color-blue-2;
 
   .nav-home {
     height: 100%;
@@ -129,6 +122,12 @@ a:-webkit-any-link {
   .nav-wrap {
     a {
       border: 1px solid black;
+      height: 100%;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+    a.router-link-exact-active {
+      color: #42b983;
     }
   }
 
@@ -158,12 +157,13 @@ a:-webkit-any-link {
     justify-content: space-between;
 
     .nav-home {
-      width: 250px;
+      width: 14rem;
       padding: 0 1rem;
     }
     .nav-wrap {
       display: flex;
       flex-wrap: wrap;
+      gap: 5px;
     }
   }
   @include tablet() {

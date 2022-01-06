@@ -9,6 +9,7 @@ module.exports = {
       sass: {
         additionalData: `
         @use "~@/assets/scss/common/_variables.scss" as *;
+        @use "~@/assets/scss/common/_class.scss" as *;
         @use "~@/assets/scss/import/media.scss" as *;
         `,
       },

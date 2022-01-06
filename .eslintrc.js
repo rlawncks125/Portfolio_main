@@ -28,4 +28,8 @@ module.exports = {
       },
     },
   ],
+  globals: {
+    // 'no-undef 에러 글로벌로 값이 있다고 알려줌'
+    naver: true,
+  },
 };
