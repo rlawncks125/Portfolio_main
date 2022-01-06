@@ -11,7 +11,14 @@
     <div>포토폴리오 소개</div>
   </section>
   <footer>
-    <div>연락처 , 이메일 등등</div>
+    <div>
+      <p
+        class="box-decoration-slice bg-gradient-to-r from-indigo-600 to-pink-500 text-white px-2"
+      >
+        연락처 <br />
+        이메일 등등
+      </p>
+    </div>
   </footer>
   <br />
   <br />

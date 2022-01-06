@@ -20,8 +20,32 @@ const routes: Array<RouteRecordRaw> = [
     path: "/foodChat",
     name: "foodChat",
     component: () =>
-      import(/* webpackChunkName: "router" */ "../views/FoodChat.vue"),
+      import(/* webpackChunkName: "router" */ "../views/FoodChat/Main.vue"),
+    children: [
+      {
+        path: "",
+        name: "RoomList",
+        component: () =>
+          import(
+            /* webpackChunkName: "router" */ "../views/FoodChat/RoomList.vue"
+          ),
+      },
+      {
+        path: ":uuid",
+        name: "foodChatRoomJoin",
+        component: () =>
+          import(
+            /* webpackChunkName: "router" */ "../views/FoodChat/FoodChat.vue"
+          ),
+      },
+    ],
   },
+  // {
+  //   path: "/foodChat/:uuid",
+  //   name: "foodChatRoomJoin",
+  //   component: () =>
+  //     import(/* webpackChunkName: "router" */ "../views/FoodChat/FoodChat.vue"),
+  // },
 ];
 
 const router = createRouter({

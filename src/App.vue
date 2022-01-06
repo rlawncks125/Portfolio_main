@@ -8,9 +8,9 @@
     </div>
     <div class="nav-wrap text-three-dot" @click="changePage">
       <router-link to="/foodChat">음식 채팅방</router-link>
-      <router-link to="/ds">준비중</router-link>
-      <router-link to="/ds">준비중</router-link>
-      <router-link to="/ds">준비중</router-link>
+      <router-link to="/">준비중</router-link>
+      <router-link to="/">준비중</router-link>
+      <router-link to="/">준비중</router-link>
     </div>
     <!-- <input class="in-checkd" type="checkbox" v-model="isCehckd" /> -->
   </div>
@@ -38,7 +38,6 @@ export default defineComponent({
 
 <style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300&family=Song+Myung&display=swap");
-
 $max-width: 1280px;
 $checkd-width: 50px;
 $checkd-height: 5rem;
