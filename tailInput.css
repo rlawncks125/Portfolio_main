@@ -5,3 +5,13 @@
 .test-apply {
   @apply font-sans  font-bold;
 }
+* {
+  @apply text-2xl;
+}
+
+input {
+  @apply border-2 border-yellow-300 my-2 mx-2 px-2 max-w-full;
+}
+button {
+  @apply px-2;
+}

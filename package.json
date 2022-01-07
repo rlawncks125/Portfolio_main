@@ -14,12 +14,14 @@
   "dependencies": {
     "@babel/preset-typescript": "^7.16.5",
     "@types/navermaps": "^3.0.13",
+    "axios": "^0.24.0",
     "core-js": "^3.6.5",
     "cypress": "^9.2.0",
     "register-service-worker": "^1.7.1",
     "swagger-axios-codegen": "^0.12.10",
     "vue": "^3.0.0",
     "vue-class-component": "^8.0.0-0",
+    "vue-radial-progress": "^0.3.2",
     "vue-router": "^4.0.0-0",
     "vuex": "^4.0.0-0"
   },

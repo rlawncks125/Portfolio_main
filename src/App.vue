@@ -22,9 +22,11 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import { useStore } from "./store";
 
 export default defineComponent({
   setup() {
+    const store = useStore();
     const isCehckd = ref();
 
     const changePage = () => {
@@ -50,7 +52,7 @@ $checkd-height: 5rem;
 
 html {
   @include mobile() {
-    font-size: 12px;
+    font-size: 11px;
   }
 
   @include tablet() {
@@ -86,9 +88,10 @@ body {
 
   @include mobile() {
     grid-template:
-      ". nav nav ." 5rem
+      "out-checkd nav nav ." 5rem
       "render-view render-view render-view render-view" minmax(50px, auto)
       / 1fr 1fr 1fr 1fr;
+    align-items: center;
   }
   @include tablet() {
     grid-template:
@@ -177,12 +180,15 @@ a:-webkit-any-link {
 }
 
 .out-checkd {
+  grid-area: out-checkd;
   display: none;
-  width: $checkd-width;
-  height: $checkd-height;
-  position: fixed;
-  top: 0px;
-  left: 0px;
+  // width: $checkd-width;
+  // height: $checkd-height;
+  width: 50%;
+  height: 50%;
+  // position: fixed;
+  // top: 0px;
+  // left: 0px;
   z-index: 100;
 
   &:checked ~ #nav {

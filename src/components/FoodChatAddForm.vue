@@ -1,13 +1,17 @@
 <template>
   <div
-    class="absolute bg-gray-600 inset-0 w-screen h-screen"
+    class="absolute bg-gray-600 inset-0 w-screen h-screen text-2xl"
     style="z-index: 1001"
   >
-    <div class="relative bg-yellow-100 inset-0 w-11/12 h-5/6 mx-auto my-14">
+    <div
+      class="relative bg-yellow-100 inset-0 w-11/12 h-5/6 mx-auto my-12 rounded-xl"
+    >
       <button class="absolute top-0 right-4" @click="closeForm">X</button>
 
-      <form class="text-center">
-        <fieldset class="border-2 p-4 mx-4">
+      <form class="text-center pt-10">
+        <fieldset
+          class="border-2 p-2 mx-4 rounded-2xl grid max-w-full grid-cols-1 justify-items-center"
+        >
           <legend class="text-center px-4">음식점 추가</legend>
           <label for="restaurntName" class="mr-4">음식점 이름</label>
           <input
@@ -15,6 +19,13 @@
             type="text"
             name="restaurntName"
             v-model="restaurantName"
+          />
+          <label for="restaurntName" class="mr-4">지역 이름</label>
+          <input
+            class="border-2 rounded-md focus:outline-green-400"
+            type="text"
+            name="restaurntName"
+            v-model="location"
           />
           <button
             @click.prevent="addResturant"
@@ -37,6 +48,7 @@ interface IFormPushData {
 
 import { defineComponent, PropType, reactive, ref, toRefs } from "vue";
 import { CreateRestaurantInputDto } from "@/assets/swagger/index";
+import { createRestaurant } from "@/api/Restaurant";
 
 export default defineComponent({
   props: {
@@ -46,23 +58,44 @@ export default defineComponent({
   setup(props, { emit }) {
     const formRef = ref<HTMLFormElement>();
     const formData = reactive({
-      uuid: "",
       restaurantName: "",
-      restaurantImageUrl: "",
       location: "",
-      lating: {
-        X: 0,
-        Y: 0,
-      },
     } as CreateRestaurantInputDto);
 
     const closeForm = () => {
       formDataReset();
       emit("closeForm");
     };
-    const addResturant = () => {
+    const addResturant = async () => {
       if (!props.formPushData) return;
       const { map, position, uuid } = props.formPushData;
+
+      // formData.uuid = uuid;
+      // formData.restaurantImageUrl = "http://";
+      // formData.lating = {
+      //   X: position!.x,
+      //   Y: position!.y,
+      // };
+
+      // const postData = { ...formData }
+      // const resturantData = { ...formData };
+      // 백엔드로 요청 보내기
+      // 성공시 Data = 레스토랑 데이터
+      // const resturantData : CreateRestaurantOutPutDto.resturant
+      const { ok, err, restaurant } = await createRestaurant({
+        uuid,
+        lating: {
+          X: position!.x,
+          Y: position!.y,
+        },
+        restaurantImageUrl: "Http://",
+        restaurantName: formData.restaurantName,
+        location: formData.location,
+      });
+      if (!ok) {
+        console.log(err);
+        return;
+      }
 
       const maker = new naver.maps.Marker({
         position: {
@@ -72,19 +105,9 @@ export default defineComponent({
         map,
       });
 
-      formData.uuid = uuid;
-      formData.restaurantImageUrl = "http://";
-      formData.location = "대구";
-      formData.lating = {
-        X: position!.x,
-        Y: position!.y,
-      };
-
-      const resturantData = { ...formData };
-
       if (maker) {
         formDataReset();
-        emit("createMaker", { maker, resturantData });
+        emit("createMaker", { maker, restaurantData: restaurant });
       }
     };
     const formDataReset = () => {

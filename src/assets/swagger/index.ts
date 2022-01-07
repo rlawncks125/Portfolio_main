@@ -1,10 +1,8 @@
 /** Generate by swagger-axios-codegen */
-// @ts-nocheck
 /* eslint-disable */
 
 /** Generate by swagger-axios-codegen */
 /* eslint-disable */
-// @ts-nocheck
 import axiosStatic, { AxiosInstance, AxiosRequestConfig } from "axios";
 
 export interface IRequestOptions extends AxiosRequestConfig {}
@@ -115,7 +113,9 @@ export class UserService {
   /**
    * 회원가입
    */
-  static userControllerUserCreate(options: IRequestOptions = {}): Promise<any> {
+  static userControllerUserCreate(
+    options: IRequestOptions = {}
+  ): Promise<userCreateOutPutDto> {
     return new Promise((resolve, reject) => {
       let url = basePath + "/user";
 
@@ -138,7 +138,7 @@ export class UserService {
   static userControllerUserUpdate(
     params: {
       /** requestBody */
-      body?: UserUpdateDto;
+      body?: UserUpdateInputDto;
     } = {} as any,
     options: IRequestOptions = {}
   ): Promise<any> {
@@ -368,7 +368,7 @@ export class RoomService {
       let url = basePath + "/room/info";
 
       const configs: IRequestConfig = getConfigs(
-        "get",
+        "post",
         "application/json",
         url,
         options
@@ -651,7 +651,15 @@ export interface LoginOutPutDto {
   user: UserOutPut;
 }
 
-export interface UserUpdateDto {
+export interface userCreateOutPutDto {
+  /** 성공 여부입니다. */
+  ok: boolean;
+
+  /** 에러 메세지입니다. */
+  err?: string;
+}
+
+export interface UserUpdateInputDto {
   /** password */
   password?: string;
 
@@ -994,7 +1002,7 @@ export interface RoomInfoOutPutDto {
   err?: string;
 
   /** 방 정보 */
-  roomInfo: RoominfoDto[];
+  roomInfo: CombinedRoomInfoTypes;
 
   /** 방안에 유저들 */
   users: RoomUsersDto[];
@@ -1157,6 +1165,7 @@ export enum EnumUserCommentInfoRole {
 export type CombinedUserInfoTypes = UserCommentInfo;
 export type CombinedParentRestaurantTypes = Restaurant;
 export type CombinedMessageTypes = messageType;
+export type CombinedRoomInfoTypes = RoominfoDto;
 export type CombinedTypes = RestaurantInfoDto;
 export type CombinedRestaurantTypes = Restaurant;
 export enum EnumAddRestaurantCommentByIdIdInputDtoRole {

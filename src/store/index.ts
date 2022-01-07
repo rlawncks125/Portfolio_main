@@ -22,7 +22,9 @@ const state: State = {
 };
 
 const mutations: MutationTree<State> & indexMutationsTypes = {
-  setToken: ({ token }) => {
+  setToken: (state, { token }) => {
+    console.log(token);
+    state.token = token;
     return;
   },
 };
