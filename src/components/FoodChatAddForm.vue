@@ -70,25 +70,13 @@ export default defineComponent({
       if (!props.formPushData) return;
       const { map, position, uuid } = props.formPushData;
 
-      // formData.uuid = uuid;
-      // formData.restaurantImageUrl = "http://";
-      // formData.lating = {
-      //   X: position!.x,
-      //   Y: position!.y,
-      // };
-
-      // const postData = { ...formData }
-      // const resturantData = { ...formData };
-      // 백엔드로 요청 보내기
-      // 성공시 Data = 레스토랑 데이터
-      // const resturantData : CreateRestaurantOutPutDto.resturant
       const { ok, err, restaurant } = await createRestaurant({
         uuid,
         lating: {
-          X: position!.x,
-          Y: position!.y,
+          x: position!.x,
+          y: position!.y,
         },
-        restaurantImageUrl: "Http://",
+        restaurantImageUrl: "null",
         restaurantName: formData.restaurantName,
         location: formData.location,
       });

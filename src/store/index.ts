@@ -12,6 +12,7 @@ import FoodCaht, { IState as FoodCahtState } from "./modules/Foodchat";
 
 export interface State {
   token: string;
+  userName: string;
   foodChat?: FoodCahtState;
 }
 
@@ -19,12 +20,14 @@ export const key: InjectionKey<Store<State>> = Symbol();
 
 const state: State = {
   token: "",
+  userName: "",
 };
 
 const mutations: MutationTree<State> & indexMutationsTypes = {
-  setToken: (state, { token }) => {
-    console.log(token);
+  setToken: (state, { token, userName }) => {
+    // console.log(token, userName);
     state.token = token;
+    state.userName = userName;
     return;
   },
 };

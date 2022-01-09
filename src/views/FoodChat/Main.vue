@@ -46,7 +46,8 @@
   <div v-else>
     <button class="border-2" @click.prevent="userLogOut">LogOut</button>
     <br />
-    <router-view />
+    <!-- 페이지 갱신 문제로 key값 추가 -->
+    <router-view :key="route.fullPath" />
   </div>
 </template>
 
@@ -54,12 +55,13 @@
 import { useStore } from "@/store";
 import { computed, defineComponent, reactive, ref, toRefs, watch } from "vue";
 import { createUser, logIn, logOut } from "@/api/auth";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 export default defineComponent({
   setup() {
     const store = useStore();
-    const rotuer = useRouter();
+    const route = useRoute();
+    const router = useRouter();
     const isLoading = ref(false);
     const userData = reactive({
       token: computed(() => store.state.token),
@@ -96,11 +98,14 @@ export default defineComponent({
         username: formData.username,
         password: formData.password,
       });
+      if (ok) {
+        alert("로그인 되었습니다.");
+      }
       resetFormData();
       // console.log(data.token);
     };
     const userLogOut = () => {
-      rotuer.push("/foodChat");
+      router.push("/foodChat");
       logOut();
     };
 
@@ -127,7 +132,8 @@ export default defineComponent({
       userCreate,
       isSignUp,
       isLoading,
-      rotuer,
+      router,
+      route,
     };
   },
 });

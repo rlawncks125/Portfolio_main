@@ -1,8 +1,10 @@
 /** Generate by swagger-axios-codegen */
+
 /* eslint-disable */
 
 /** Generate by swagger-axios-codegen */
 /* eslint-disable */
+
 import axiosStatic, { AxiosInstance, AxiosRequestConfig } from "axios";
 
 export interface IRequestOptions extends AxiosRequestConfig {}
@@ -259,33 +261,7 @@ export class RoomService {
     });
   }
   /**
-   * 방 삭제하기 ( removeRoom )
-   */
-  static roomControllerRemoveRoom(
-    params: {
-      /** requestBody */
-      body?: RemoveRoomInPutDto;
-    } = {} as any,
-    options: IRequestOptions = {}
-  ): Promise<any> {
-    return new Promise((resolve, reject) => {
-      let url = basePath + "/room";
-
-      const configs: IRequestConfig = getConfigs(
-        "delete",
-        "application/json",
-        url,
-        options
-      );
-
-      let data = params.body;
-
-      configs.data = data;
-      axios(configs, resolve, reject);
-    });
-  }
-  /**
-   * 방 목록 ( myRooms )
+   * 방 목록 ( roomList )
    */
   static roomControllerRoomList(
     options: IRequestOptions = {}
@@ -295,6 +271,33 @@ export class RoomService {
 
       const configs: IRequestConfig = getConfigs(
         "get",
+        "application/json",
+        url,
+        options
+      );
+
+      let data = null;
+
+      configs.data = data;
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   * 방 삭제하기 ( removeRoom )
+   */
+  static roomControllerRemoveRoom(
+    params: {
+      /** 방고유아이디입니다. */
+      uuid: string;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<any> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + "/room/{uuid}";
+      url = url.replace("{uuid}", params["uuid"] + "");
+
+      const configs: IRequestConfig = getConfigs(
+        "delete",
         "application/json",
         url,
         options
@@ -674,10 +677,10 @@ export interface EventTrigger {
 
 export interface Lating {
   /** Lating_X */
-  X: number;
+  x: number;
 
   /** Lating_Y */
-  Y: number;
+  y: number;
 }
 
 export interface SuperUserDto {
@@ -825,11 +828,6 @@ export interface CreateRoomOutPutDto {
 
   /** 방정보입니다. */
   room?: CombinedRoomTypes;
-}
-
-export interface RemoveRoomInPutDto {
-  /** 방고유아이디입니다. */
-  uuid: string;
 }
 
 export interface MyCreateRoomsOutPutDto {
@@ -1032,7 +1030,7 @@ export interface GetRestaurantByIdOutPutDto {
   err?: string;
 
   /**  */
-  "레스토랑 정보": CombinedTypes;
+  restaurant: RestaurantInfoDto;
 }
 
 export interface CreateRestaurantInputDto {
@@ -1166,7 +1164,6 @@ export type CombinedUserInfoTypes = UserCommentInfo;
 export type CombinedParentRestaurantTypes = Restaurant;
 export type CombinedMessageTypes = messageType;
 export type CombinedRoomInfoTypes = RoominfoDto;
-export type CombinedTypes = RestaurantInfoDto;
 export type CombinedRestaurantTypes = Restaurant;
 export enum EnumAddRestaurantCommentByIdIdInputDtoRole {
   "User" = "User",

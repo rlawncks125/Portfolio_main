@@ -4,7 +4,7 @@ export type MutationType<T, U, V> = {
 
 // 메인 index
 export interface IndexMutationsPayloadMaps {
-  setToken: { token: string };
+  setToken: { token: string; userName: string };
 }
 export interface IndexMutationsReturnsMaps {
   setToken: void;
