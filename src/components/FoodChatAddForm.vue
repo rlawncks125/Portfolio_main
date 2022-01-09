@@ -1,10 +1,10 @@
 <template>
   <div
-    class="absolute bg-gray-600 inset-0 w-screen h-screen text-2xl"
+    class="fixed bg-gray-600 inset-0 w-screen h-screen text-2xl"
     style="z-index: 1001"
   >
     <div
-      class="relative bg-yellow-100 inset-0 w-11/12 h-5/6 mx-auto my-12 rounded-xl"
+      class="relative bg-yellow-100 inset-0 w-11/12 h-5/6 mx-auto my-12 rounded-xl overflow-y-auto"
     >
       <button class="absolute top-0 right-4" @click="closeForm">X</button>
 
@@ -95,7 +95,7 @@ export default defineComponent({
 
       if (maker) {
         formDataReset();
-        emit("createMaker", { maker, restaurantData: restaurant });
+        emit("createMaker", { maker, restaurant: restaurant });
       }
     };
     const formDataReset = () => {

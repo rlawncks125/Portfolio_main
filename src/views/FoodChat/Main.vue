@@ -15,7 +15,8 @@
       ><input type="text" id="username" v-model="username" />
       <br />
       <label for="password">패스워드</label
-      ><input type="text" id="password" v-model="password" /><br />
+      ><input type="password" id="password" v-model="password" /><br />
+
       <div class="flex justify-between">
         <button @click.prevent="userCreate" class="border-2">
           계정 만들기
@@ -34,7 +35,7 @@
       ><input type="text" id="username" v-model="username" />
       <br />
       <label for="password">패스워드</label
-      ><input type="text" id="password" v-model="password" />
+      ><input type="password" id="password" v-model="password" />
       <div class="flex justify-between">
         <button class="border-2" @click.prevent="userLogin">Login</button>
         <button class="border-2" @click.prevent="isSignUp = true">
@@ -43,11 +44,17 @@
       </div>
     </form>
   </div>
+
   <div v-else>
     <button class="border-2" @click.prevent="userLogOut">LogOut</button>
     <br />
     <!-- 페이지 갱신 문제로 key값 추가 -->
     <router-view :key="route.fullPath" />
+  </div>
+
+  <div>
+    <button @click="getMyRoomlist">토큰 테스트</button>
+    유저 닉네임 : {{ userName }}
   </div>
 </template>
 
@@ -56,6 +63,7 @@ import { useStore } from "@/store";
 import { computed, defineComponent, reactive, ref, toRefs, watch } from "vue";
 import { createUser, logIn, logOut } from "@/api/auth";
 import { useRoute, useRouter } from "vue-router";
+import { getJoinRoomList } from "@/api/Room";
 
 export default defineComponent({
   setup() {
@@ -65,6 +73,7 @@ export default defineComponent({
     const isLoading = ref(false);
     const userData = reactive({
       token: computed(() => store.state.token),
+      userName: computed(() => store.state.userName),
     });
     const isLogin = ref(userData.token.length > 2);
     const isSignUp = ref(false);
@@ -109,6 +118,15 @@ export default defineComponent({
       logOut();
     };
 
+    const getMyRoomlist = async () => {
+      const { ok, myRooms, err } = await getJoinRoomList();
+      if (ok) {
+        console.log(myRooms);
+      } else {
+        console.log(err);
+      }
+    };
+
     watch(
       () => userData.token,
       () => {
@@ -134,6 +152,7 @@ export default defineComponent({
       isLoading,
       router,
       route,
+      getMyRoomlist,
     };
   },
 });

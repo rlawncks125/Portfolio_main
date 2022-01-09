@@ -1,7 +1,7 @@
 <template>
   <loding :isLoding="isLoding" />
   <div class="flex gap-2">
-    <span v-if="isSpuerUser">방 주인입니다.</span>
+    <span class="text-red-800" v-if="isSpuerUser">방 주인입니다.</span>
     <button v-if="isSpuerUser" @click="onDeleteRoom">방 삭제하기</button>
   </div>
   <div class="flex flex-col justify-between">
@@ -19,7 +19,13 @@
     @closeForm="closeForm"
     @createMaker="createMaker"
   />
-  <foot-chat-view-form v-show="isViewActive" :vieFormData="viewPushData" />
+  <foot-chat-view-form
+    v-show="isViewActive"
+    :vieFormData="viewPushData"
+    :isRoomSuperUser="isSpuerUser"
+    @viewClose="onCloseView"
+    @DeleteRestrunt="onDeleteRestaurnt"
+  />
 
   <div>음식점 리스트 필터 ( 태그 , 지역 , 등등등)</div>
 </template>
@@ -62,7 +68,13 @@ export default defineComponent({
     const uuid = route.params.uuid as string;
 
     let map = ref<naver.maps.Map>();
-    let makers: Array<any> = [];
+    let makers: Array<{
+      maker: naver.maps.Marker;
+      restaurantData: RestaurantInfoDto;
+    }> = [];
+
+    const makerInfoWindow = new naver.maps.InfoWindow({ content: "" });
+
     // form
     const isFromActive = ref<boolean>(false);
     const formPushData = reactive<IFormPushData>({
@@ -71,52 +83,8 @@ export default defineComponent({
       uuid,
     });
     // view
-    const isViewActive = ref<boolean>(true);
-    const viewPushData = reactive({
-      id: 15,
-      resturantSuperUser: {
-        id: 12,
-        nickName: "userTest1",
-      },
-      restaurantName: "adw",
-      restaurantImageUrl:
-        "https://res.cloudinary.com/dhdq4v4ar/image/upload/v1603952836/sample.jpg",
-      location: "인천",
-      comments: [
-        {
-          id: 31,
-          star: 4,
-          message: {
-            message: "메시지메시지",
-            userInfo: {
-              nickName: "유저1",
-              role: "User",
-            },
-          },
-          childMessages: [
-            {
-              userInfo: {
-                nickName: "usertest1",
-                role: "User",
-              },
-              message: "zzzz",
-            },
-            {
-              message: "대변경해보아ㄴ요",
-              userInfo: {
-                nickName: "userTest2",
-                role: "User",
-              },
-            },
-          ],
-        },
-      ],
-      avgStar: 4,
-      lating: {
-        x: 126.7,
-        y: 37.4391,
-      },
-    } as RestaurantInfoDto);
+    const isViewActive = ref<boolean>(false);
+    const viewPushData = ref({} as RestaurantInfoDto);
 
     const onLeaveRoom = async () => {
       if (!window.confirm("방을 나가실겁니까?")) return;
@@ -142,55 +110,95 @@ export default defineComponent({
 
         return;
       }
-      console.log("노삭제");
+      console.log("방 노삭제");
     };
 
     const makerCommonEvent = (maker: naver.maps.Marker) => {
-      // 더블 클릭시 마커 삭제 이벤트 리스너
-      // - 채팅창으로 오픈 작업하기
-      // - filter로 더블클릭한 마커 정보 가져오기
-      // - food-chat-view 컴포넌트 만들어서 정보 바인드
       maker.addListener("dblclick", () => {
-        if (!window.confirm("삭제 하실겁니까??")) return;
+        // 방법 1 ) 레스토랑 값 찾아서 view에 보낼 데이터 변경
+        const restaurantId = makers.filter((v) => v.maker === maker)[0]
+          .restaurantData.id;
 
-        makers = makers.filter(async (v) => {
-          if (
-            v.restaurantData.lating.x === maker.getPosition().x &&
-            v.restaurantData.lating.y === maker.getPosition().y
-          ) {
-            const { ok, err } = await deleteRestaurant(v.restaurantData.id);
+        console.log(restaurantId);
+        // const findRestaurantId = 11;
 
-            if (!ok) {
-              console.log(err);
-              return true;
-            }
+        // viewPushData.value = RestaurantInfo.filter(
+        //   (v) => v.id === findRestaurantId
+        // )[0];
 
-            maker.onRemove();
-            return false;
-          }
-          return true;
-        });
+        viewPushData.value = makers.filter(
+          (v) => v.restaurantData.id === restaurantId
+        )[0].restaurantData;
+
+        isViewActive.value = true;
+      });
+      // document.getElementById('')?.addEventListener('mouseleave')
+      // 마커 클릭시 레스토랑 정보 보여주기
+      maker.addListener("click", () => {
+        if (makerInfoWindow.getMap()) {
+          makerInfoWindow.close();
+        } else {
+          let restaurant = makers.filter((v) => v.maker === maker)[0]
+            .restaurantData;
+
+          const infoContent = `
+          <p class="font-mono">레스토랑 id :${restaurant.id}</p>
+          <p>레스토랑 이름 :${restaurant.restaurantName}</p>
+          `;
+
+          makerInfoWindow.setContent(infoContent);
+
+          makerInfoWindow.open(map.value!, maker);
+        }
       });
     };
 
     const closeForm = () => {
       isFromActive.value = false;
     };
+    const onCloseView = () => {
+      isViewActive.value = false;
+    };
 
     const createMaker = ({
       maker,
-      restaurantData,
+      restaurant,
     }: {
       maker: naver.maps.Marker;
-      restaurantData: CreateRestaurantOutPutDto;
+      restaurant: Restaurant;
     }) => {
       isFromActive.value = false;
 
+      console.log("createMaker", restaurant);
+
+      if (!restaurant) return;
+
       makerCommonEvent(maker);
 
-      makers.push({ maker, restaurantData });
+      makers.push({ maker, restaurantData: restaurant });
 
       console.log(makers);
+    };
+
+    const onDeleteRestaurnt = (id: number) => {
+      if (!window.confirm("삭제 하실겁니까??")) return;
+
+      makers = makers.filter(async (v) => {
+        if (v.restaurantData.id === id) {
+          const { ok, err } = await deleteRestaurant(v.restaurantData.id);
+
+          if (!ok) {
+            console.log(err);
+            return true;
+          }
+
+          v.maker.onRemove();
+          isViewActive.value = false;
+          makerInfoWindow.close();
+          return false;
+        }
+        return true;
+      });
     };
 
     onMounted(async () => {
@@ -242,6 +250,7 @@ export default defineComponent({
       });
 
       // 마커 클릭(추가) 리스너 ( 폼에 보낼 데이터 설정 )
+      // 지도에서 빈곳 클릭시 레스토랑 챗 생성 폼 Active
       naver.maps.Event.addListener(map.value, "click", (e) => {
         isFromActive.value = true;
         formPushData.map = map.value;
@@ -263,6 +272,8 @@ export default defineComponent({
       onDeleteRoom,
       isViewActive,
       viewPushData,
+      onCloseView,
+      onDeleteRestaurnt,
     };
   },
 });

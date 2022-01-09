@@ -6,6 +6,7 @@ import {
   Store,
   CommitOptions,
   MutationTree,
+  GetterTree,
 } from "vuex";
 
 import FoodCaht, { IState as FoodCahtState } from "./modules/Foodchat";

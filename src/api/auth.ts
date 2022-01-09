@@ -6,13 +6,24 @@ import {
 } from "@/assets/swagger";
 import { store } from "@/store";
 import axios, { AxiosRequestConfig } from "axios";
+import { computed, watch } from "vue";
+
+// main.ts에 import 안할시
+// 처음 호출되는곳에서 init
+// console.log("auth 로드");
+
+const token = computed(() => store.state.token);
 
 export const AuthHeaders: AxiosRequestConfig = {
   headers: {
-    "acces-token": store.state.token || " ",
+    "acces-token": token.value,
   },
-  // timeout: 500,
 };
+
+watch(token, () => {
+  console.log("wacth");
+  AuthHeaders.headers!["acces-token"] = token.value;
+});
 
 interface IBasicAuth {
   username: string;
@@ -28,7 +39,7 @@ export const logIn = async (auth: IBasicAuth): Promise<LoginOutPutDto> => {
 
       // 토큰 vuex에 저장 처리
       if (ok) {
-        token && setToken(token, user);
+        token && store.commit("setToken", { token, userName: user.username });
       } else {
         console.log(err);
       }
@@ -55,19 +66,7 @@ export const editUser = async (dsc: string): Promise<any> => {
 };
 
 export const logOut = () => {
-  restToken();
-};
-
-const setToken = (token: string, user: UserOutPut) => {
-  AuthHeaders.headers!["acces-token"] = token;
-
-  // localstorge 저장
-  store.commit("setToken", { token, userName: user.username });
-};
-
-const restToken = () => {
-  AuthHeaders.headers!["acces-token"] = "";
   store.commit("setToken", { token: "", userName: "" });
 };
 
-const triger = EnumEventTriggerTypes.LEAVEROOM;
+// const triger = EnumEventTriggerTypes.LEAVEROOM;

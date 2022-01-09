@@ -520,6 +520,10 @@ Ensure the default browser behavior of the `hidden` attribute.
   height: 83.333333%;
 }
 
+.h-full {
+  height: 100%;
+}
+
 .h-96 {
   height: 24rem;
 }
@@ -534,6 +538,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .w-10\/12 {
   width: 83.333333%;
+}
+
+.w-80 {
+  width: 20rem;
 }
 
 .w-full {
@@ -607,6 +615,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .gap-y-2 {
   row-gap: 0.5rem;
+}
+
+.overflow-y-auto {
+  overflow-y: auto;
 }
 
 .rounded-xl {
@@ -694,6 +706,14 @@ Ensure the default browser behavior of the `hidden` attribute.
           box-decoration-break: slice;
 }
 
+.bg-cover {
+  background-size: cover;
+}
+
+.bg-center {
+  background-position: center;
+}
+
 .p-2 {
   padding: 0.5rem;
 }
@@ -729,8 +749,16 @@ Ensure the default browser behavior of the `hidden` attribute.
   padding-left: 1rem;
 }
 
+.pl-3 {
+  padding-left: 0.75rem;
+}
+
 .text-center {
   text-align: center;
+}
+
+.font-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 .text-2xl {
@@ -756,6 +784,11 @@ Ensure the default browser behavior of the `hidden` attribute.
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.text-red-800 {
+  --tw-text-opacity: 1;
+  color: rgb(153 27 27 / var(--tw-text-opacity));
 }
 
 .text-pink-500 {
