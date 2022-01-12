@@ -25,6 +25,7 @@
     :isRoomSuperUser="isSpuerUser"
     @viewClose="onCloseView"
     @DeleteRestrunt="onDeleteRestaurnt"
+    @UpdateRestaurantById="onUpdateRestaurant"
   />
 
   <div>음식점 리스트 필터 ( 태그 , 지역 , 등등등)</div>
@@ -46,7 +47,7 @@ import {
   getRoomInfo,
   leaveRoom,
 } from "@/api/Room";
-import { deleteRestaurant } from "@/api/Restaurant";
+import { deleteRestaurant, getRestaurantById } from "@/api/Restaurant";
 import { useStore } from "@/store/index";
 
 interface IFormPushData {
@@ -113,13 +114,12 @@ export default defineComponent({
       console.log("방 노삭제");
     };
 
-    const makerCommonEvent = (maker: naver.maps.Marker) => {
+    const markerCommonEvent = (maker: naver.maps.Marker) => {
       maker.addListener("dblclick", () => {
         // 방법 1 ) 레스토랑 값 찾아서 view에 보낼 데이터 변경
         const restaurantId = makers.filter((v) => v.maker === maker)[0]
           .restaurantData.id;
 
-        console.log(restaurantId);
         // const findRestaurantId = 11;
 
         // viewPushData.value = RestaurantInfo.filter(
@@ -173,11 +173,34 @@ export default defineComponent({
 
       if (!restaurant) return;
 
-      makerCommonEvent(maker);
+      markerCommonEvent(maker);
 
       makers.push({ maker, restaurantData: restaurant });
 
       console.log(makers);
+    };
+
+    const onUpdateRestaurant = async (id: number) => {
+      const { ok, restaurant, err } = await getRestaurantById(id);
+
+      if (ok) {
+        makers = makers.map((v) => {
+          if (v.restaurantData.id === id) {
+            return {
+              maker: v.maker,
+              restaurantData: restaurant,
+            };
+          } else {
+            return v;
+          }
+        });
+        // 보고있는 view 값 갱신
+        viewPushData.value = makers.filter(
+          (v) => v.restaurantData.id === id
+        )[0].restaurantData;
+      } else {
+        console.log(err);
+      }
     };
 
     const onDeleteRestaurnt = (id: number) => {
@@ -206,7 +229,7 @@ export default defineComponent({
       const { ok, roomInfo, users, RestaurantInfo } = await getRoomInfo({
         uuid: route.params.uuid as string,
       });
-      // console.log(roomInfo);
+      console.log(roomInfo);
       // console.log(users);
       // console.log(RestaurantInfo);
 
@@ -245,7 +268,7 @@ export default defineComponent({
           },
           map: map.value,
         });
-        makerCommonEvent(maker);
+        markerCommonEvent(maker);
         makers.push({ maker, restaurantData: v });
       });
 
@@ -274,6 +297,7 @@ export default defineComponent({
       viewPushData,
       onCloseView,
       onDeleteRestaurnt,
+      onUpdateRestaurant,
     };
   },
 });

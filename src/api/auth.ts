@@ -21,7 +21,7 @@ export const AuthHeaders: AxiosRequestConfig = {
 };
 
 watch(token, () => {
-  console.log("wacth");
+  console.log("wacth", AuthHeaders);
   AuthHeaders.headers!["acces-token"] = token.value;
 });
 

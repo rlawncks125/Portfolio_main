@@ -32,55 +32,137 @@
         </fieldset>
       </form>
       <div>
-        댓글
+        댓글 {{ activeMessage }}
         <div
           class="pl-4"
           v-for="comment in vieFormData.comments"
           :key="comment.id"
         >
-          <p>
-            {{ comment.message.userInfo.nickName }} :
-            {{ comment.message.message }}
-          </p>
+          <div class="flex justify-between">
+            <p class="cursor-pointer" @click="setcommentId(comment.id)">
+              {{ comment.message.userInfo.nickName }} :
+              {{ comment.message.message }}
+            </p>
+            <button @click="onDeleteComment(comment.id)">삭제</button>
+          </div>
+          <div v-show="activeMessage === comment.id">
+            <label for="">추가 댓글:</label>
+            <input type="text" v-model="childMessage" />
+            <button @click="onAddCommentByCommentId(comment.id)">
+              대댓글 추가
+            </button>
+          </div>
           <div
-            class="pl-4 grid grid-cols-1 border-2"
+            class="ml-6 pl-4 flex flex-col border-2"
             v-for="childMessages in comment.childMessages"
             :key="childMessages.id"
           >
-            <p>
-              {{ childMessages.userInfo.nickName }}
+            <p @click="setChuldCommentCreateTime(childMessages.CreateTime)">
+              {{ childMessages.userInfo.nickName }}[{{
+                childMessages.userInfo.role
+              }}]
               {{ getDateData(childMessages.CreateTime) }}
             </p>
-
             <p class="pl-3">
               {{ childMessages.message }}
             </p>
+            <div
+              class="flex justify-between border border-yellow-400"
+              v-show="etidActiveChildMessage === childMessages.CreateTime"
+            >
+              <div>
+                <label for="">수정할 내용</label>
+                <input type="text" v-model="editChildMessage" />
+              </div>
+              <button
+                class="border border-red-400"
+                @click="
+                  onEditChildComment(comment.id, childMessages.CreateTime)
+                "
+              >
+                수정
+              </button>
+            </div>
           </div>
         </div>
       </div>
+      <label for="">댓글 :</label>
+      <input type="text" v-model="message" />
+      <button @click="onAddCommentRestaurantById">댓글 추가</button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { RestaurantInfoDto } from "@/assets/swagger";
-import { defineComponent, onMounted, PropType, ref, watch } from "vue";
+import {
+  EnumAddMessageByCommentIdInPutDtoRole,
+  EnumAddRestaurantCommentByIdIdInputDtoRole,
+  RestaurantInfoDto,
+} from "@/assets/swagger";
+import {
+  defineComponent,
+  onMounted,
+  PropType,
+  reactive,
+  ref,
+  toRefs,
+  watch,
+} from "vue";
 import { useStore } from "@/store/index";
+import {
+  addMessageByCommentId,
+  addRestaurantCommentById,
+  deleteComment,
+  editCommentChildMessage,
+} from "@/api/Restaurant";
 
 export default defineComponent({
   props: {
     vieFormData: Object as PropType<RestaurantInfoDto>,
     isRoomSuperUser: Boolean,
   },
-  emits: ["viewClose", "DeleteRestrunt"],
+  emits: ["viewClose", "DeleteRestrunt", "UpdateRestaurantById"],
 
   setup(props, { emit }) {
     const store = useStore();
     const isSuperUser = ref(false);
 
+    const activeMessage = ref<number | null>();
+    const etidActiveChildMessage = ref<string | null>();
+
     const restaurantImageUrl = ref(
       "https://res.cloudinary.com/dhdq4v4ar/image/upload/v1603952836/sample.jpg"
     );
+
+    const addFormData = reactive({
+      message: "",
+      childMessage: "",
+      editChildMessage: "",
+      start: 0,
+    });
+
+    const setcommentId = (id: number) => {
+      if (activeMessage.value === id) {
+        activeMessage.value = null;
+        return;
+      }
+
+      activeMessage.value = id;
+      addFormData.childMessage = "";
+
+      console.log(activeMessage.value);
+    };
+
+    const setChuldCommentCreateTime = (createTime: string) => {
+      if (etidActiveChildMessage.value === createTime) {
+        etidActiveChildMessage.value = null;
+        return;
+      }
+
+      etidActiveChildMessage.value = createTime;
+      addFormData.childMessage = "";
+      console.log(etidActiveChildMessage.value);
+    };
 
     const getDateData = (date: Date) => {
       let outPutTime = "작성 시간 : ㄴ";
@@ -109,7 +191,70 @@ export default defineComponent({
       emit("DeleteRestrunt", props.vieFormData?.id);
     };
 
-    // onMounted(() => {});
+    const onAddCommentRestaurantById = async () => {
+      const { id } = props.vieFormData!;
+
+      const { ok, err } = await addRestaurantCommentById({
+        restaurantId: id,
+        role: EnumAddRestaurantCommentByIdIdInputDtoRole.User,
+        message: addFormData.message,
+        star: 2,
+      });
+      if (ok) {
+        updateRestaurant();
+      } else {
+        console.log(err);
+      }
+    };
+
+    const onAddCommentByCommentId = async (id: number) => {
+      const { ok, err } = await addMessageByCommentId({
+        commentId: id,
+        role: EnumAddMessageByCommentIdInPutDtoRole.Anonymous,
+        message: addFormData.childMessage,
+      });
+
+      if (ok) {
+        activeMessage.value = null;
+        updateRestaurant();
+      } else {
+        console.log(err);
+      }
+    };
+
+    const onEditChildComment = async (
+      commentId: number,
+      childCreateTime: string
+    ) => {
+      // console.log(commentId, childCreateTime, addFormData.editChildMessage);
+      // console.log(new Date(childCreateTime));
+      const { ok, err } = await editCommentChildMessage({
+        id: commentId,
+        createTime: new Date(childCreateTime),
+        message: addFormData.editChildMessage,
+      });
+
+      if (ok) {
+        updateRestaurant();
+      } else {
+        console.log(err);
+      }
+    };
+
+    const onDeleteComment = async (id: number) => {
+      if (window.confirm("정말로 삭제하시겠습니까?")) {
+        const { ok, err } = await deleteComment(id);
+        if (ok) {
+          updateRestaurant();
+        } else {
+          console.log(err);
+        }
+      }
+    };
+
+    const updateRestaurant = () => {
+      emit("UpdateRestaurantById", props.vieFormData?.id);
+    };
 
     watch(
       () => props.vieFormData,
@@ -145,11 +290,22 @@ export default defineComponent({
       restaurantImageUrl,
       onClose,
       onDeleteRestaurnt,
+      onAddCommentRestaurantById,
+      ...toRefs(addFormData),
+      setcommentId,
+      onAddCommentByCommentId,
+      onEditChildComment,
+      activeMessage,
+      onDeleteComment,
+      etidActiveChildMessage,
+      setChuldCommentCreateTime,
     };
   },
 });
 // 나머지 api구현
 // ui/ux
+// 댓글 or 대댓글이 성공적으로 추가했을시
+// 해당레스토랑 정보 다시 받아서 업데이트
 </script>
 
-<style scoped></style>
+<style lang="scss"></style>
