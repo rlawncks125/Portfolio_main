@@ -43,7 +43,13 @@
               {{ comment.message.userInfo.nickName }} :
               {{ comment.message.message }}
             </p>
+            <button @click="setEditCommentId(comment.id)">수정</button>
             <button @click="onDeleteComment(comment.id)">삭제</button>
+          </div>
+          <div v-show="editActiveMessage === comment.id">
+            <label for="">댓글 수정:</label>
+            <input type="text" v-model="editMessage" />
+            <button @click="onEditCommentId(comment.id)">댓글 수정</button>
           </div>
           <div v-show="activeMessage === comment.id">
             <label for="">추가 댓글:</label>
@@ -57,18 +63,26 @@
             v-for="childMessages in comment.childMessages"
             :key="childMessages.id"
           >
-            <p @click="setChuldCommentCreateTime(childMessages.CreateTime)">
-              {{ childMessages.userInfo.nickName }}[{{
-                childMessages.userInfo.role
-              }}]
-              {{ getDateData(childMessages.CreateTime) }}
-            </p>
+            <div class="">
+              <p>
+                {{ childMessages.userInfo.nickName }}[{{
+                  childMessages.userInfo.role
+                }}]
+                {{ getDateData(childMessages.CreateTime) }}
+              </p>
+              <button
+                class="text-red-300"
+                @click="setChildCommentCreateTime(childMessages.CreateTime)"
+              >
+                수정 하기
+              </button>
+            </div>
             <p class="pl-3">
               {{ childMessages.message }}
             </p>
             <div
               class="flex justify-between border border-yellow-400"
-              v-show="etidActiveChildMessage === childMessages.CreateTime"
+              v-show="editActiveChildMessage === childMessages.CreateTime"
             >
               <div>
                 <label for="">수정할 내용</label>
@@ -114,6 +128,7 @@ import {
   addRestaurantCommentById,
   deleteComment,
   editCommentChildMessage,
+  editCommentMessage,
 } from "@/api/Restaurant";
 
 export default defineComponent({
@@ -128,7 +143,8 @@ export default defineComponent({
     const isSuperUser = ref(false);
 
     const activeMessage = ref<number | null>();
-    const etidActiveChildMessage = ref<string | null>();
+    const editActiveMessage = ref<number | null>();
+    const editActiveChildMessage = ref<string | null>();
 
     const restaurantImageUrl = ref(
       "https://res.cloudinary.com/dhdq4v4ar/image/upload/v1603952836/sample.jpg"
@@ -138,6 +154,7 @@ export default defineComponent({
       message: "",
       childMessage: "",
       editChildMessage: "",
+      editMessage: "",
       start: 0,
     });
 
@@ -153,15 +170,25 @@ export default defineComponent({
       console.log(activeMessage.value);
     };
 
-    const setChuldCommentCreateTime = (createTime: string) => {
-      if (etidActiveChildMessage.value === createTime) {
-        etidActiveChildMessage.value = null;
+    const setChildCommentCreateTime = (createTime: string) => {
+      if (editActiveChildMessage.value === createTime) {
+        editActiveChildMessage.value = null;
         return;
       }
 
-      etidActiveChildMessage.value = createTime;
+      editActiveChildMessage.value = createTime;
       addFormData.childMessage = "";
-      console.log(etidActiveChildMessage.value);
+      console.log(editActiveChildMessage.value);
+    };
+
+    const setEditCommentId = (id: number) => {
+      if (editActiveMessage.value === id) {
+        editActiveMessage.value = null;
+        return;
+      }
+
+      editActiveMessage.value = id;
+      addFormData.editMessage = "";
     };
 
     const getDateData = (date: Date) => {
@@ -222,6 +249,20 @@ export default defineComponent({
       }
     };
 
+    const onEditCommentId = async (id: number) => {
+      const { ok, err } = await editCommentMessage({
+        id,
+        message: addFormData.editMessage,
+      });
+
+      if (ok) {
+        editActiveMessage.value = null;
+        updateRestaurant();
+      } else {
+        console.log(err);
+      }
+    };
+
     const onEditChildComment = async (
       commentId: number,
       childCreateTime: string
@@ -235,6 +276,7 @@ export default defineComponent({
       });
 
       if (ok) {
+        editActiveChildMessage.value = null;
         updateRestaurant();
       } else {
         console.log(err);
@@ -297,8 +339,11 @@ export default defineComponent({
       onEditChildComment,
       activeMessage,
       onDeleteComment,
-      etidActiveChildMessage,
-      setChuldCommentCreateTime,
+      editActiveChildMessage,
+      setChildCommentCreateTime,
+      onEditCommentId,
+      editActiveMessage,
+      setEditCommentId,
     };
   },
 });

@@ -7,6 +7,8 @@ import {
   CreateRestaurantOutPutDto,
   EditCommentChildMessageInPutDto,
   EditCommentChildMessageOutPutDto,
+  EditCommentMessageInPutDto,
+  EditCommentMessageOutPutDto,
   GetRestaurantByIdOutPutDto,
 } from "@/assets/swagger";
 import axios from "axios";
@@ -44,7 +46,11 @@ export const addRestaurantCommentById = async (
     .then((res: any) => res.data as AddRestaurantCommentByIdIdOutPutDto);
 };
 
-// '레스토랑 댓글 변경 ( editCommentMessage )'
+export const editCommentMessage = async (data: EditCommentMessageInPutDto) => {
+  return axios
+    .patch("/api/restaurant/comment", data, AuthHeaders)
+    .then((res: any) => res.data as EditCommentMessageOutPutDto);
+};
 
 export const addMessageByCommentId = async (
   data: AddMessageByCommentIdInPutDto
@@ -62,9 +68,10 @@ export const editCommentChildMessage = async (
     .then((res: any) => res.data as EditCommentChildMessageOutPutDto);
 };
 
-// '댓글 정보 얻기 ( addMessageById 없어도 될듯? )'
 export const deleteComment = async (id: number) => {
   return axios
     .delete(`api/restaurant/comment/${id}`, AuthHeaders)
     .then((res: any) => res.data as { ok: boolean; err?: string });
 };
+
+// '댓글 정보 얻기 ( addMessageById 없어도 될듯? )'
