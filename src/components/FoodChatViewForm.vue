@@ -4,7 +4,7 @@
     style="z-index: 1001"
   >
     <div
-      class="relative bg-yellow-100 inset-0 w-11/12 h-5/6 mx-auto my-12 rounded-xl overflow-y-auto"
+      class="relative bg-yellow-100 inset-0 w-11/12 h-5/6 mx-auto my-12 rounded-xl overflow-y-auto p-4"
     >
       <p>접속유저 : {{ store.state.userName }}</p>
 
@@ -32,9 +32,9 @@
         </fieldset>
       </form>
       <div>
-        댓글 {{ activeMessage }}
+        {{ activeMessage }}
         <div
-          class="pl-4"
+          class="px-4"
           v-for="comment in vieFormData.comments"
           :key="comment.id"
         >
@@ -63,21 +63,25 @@
             v-for="childMessages in comment.childMessages"
             :key="childMessages.id"
           >
-            <div class="">
+            <div class="whitespace-pre-wrap">
+              <div class="flex">
+                <p>
+                  {{ childMessages.userInfo.nickName }}[{{
+                    childMessages.userInfo.role
+                  }}]
+                </p>
+                <button
+                  class="text-red-300"
+                  @click="setChildCommentCreateTime(childMessages.CreateTime)"
+                >
+                  수정 하기
+                </button>
+              </div>
               <p>
-                {{ childMessages.userInfo.nickName }}[{{
-                  childMessages.userInfo.role
-                }}]
                 {{ getDateData(childMessages.CreateTime) }}
               </p>
-              <button
-                class="text-red-300"
-                @click="setChildCommentCreateTime(childMessages.CreateTime)"
-              >
-                수정 하기
-              </button>
             </div>
-            <p class="pl-3">
+            <p class="">
               {{ childMessages.message }}
             </p>
             <div
@@ -100,9 +104,11 @@
           </div>
         </div>
       </div>
-      <label for="">댓글 :</label>
-      <input type="text" v-model="message" />
-      <button @click="onAddCommentRestaurantById">댓글 추가</button>
+      <div class="mt-4 flex flex-col text-left">
+        <label for="">추가 댓글 달기 :</label>
+        <textarea class="" v-model="message" />
+        <button @click="onAddCommentRestaurantById">댓글 추가</button>
+      </div>
     </div>
   </div>
 </template>
@@ -188,7 +194,7 @@ export default defineComponent({
       }
 
       editActiveMessage.value = id;
-      addFormData.editMessage = "";
+      addFormData.editMessage = " ";
     };
 
     const getDateData = (date: Date) => {
@@ -197,15 +203,16 @@ export default defineComponent({
         // 데이터 가 어떻게 받아올지 모르겠지만
         // 2021-12-20T17:14:34.508Z 형식일경우
         const paseDate = new Date(date);
-        const time = {
-          year: paseDate.getFullYear(),
-          month: paseDate.getMonth(),
-          date: paseDate.getDate(),
-          hour: paseDate.getHours(),
-          second: paseDate.getSeconds(),
-        };
+        // const time = {
+        //   year: paseDate.getFullYear(),
+        //   month: paseDate.getMonth(),
+        //   date: paseDate.getDate() as string | number,
+        //   hour: paseDate.getHours(),
+        //   second: paseDate.getSeconds(),
+        // };
 
-        outPutTime = `작성 시간 : ${time.year}-${time.month}-${time.date}:${time.hour}:${time.second}`;
+        // outPutTime = `작성 시간 : ${time.year}-${time.month}-${time.date}:${time.hour}:${time.second}`;
+        outPutTime = paseDate.toLocaleString();
       }
       return outPutTime;
     };
@@ -228,6 +235,7 @@ export default defineComponent({
         star: 2,
       });
       if (ok) {
+        addFormData.message = "";
         updateRestaurant();
       } else {
         console.log(err);

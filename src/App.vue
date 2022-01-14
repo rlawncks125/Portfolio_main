@@ -79,6 +79,7 @@ body {
   color: #2c3e50;
 
   display: grid;
+  margin: 1rem;
 
   grid-template:
     "nav nav nav nav" 4rem
@@ -88,9 +89,9 @@ body {
 
   @include mobile() {
     grid-template:
-      "out-checkd nav nav ." 5rem
-      "render-view render-view render-view render-view" minmax(50px, auto)
-      / 1fr 1fr 1fr 1fr;
+      "out-checkd nav ." 5rem
+      "render-view render-view render-view" minmax(50px, auto)
+      / 1fr 1fr 1fr;
     align-items: center;
   }
   @include tablet() {
@@ -136,6 +137,7 @@ a:-webkit-any-link {
   @include mobile() {
     .nav-home {
       width: 100%;
+      max-width: 14rem;
     }
     .nav-wrap {
       display: flex;
@@ -150,6 +152,10 @@ a:-webkit-any-link {
 
       transform: translateX(-1000px);
       transition: transform 0.2s ease-in-out;
+
+      a {
+        padding: 2rem 0;
+      }
     }
   }
 
