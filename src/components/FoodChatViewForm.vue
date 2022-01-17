@@ -1,34 +1,43 @@
 <template>
   <div
-    class="fixed bg-gray-600 inset-0 w-screen h-screen text-2xl"
+    class="fixed bg-gray-600 inset-0 w-screen h-screen text-2xl sm:text-base"
     style="z-index: 1001"
   >
     <div
-      class="relative bg-yellow-100 inset-0 w-11/12 h-5/6 mx-auto my-12 rounded-xl overflow-y-auto p-4"
+      class="relative overflow-auto max-w-5xl p-2 pt-0 h-full bg-yellow-100 inset-0 sm:w-11/12 sm:h-5/6 sm:mx-auto sm:my-12 sm:rounded-xl sm:overflow-y-auto sm:p-4"
     >
+      <div
+        class="sticky sm:hidden p-2 py-4 top-0 flex justify-between bg-yellow-100"
+      >
+        <button class="text-3xl" @click="onClose">&lt;</button>
+        <p>가운데</p>
+        <p>오른쪽</p>
+      </div>
+      <button class="hidden sm:block absolute top-2 right-2" @click="onClose">
+        X
+      </button>
+
       <p>접속유저 : {{ store.state.userName }}</p>
 
       <button v-if="isSuperUser" @click="onDeleteRestaurnt">삭제 버튼</button>
-      <button class="absolute pt-2 top-0 right-4" @click="onClose">X</button>
 
       <form class="text-center pt-10">
         <fieldset
           class="border-2 p-2 mx-4 rounded-2xl grid max-w-full grid-cols-1 justify-items-center"
         >
           <legend class="text-center px-4">음식점 정보</legend>
-          <p for="restaurntName" class="mr-4">
+          <h1 class="mr-4 text-4xl">
             음식점 이름 {{ vieFormData.restaurantName }}
-          </p>
-          <p for="restaurntName" class="mr-4">
-            지역 이름 {{ vieFormData.location }}
-          </p>
-          <p>평균 별점 {{ vieFormData.avgStar }}</p>
-          <div class="w-80">
+          </h1>
+          <div class="h-64 sm:h-5/6">
             <img
               class="bg-cover bg-center w-full h-full"
               :src="restaurantImageUrl"
             />
           </div>
+
+          <p class="mr-4">지역 이름 {{ vieFormData.location }}</p>
+          <p>평균 별점 {{ vieFormData.avgStar }}</p>
         </fieldset>
       </form>
       <div>

@@ -462,6 +462,10 @@ Ensure the default browser behavior of the `hidden` attribute.
   position: relative;
 }
 
+.sticky {
+  position: sticky;
+}
+
 .inset-0 {
   top: 0px;
   right: 0px;
@@ -475,6 +479,30 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .right-4 {
   right: 1rem;
+}
+
+.right-0 {
+  right: 0px;
+}
+
+.left-5 {
+  left: 1.25rem;
+}
+
+.right-1 {
+  right: 0.25rem;
+}
+
+.top-2 {
+  top: 0.5rem;
+}
+
+.right-2 {
+  right: 0.5rem;
+}
+
+.float-right {
+  float: right;
 }
 
 .mx-auto {
@@ -492,11 +520,6 @@ Ensure the default browser behavior of the `hidden` attribute.
   margin-right: 1rem;
 }
 
-.my-4 {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
-
 .mr-4 {
   margin-right: 1rem;
 }
@@ -505,12 +528,12 @@ Ensure the default browser behavior of the `hidden` attribute.
   margin-left: 1.5rem;
 }
 
-.mr-2 {
-  margin-right: 0.5rem;
-}
-
 .mt-4 {
   margin-top: 1rem;
+}
+
+.mr-2 {
+  margin-right: 0.5rem;
 }
 
 .flex {
@@ -519,6 +542,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .grid {
   display: grid;
+}
+
+.hidden {
+  display: none;
 }
 
 .h-screen {
@@ -535,6 +562,18 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .h-96 {
   height: 24rem;
+}
+
+.h-60 {
+  height: 15rem;
+}
+
+.h-40 {
+  height: 10rem;
+}
+
+.h-64 {
+  height: 16rem;
 }
 
 .w-screen {
@@ -561,20 +600,8 @@ Ensure the default browser behavior of the `hidden` attribute.
   width: 50%;
 }
 
-.w-9 {
-  width: 2.25rem;
-}
-
-.w-16 {
-  width: 4rem;
-}
-
-.w-52 {
-  width: 13rem;
-}
-
-.w-1\/2 {
-  width: 50%;
+.w-60 {
+  width: 15rem;
 }
 
 .max-w-full {
@@ -583,6 +610,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .max-w-xl {
   max-width: 36rem;
+}
+
+.max-w-5xl {
+  max-width: 64rem;
 }
 
 .transform {
@@ -646,12 +677,12 @@ Ensure the default browser behavior of the `hidden` attribute.
   row-gap: 0.5rem;
 }
 
-.overflow-y-auto {
-  overflow-y: auto;
+.overflow-auto {
+  overflow: auto;
 }
 
-.whitespace-pre-line {
-  white-space: pre-line;
+.overflow-y-auto {
+  overflow-y: auto;
 }
 
 .whitespace-pre-wrap {
@@ -731,6 +762,11 @@ Ensure the default browser behavior of the `hidden` attribute.
   background-color: rgb(51 65 85 / var(--tw-bg-opacity));
 }
 
+.bg-white {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+}
+
 .bg-opacity-50 {
   --tw-bg-opacity: 0.5;
 }
@@ -765,12 +801,16 @@ Ensure the default browser behavior of the `hidden` attribute.
   padding: 0.5rem;
 }
 
+.p-4 {
+  padding: 1rem;
+}
+
 .p-8 {
   padding: 2rem;
 }
 
-.p-4 {
-  padding: 1rem;
+.p-20 {
+  padding: 5rem;
 }
 
 .px-4 {
@@ -788,6 +828,11 @@ Ensure the default browser behavior of the `hidden` attribute.
   padding-bottom: 1rem;
 }
 
+.py-2 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
 .pt-10 {
   padding-top: 2.5rem;
 }
@@ -800,8 +845,8 @@ Ensure the default browser behavior of the `hidden` attribute.
   padding-left: 1rem;
 }
 
-.pl-3 {
-  padding-left: 0.75rem;
+.pt-0 {
+  padding-top: 0px;
 }
 
 .text-left {
@@ -824,6 +869,25 @@ Ensure the default browser behavior of the `hidden` attribute.
 .text-3xl {
   font-size: 1.875rem;
   line-height: 2.25rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+.text-6xl {
+  font-size: 3.75rem;
+  line-height: 1;
+}
+
+.text-4xl {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+}
+
+.font-light {
+  font-weight: 300;
 }
 
 .text-red-400 {
@@ -912,7 +976,72 @@ button {
 }
 
 @media (min-width: 640px) {
+  .sm\:m-0 {
+    margin: 0px;
+  }
+
+  .sm\:mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .sm\:my-12 {
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+  }
+
+  .sm\:block {
+    display: block;
+  }
+
+  .sm\:hidden {
+    display: none;
+  }
+
+  .sm\:h-5\/6 {
+    height: 83.333333%;
+  }
+
+  .sm\:h-full {
+    height: 100%;
+  }
+
+  .sm\:w-11\/12 {
+    width: 91.666667%;
+  }
+
   .sm\:grid-cols-1 {
     grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
+  .sm\:overflow-y-auto {
+    overflow-y: auto;
+  }
+
+  .sm\:rounded-xl {
+    border-radius: 0.75rem;
+  }
+
+  .sm\:p-0 {
+    padding: 0px;
+  }
+
+  .sm\:p-4 {
+    padding: 1rem;
+  }
+
+  .sm\:text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
+  .sm\:text-xs {
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+
+  .sm\:text-base {
+    font-size: 1rem;
+    line-height: 1.5rem;
   }
 }

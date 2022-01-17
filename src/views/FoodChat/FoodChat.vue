@@ -29,10 +29,30 @@
   />
 
   <div>음식점 리스트 필터 ( 태그 , 지역 , 등등등)</div>
+  <label for="">필터 레스토랑명</label>
+  <input
+    type="text"
+    @input="
+      (e) => {
+        filterName = e.target.value;
+      }
+    "
+    :value="filterName"
+  />
+  <br />
+  {{ fillterArry }}
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, Ref, ref, toRefs } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  reactive,
+  Ref,
+  ref,
+  toRefs,
+  watch,
+} from "vue";
 import FootChatAddForm from "@/components/FoodChatAddForm.vue";
 import FootChatViewForm from "@/components/FoodChatViewForm.vue";
 import { useRoute, useRouter } from "vue-router";
@@ -66,15 +86,16 @@ export default defineComponent({
     const store = useStore();
     const isLoding = ref(false);
     const isSpuerUser = ref(false);
+
     const uuid = route.params.uuid as string;
 
     let map = ref<naver.maps.Map>();
+    const makerInfoWindow = new naver.maps.InfoWindow({ content: "" });
+
     let makers: Array<{
       maker: naver.maps.Marker;
       restaurantData: RestaurantInfoDto;
     }> = [];
-
-    const makerInfoWindow = new naver.maps.InfoWindow({ content: "" });
 
     // form
     const isFromActive = ref<boolean>(false);
@@ -86,6 +107,11 @@ export default defineComponent({
     // view
     const isViewActive = ref<boolean>(false);
     const viewPushData = ref({} as RestaurantInfoDto);
+    // 필터
+    const filterResult = reactive({
+      filterName: "",
+      fillterArry: [] as (string | undefined)[],
+    });
 
     const onLeaveRoom = async () => {
       if (!window.confirm("방을 나가실겁니까?")) return;
@@ -178,6 +204,7 @@ export default defineComponent({
       makers.push({ maker, restaurantData: restaurant });
 
       console.log(makers);
+      updateFilterInfo();
     };
 
     const onUpdateRestaurant = async (id: number) => {
@@ -203,10 +230,10 @@ export default defineComponent({
       }
     };
 
-    const onDeleteRestaurnt = (id: number) => {
+    const onDeleteRestaurnt = async (id: number) => {
       if (!window.confirm("삭제 하실겁니까??")) return;
 
-      makers = makers.filter(async (v) => {
+      makers.filter(async (v) => {
         if (v.restaurantData.id === id) {
           const { ok, err } = await deleteRestaurant(v.restaurantData.id);
 
@@ -218,10 +245,19 @@ export default defineComponent({
           v.maker.onRemove();
           isViewActive.value = false;
           makerInfoWindow.close();
+          makers = makers.filter((v) => v.restaurantData.id !== id);
+          console.log(makers);
+          updateFilterInfo();
           return false;
         }
         return true;
       });
+    };
+
+    const updateFilterInfo = () => {
+      filterResult.fillterArry = makers.map(
+        (v) => v.restaurantData.restaurantName
+      );
     };
 
     onMounted(async () => {
@@ -281,7 +317,20 @@ export default defineComponent({
       });
       isLoding.value = false;
       console.log("maksers", makers);
+
+      updateFilterInfo();
     });
+
+    watch(
+      () => filterResult.filterName,
+      () => {
+        filterResult.fillterArry = makers
+          .filter((v) =>
+            v.restaurantData.restaurantName.includes(filterResult.filterName)
+          )
+          .map((v) => v.restaurantData.restaurantName);
+      }
+    );
 
     return {
       isLoding,
@@ -298,6 +347,7 @@ export default defineComponent({
       onCloseView,
       onDeleteRestaurnt,
       onUpdateRestaurant,
+      ...toRefs(filterResult),
     };
   },
 });

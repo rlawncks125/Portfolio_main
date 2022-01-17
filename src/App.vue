@@ -52,17 +52,17 @@ $checkd-height: 5rem;
 
 html {
   @include mobile() {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   @include tablet() {
     font-size: 14px;
   }
   @include laptop() {
-    font-size: 15px;
+    font-size: 14px;
   }
   @include desktop() {
-    font-size: 18px;
+    font-size: 14px;
   }
 }
 
@@ -80,6 +80,7 @@ body {
 
   display: grid;
   margin: 1rem;
+  margin-top: 0;
 
   grid-template:
     "nav nav nav nav" 4rem
