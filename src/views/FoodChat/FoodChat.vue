@@ -69,6 +69,7 @@ import {
 } from "@/api/Room";
 import { deleteRestaurant, getRestaurantById } from "@/api/Restaurant";
 import { useStore } from "@/store/index";
+import axios from "axios";
 
 interface IFormPushData {
   map?: naver.maps.Map;
@@ -240,6 +241,19 @@ export default defineComponent({
           if (!ok) {
             console.log(err);
             return true;
+          }
+
+          const deleteImageUrl = v.restaurantData.restaurantImageUrl
+            .split("/")
+            .pop()
+            ?.split(".")[0];
+
+          const deleteResult = await axios
+            .delete(`/api/file/${deleteImageUrl}`)
+            .then((res: any) => res.data.deleted);
+
+          if (Object.values(deleteResult).length > 0) {
+            console.log("이미지 삭제 성공");
           }
 
           v.maker.onRemove();

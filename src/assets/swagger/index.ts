@@ -561,7 +561,7 @@ export class RestaurantService {
     });
   }
   /**
-   * 레스토랑 대댓글 변경 ( editCommentMessage )
+   * 레스토랑 대댓글 변경 ( editCommentChildMessage )
    */
   static restaurantControllerEditCommentChildMessage(
     params: {
