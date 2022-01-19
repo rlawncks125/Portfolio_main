@@ -21,6 +21,7 @@
 
       <button v-if="isSuperUser" @click="onDeleteRestaurnt">삭제 버튼</button>
 
+      <!-- 레스토랑 정보 -->
       <form class="text-center pt-10">
         <fieldset
           class="border-2 p-2 mx-4 rounded-2xl grid max-w-full grid-cols-1 justify-items-center"
@@ -29,7 +30,21 @@
           <h1 class="mr-4 text-4xl">
             음식점 이름 {{ vieFormData.restaurantName }}
           </h1>
-          <div class="h-64 sm:h-5/6">
+          <div
+            v-if="vieFormData.specialization.length > 0"
+            class="flex gap-1 items-center my-2"
+          >
+            <span> 전문 분야 : </span>
+            <template
+              v-for="special in vieFormData.specialization"
+              :key="special.id"
+            >
+              <p class="text-gray-500 bg-yellow-400 rounded-full py-1 px-3">
+                {{ special }}
+              </p>
+            </template>
+          </div>
+          <div class="h-64 sm:h-96">
             <img
               class="bg-cover bg-center w-full h-full"
               :src="restaurantImageUrl"
@@ -38,8 +53,16 @@
 
           <p class="mr-4">지역 이름 {{ vieFormData.location }}</p>
           <p>평균 별점 {{ vieFormData.avgStar }}</p>
+          <div v-if="vieFormData.hashTags.length > 0" class="flex gap-1">
+            <template v-for="tag in vieFormData.hashTags" :key="tag.id">
+              <p class="px-1 text-indigo-100 bg-cyan-500 rounded-full">
+                {{ tag }}
+              </p>
+            </template>
+          </div>
         </fieldset>
       </form>
+      <!-- 댓글 -->
       <div>
         {{ activeMessage }}
         <div

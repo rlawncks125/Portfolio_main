@@ -3,6 +3,7 @@
     class="fixed bg-gray-600 inset-0 w-screen h-screen text-2xl"
     style="z-index: 1001"
   >
+    <loding :isLoding="isLoading" />
     <div
       class="relative bg-yellow-100 inset-0 w-11/12 h-5/6 mx-auto my-12 rounded-xl overflow-y-auto"
     >
@@ -14,7 +15,8 @@
         >
           <legend class="text-center px-4">음식점 추가</legend>
           <!-- 이미지 드래그 앤 드롭 -->
-          <div
+          <label
+            for="imageFile"
             @drop="onDropFile"
             @dragover="isFileStatus = 'dragover'"
             @dragleave="isFileStatus = ''"
@@ -22,18 +24,29 @@
             :style="[isFileStatus === 'dragover' ? classOverFile : {}]"
           >
             <div class="pointer-events-none">
-              <template v-if="!isFileStatus">
-                <p>올리 이미지들을 여기에 끌어다 올리세요.</p>
-              </template>
-              <template v-else-if="isFileStatus === 'dragover'">
-                <p>이미지를 놓으세요</p>
-              </template>
+              <input
+                class="hidden"
+                @change.prevent="onChangeFile"
+                type="file"
+                name=""
+                id="imageFile"
+              />
+              <div class="h-12">
+                <template v-if="!isFileStatus">
+                  <div></div>
+                  <p>이 구역을 클릭하시거나.</p>
+                  <p>올리 이미지들을 여기에 끌어다 올리세요.</p>
+                </template>
+                <template v-else-if="isFileStatus === 'dragover'">
+                  <p>이미지를 놓으세요</p>
+                </template>
+              </div>
             </div>
-          </div>
+          </label>
           <!-- 이미지 출력 -->
           <div
             v-if="files.length > 0"
-            class="flex justify-between max-w-full overflow-auto my-2"
+            class="flex justify-between max-w-full overflow-auto my-2 max-h-60"
           >
             <template v-for="file in files" :key="file.id">
               <img
@@ -58,24 +71,52 @@
             name="location"
             v-model="location"
           />
+          <!-- 전문 분야들 -->
           <div class="flex justify-between items-center">
-            <label for="tag" class="mr-4">tag 추가</label>
+            <label for="specialization" class="mr-4 text-indigo-300"
+              >전문 분야 :</label
+            >
             <input
-              class="border-2 rounded-md focus:outline-green-400"
+              class="border-2 rounded-md focus:outline-green-400 text-indigo-300"
+              type="text"
+              name="specialization"
+              v-model="specialization"
+              placeholder="전문 분야를 입력하세요"
+            />
+            <button @click.prevent="addSpecialization">추가</button>
+          </div>
+
+          <div class="flex my-2">
+            <template
+              v-for="specialization in specializations"
+              :key="specialization.id"
+            >
+              <p class="mx-1 text-indigo-100 bg-cyan-500 rounded-full px-2">
+                {{ specialization }}
+              </p>
+            </template>
+          </div>
+          <!-- 태그들  -->
+          <div class="flex justify-between items-center">
+            <label for="tag" class="mr-4 text-indigo-300">#해시태그</label>
+            <input
+              class="border-2 rounded-md focus:outline-green-400 text-indigo-300"
               type="text"
               name="tag"
               v-model="tag"
+              placeholder="#해시태크 추가"
             />
-            <button @click="addTag">추가</button>
+            <button @click.prevent="addTag">추가</button>
           </div>
-          <!-- 추가한 태그들  -->
+
           <div class="flex my-2">
             <template v-for="tag in tags" :key="tag.id">
-              <p class="mx-1 bg-red-500 rounded-full px-2 py-1">
+              <p class="mx-1 text-indigo-100 bg-cyan-500 rounded-full px-2">
                 {{ tag }}
               </p>
             </template>
           </div>
+          <!-- Create 버튼 -->
           <button
             @click.prevent="addResturant"
             class="w-10/12 border-2 rounded-lg bg-gray-500 text-red-400 center"
@@ -108,8 +149,10 @@ import {
 import { CreateRestaurantInputDto } from "@/assets/swagger/index";
 import { createRestaurant } from "@/api/Restaurant";
 import axios from "axios";
+import Loding from "./Loding.vue";
 
 export default defineComponent({
+  components: { Loding },
   props: {
     formPushData: Object as PropType<IFormPushData>,
   },
@@ -119,11 +162,14 @@ export default defineComponent({
     const formData = reactive({
       restaurantName: "",
       location: "",
+      specialization: "" as string,
+      specializations: [] as string[],
       tag: "" as string,
       tags: [] as string[],
       files: [] as { type: string; data: any; fileName: any; file: File }[],
     });
     const isFileStatus = ref<string>();
+    const isLoading = ref(false);
 
     const classData = reactive({
       classOverFile: {
@@ -134,6 +180,7 @@ export default defineComponent({
     const onDropFile = (e: any) => {
       const files = e.dataTransfer?.files;
       isFileStatus.value = "";
+      isLoading.value = true;
       // console.log(files);
 
       if (files.length > 1) {
@@ -143,6 +190,20 @@ export default defineComponent({
       } else {
         fileRender(files[0]);
       }
+      isLoading.value = false;
+    };
+    const onChangeFile = (e: any) => {
+      const files = e.target.files;
+
+      isLoading.value = true;
+      if (files.length > 1) {
+        for (let i = 0; i < files.length; i++) {
+          fileRender(files[i]);
+        }
+      } else {
+        fileRender(files[0]);
+      }
+      isLoading.value = false;
     };
 
     const fileRender = (file: any) => {
@@ -164,29 +225,43 @@ export default defineComponent({
 
     const addTag = (e: any) => {
       e.preventDefault();
+
+      if (formData.tag.slice(0, 1) !== "#") {
+        formData.tag = `#${formData.tag}`;
+      }
+
       formData.tags.push(formData.tag);
       formData.tag = "";
+    };
+
+    const addSpecialization = (e: any) => {
+      formData.specializations.push(formData.specialization);
+      formData.specialization = "";
     };
 
     const addResturant = async () => {
       if (!props.formPushData) return;
       const { map, position, uuid } = props.formPushData;
+      let imageUrl = "";
 
-      const postForm = new FormData();
-      postForm.append(
-        "file",
-        formData.files[0].file,
-        formData.files[0].fileName
-      );
+      isLoading.value = true;
+      if (formData.files.length > 0) {
+        const postForm = new FormData();
+        postForm.append(
+          "file",
+          formData.files[0].file,
+          formData.files[0].fileName
+        );
 
-      // 이미지 url 작업
-      const imageUrl = await axios
-        .post("/api/file", postForm, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((res) => res.data.url);
+        // 이미지 url 작업
+        imageUrl = await axios
+          .post("/api/file", postForm, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+          .then((res) => res.data.url);
+      }
 
       const { ok, err, restaurant } = await createRestaurant({
         uuid,
@@ -197,11 +272,15 @@ export default defineComponent({
         restaurantImageUrl: imageUrl,
         restaurantName: formData.restaurantName,
         location: formData.location,
+        hashTags: formData.tags,
+        specialization: formData.specializations,
       });
       if (!ok) {
         console.log(err);
         return;
       }
+
+      isLoading.value = false;
 
       const maker = new naver.maps.Marker({
         position: {
@@ -223,7 +302,10 @@ export default defineComponent({
 
     const formDataReset = () => {
       formData.restaurantName = "";
-      (formData.location = ""), (formData.files = []);
+      formData.location = "";
+      formData.files = [];
+      formData.specializations = [];
+      formData.tags = [];
     };
 
     const preventDefaultDrag = (e: any) => {
@@ -240,6 +322,7 @@ export default defineComponent({
 
     return {
       onDropFile,
+      onChangeFile,
       ...toRefs(classData),
       isFileStatus,
       closeForm,
@@ -247,6 +330,8 @@ export default defineComponent({
       formRef,
       ...toRefs(formData),
       addTag,
+      addSpecialization,
+      isLoading,
     };
   },
 });

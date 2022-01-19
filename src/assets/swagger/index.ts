@@ -928,6 +928,12 @@ export interface Restaurant {
 
   /** 소속한 방정보입니다. */
   parentRoom: CombinedParentRoomTypes;
+
+  /** 해시태그들 */
+  hashTags: string[];
+
+  /** 전문분야 */
+  specialization: string[];
 }
 
 export interface UserCommentInfo {
@@ -990,6 +996,12 @@ export interface RestaurantInfoDto {
 
   /** 좌표입니다. */
   lating: CombinedLatingTypes;
+
+  /** 해시태그들 */
+  hashTags: string[];
+
+  /** 전문분야 */
+  specialization: string[];
 }
 
 export interface RoomInfoOutPutDto {
@@ -1048,6 +1060,12 @@ export interface CreateRestaurantInputDto {
 
   /** 좌표입니다. */
   lating: CombinedLatingTypes;
+
+  /** 해시태그들 */
+  hashTags: string[];
+
+  /** 전문분야 */
+  specialization: string[];
 }
 
 export interface CreateRestaurantOutPutDto {

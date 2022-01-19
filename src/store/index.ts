@@ -1,4 +1,5 @@
 // store/index.ts
+import createPersistedState from "vuex-persistedstate";
 import { InjectionKey } from "vue";
 import {
   createStore,
@@ -41,6 +42,7 @@ export const store = createStore<State>({
   modules: {
     FoodCaht,
   },
+  plugins: [createPersistedState()],
 });
 
 // Composition Api에서 접근할떄 이함수를 사용

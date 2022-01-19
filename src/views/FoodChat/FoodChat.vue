@@ -107,7 +107,10 @@ export default defineComponent({
     });
     // view
     const isViewActive = ref<boolean>(false);
-    const viewPushData = ref({} as RestaurantInfoDto);
+    const viewPushData = ref({
+      specialization: [] as string[],
+      hashTags: [] as string[],
+    } as RestaurantInfoDto);
     // 필터
     const filterResult = reactive({
       filterName: "",
@@ -169,8 +172,9 @@ export default defineComponent({
             .restaurantData;
 
           const infoContent = `
-          <p class="font-mono">레스토랑 id :${restaurant.id}</p>
-          <p>레스토랑 이름 :${restaurant.restaurantName}</p>
+          <p class="font-mono text-xs">레스토랑 id :${restaurant.id}</p>
+          <p class="font-mono text-sm">${restaurant.restaurantName}</p>
+          <p class="text-xs">${restaurant.resturantSuperUser.nickName} 님이 만들었습니다.</p>
           `;
 
           makerInfoWindow.setContent(infoContent);
@@ -234,6 +238,7 @@ export default defineComponent({
     const onDeleteRestaurnt = async (id: number) => {
       if (!window.confirm("삭제 하실겁니까??")) return;
 
+      isLoding.value = true;
       makers.filter(async (v) => {
         if (v.restaurantData.id === id) {
           const { ok, err } = await deleteRestaurant(v.restaurantData.id);
@@ -243,17 +248,22 @@ export default defineComponent({
             return true;
           }
 
-          const deleteImageUrl = v.restaurantData.restaurantImageUrl
-            .split("/")
-            .pop()
-            ?.split(".")[0];
+          if (
+            v.restaurantData.restaurantImageUrl !== null &&
+            v.restaurantData.restaurantImageUrl.length > 1
+          ) {
+            const deleteImageUrl = v.restaurantData.restaurantImageUrl
+              .split("/")
+              .pop()
+              ?.split(".")[0];
 
-          const deleteResult = await axios
-            .delete(`/api/file/${deleteImageUrl}`)
-            .then((res: any) => res.data.deleted);
+            const deleteResult = await axios
+              .delete(`/api/file/${deleteImageUrl}`)
+              .then((res: any) => res.data.deleted);
 
-          if (Object.values(deleteResult).length > 0) {
-            console.log("이미지 삭제 성공");
+            if (Object.values(deleteResult).length > 0) {
+              console.log("이미지 삭제 성공");
+            }
           }
 
           v.maker.onRemove();
@@ -262,6 +272,7 @@ export default defineComponent({
           makers = makers.filter((v) => v.restaurantData.id !== id);
           console.log(makers);
           updateFilterInfo();
+          isLoding.value = false;
           return false;
         }
         return true;
@@ -281,7 +292,7 @@ export default defineComponent({
       });
       console.log(roomInfo);
       // console.log(users);
-      // console.log(RestaurantInfo);
+      console.log(RestaurantInfo);
 
       if (roomInfo.superUserInfo.username === store.state.userName) {
         isSpuerUser.value = true;
