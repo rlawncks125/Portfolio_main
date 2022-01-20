@@ -1,6 +1,10 @@
 <template>
   <loding :isLoding="isLoading" />
   <div class="underline">음식 채팅방 메인방</div>
+  <div>
+    <button @click="getMyRoomlist">토큰 테스트</button>
+    유저 닉네임 : {{ userName }}
+  </div>
   <div
     v-if="!isLogin"
     class="h-5/6 flex items-center justify-center w-full text-3xl"
@@ -50,11 +54,6 @@
     <br />
     <!-- 페이지 갱신 문제로 key값 추가 -->
     <router-view :key="route.fullPath" />
-  </div>
-
-  <div>
-    <button @click="getMyRoomlist">토큰 테스트</button>
-    유저 닉네임 : {{ userName }}
   </div>
 </template>
 

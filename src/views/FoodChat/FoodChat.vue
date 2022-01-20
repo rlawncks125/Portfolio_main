@@ -28,8 +28,19 @@
     @UpdateRestaurantById="onUpdateRestaurant"
   />
 
+  <!-- 필터 -->
   <div>음식점 리스트 필터 ( 태그 , 지역 , 등등등)</div>
-  <label for="">필터 레스토랑명</label>
+
+  <select v-model="selectedText">
+    <option class="hidden" disabled value="">필터할 종류</option>
+    <template v-for="item in selectedFilter" :key="item.id">
+      <option>
+        {{ item.type }}
+      </option>
+    </template>
+  </select>
+
+  <label for=""> :</label>
   <input
     type="text"
     @input="
@@ -40,6 +51,8 @@
     :value="filterName"
   />
   <br />
+
+  <!-- 필터 결과값 -->
   {{ fillterArry }}
 </template>
 
@@ -76,6 +89,14 @@ interface IFormPushData {
   position?: naver.maps.Coord;
   uuid: string;
 }
+
+enum EnumFilter {
+  RestaurantName = "레스토랑 이름",
+  HashTag = "해시태그",
+  Specialization = "전문 분야",
+  Location = "지역",
+}
+
 export default defineComponent({
   components: {
     FootChatAddForm,
@@ -85,11 +106,12 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
     const store = useStore();
+
+    const uuid = route.params.uuid as string;
     const isLoding = ref(false);
     const isSpuerUser = ref(false);
 
-    const uuid = route.params.uuid as string;
-
+    // 네이버 api
     let map = ref<naver.maps.Map>();
     const makerInfoWindow = new naver.maps.InfoWindow({ content: "" });
 
@@ -112,6 +134,15 @@ export default defineComponent({
       hashTags: [] as string[],
     } as RestaurantInfoDto);
     // 필터
+    const selectedText = ref("");
+
+    const selectedFilter = [
+      { type: EnumFilter.RestaurantName },
+      { type: EnumFilter.HashTag },
+      { type: EnumFilter.Specialization },
+      { type: EnumFilter.Location },
+    ];
+
     const filterResult = reactive({
       filterName: "",
       fillterArry: [] as (string | undefined)[],
@@ -346,16 +377,62 @@ export default defineComponent({
       updateFilterInfo();
     });
 
-    watch(
-      () => filterResult.filterName,
-      () => {
-        filterResult.fillterArry = makers
-          .filter((v) =>
-            v.restaurantData.restaurantName.includes(filterResult.filterName)
-          )
-          .map((v) => v.restaurantData.restaurantName);
+    watch([selectedText, () => filterResult.filterName], () => {
+      updateFilterResult();
+    });
+
+    const updateFilterResult = () => {
+      if (!selectedText.value) return;
+
+      if (filterResult.filterName === "") {
+        filterResult.fillterArry = makers.map(
+          (v) => v.restaurantData.restaurantName
+        );
+        console.log("모든값");
+        return;
       }
-    );
+
+      switch (selectedText.value) {
+        case EnumFilter.RestaurantName:
+          console.log(EnumFilter.RestaurantName);
+          filterResult.fillterArry = makers
+            .filter((v) =>
+              v.restaurantData.restaurantName.includes(filterResult.filterName)
+            )
+            .map((v) => v.restaurantData.restaurantName);
+
+          break;
+        case EnumFilter.HashTag:
+          console.log(EnumFilter.HashTag);
+
+          filterResult.fillterArry = makers
+            .filter((v) =>
+              v.restaurantData.hashTags.includes(`#${filterResult.filterName}`)
+            )
+            .map((v) => v.restaurantData.restaurantName);
+
+          break;
+        case EnumFilter.Specialization:
+          console.log(EnumFilter.Specialization);
+          filterResult.fillterArry = makers
+            .filter((v) =>
+              v.restaurantData.specialization.includes(filterResult.filterName)
+            )
+            .map((v) => v.restaurantData.restaurantName);
+          break;
+        case EnumFilter.Location:
+          console.log(EnumFilter.Location);
+          filterResult.fillterArry = makers
+            .filter((v) =>
+              v.restaurantData.location.includes(filterResult.filterName)
+            )
+            .map((v) => v.restaurantData.restaurantName);
+          break;
+        default:
+          console.log("나무지값");
+          break;
+      }
+    };
 
     return {
       isLoding,
@@ -373,6 +450,8 @@ export default defineComponent({
       onDeleteRestaurnt,
       onUpdateRestaurant,
       ...toRefs(filterResult),
+      selectedText,
+      selectedFilter,
     };
   },
 });
