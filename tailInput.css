@@ -10,8 +10,13 @@
 }
 
 input {
-  @apply border-2 border-yellow-300 my-2 mx-2 px-2 max-w-full;
+  @apply border-2 border-yellow-300 my-2 mx-2 px-2 max-w-full focus:outline-green-400;
 }
 button {
-  @apply px-2;
+  @apply px-2 border border-sky-400 rounded-md bg-gray-500 text-red-400 hover:bg-sky-300;
+}
+
+/* FoodChatAddForm Component */
+.addform-input-add {
+  @apply flex-1 w-1/2 border-2 rounded-md  text-indigo-300 sm:flex-auto;
 }

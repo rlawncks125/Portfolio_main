@@ -1,11 +1,11 @@
 <template>
   <div
-    class="fixed bg-gray-600 inset-0 w-screen h-screen text-2xl"
+    class="fixed bg-gray-600 inset-0 w-screen h-screen text-2xl sm:text-base"
     style="z-index: 1001"
   >
     <loding :isLoding="isLoading" />
     <div
-      class="relative bg-yellow-100 inset-0 w-11/12 h-5/6 mx-auto my-12 rounded-xl overflow-y-auto"
+      class="relative overflow-auto max-w-5xl p-2 pt-0 h-full bg-yellow-100 inset-0 sm:w-11/12 sm:h-5/6 sm:mx-auto sm:my-12 sm:rounded-xl sm:overflow-y-auto sm:p-4"
     >
       <button class="absolute top-0 right-4" @click="closeForm">X</button>
 
@@ -72,12 +72,12 @@
             v-model="location"
           />
           <!-- 전문 분야들 -->
-          <div class="flex justify-between items-center">
-            <label for="specialization" class="mr-4 text-indigo-300"
-              >전문 분야 :</label
-            >
+          <div class="flex flex-wrap justify-between items-center">
+            <label for="specialization" class="text-left mr-4 text-indigo-300"
+              >전문 분야
+            </label>
             <input
-              class="border-2 rounded-md focus:outline-green-400 text-indigo-300"
+              class="addform-input-add"
               type="text"
               name="specialization"
               v-model="specialization"
@@ -97,10 +97,12 @@
             </template>
           </div>
           <!-- 태그들  -->
-          <div class="flex justify-between items-center">
-            <label for="tag" class="mr-4 text-indigo-300">#해시태그</label>
+          <div class="flex flex-wrap justify-between items-center">
+            <label for="tag" class="text-left mr-4 text-indigo-300"
+              >#해시태그</label
+            >
             <input
-              class="border-2 rounded-md focus:outline-green-400 text-indigo-300"
+              class="addform-input-add"
               type="text"
               name="tag"
               v-model="tag"
@@ -119,7 +121,7 @@
           <!-- Create 버튼 -->
           <button
             @click.prevent="addResturant"
-            class="w-10/12 border-2 rounded-lg bg-gray-500 text-red-400 center"
+            class="w-10/12 border-2 rounded-lg"
           >
             Add
           </button>
