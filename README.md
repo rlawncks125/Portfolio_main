@@ -9,13 +9,20 @@ Form 추가 레스토랑 이미지 여러개로 랜더링 할수있게 form UI/U
 - 3. 둘다 ( 텍스트 입력시 실시간 필터)
 - select가 모바일시
 
-# 방만들시 시작 lating 설정할수 있게 ui/ux작업
-
 # 방찾기 할때도 필터 ( 방 제목 , 만든 유저 )
 
-# addForm 유효성 검사 ( validation )
+# 모바일에서 레스토랑 이미지 파일 찾을수 있게 작업
 
 # UI/UX 예제 찾기
 
 - tailwind template보고 윤곽잡기 or
 - bootstrap 테마 구매 고민
+
+# 방만들시 시작 lating 설정할수 있게 ui/ux작업
+
+( addFrom 처럼 방만들기 클릭시 form 활성화 ,
+create시 정보 emit로 전달하기,
+마커로 마크한 좌표 표시 ( 1개만 )
+)
+
+# addForm 유효성 검사 ( validation )

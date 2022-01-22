@@ -2,6 +2,18 @@
   <loding :isLoding="isLoading" />
   <button @click="getRoomLists">Loom List 얻기</button>
 
+  <!-- 방만들기 버튼 -->
+  <button @click="isCreateRoom = true">방 만들기</button>
+  <room-create-form
+    v-if="isCreateRoom"
+    @createRoom="onCreateRoom"
+    @onClose="
+      (isActive) => {
+        isCreateRoom = isActive;
+      }
+    "
+  />
+
   <div
     v-for="item in roomLists"
     :key="item.key"
@@ -32,12 +44,6 @@
       입장
     </button>
   </div>
-  <!-- onCreateRoom form 만들어서 작업 -->
-  <div>
-    <label for="roomName">방 이름</label
-    ><input type="text" name="roomName" v-model="roomName" />
-    <button @click="onCreateRoom">방 만들기</button>
-  </div>
 </template>
 
 <script lang="ts">
@@ -46,9 +52,10 @@ import { defineComponent, onMounted, reactive, ref, toRefs } from "vue";
 import { createRoom, getJoinRoomList, getRoomList, joinRoom } from "@/api/Room";
 import { useRouter } from "vue-router";
 import Loding from "@/components/Loding.vue";
+import RoomCreateForm from "@/components/RoomCreateForm.vue";
 
 export default defineComponent({
-  components: { Loding },
+  components: { Loding, RoomCreateForm },
   setup() {
     const router = useRouter();
     const data = reactive({
@@ -56,6 +63,8 @@ export default defineComponent({
       myJoinRoomLists: [] as Array<MyRoomsinfoDto>,
       isLoading: false,
     });
+
+    const isCreateRoom = ref(false);
 
     const getRoomLists = async () => {
       data.isLoading = true;
@@ -102,17 +111,17 @@ export default defineComponent({
       }
     });
 
-    const roomName = ref("");
-    const onCreateRoom = async () => {
-      if (roomName.value === "") return;
-
+    const onCreateRoom = async ({
+      LatLng,
+      roomName,
+    }: {
+      LatLng: { x: number; y: number };
+      roomName: string;
+    }) => {
       data.isLoading = true;
       const { ok, room } = await createRoom({
-        roomName: roomName.value,
-        lating: {
-          x: 126.7,
-          y: 37.4409,
-        },
+        roomName: roomName,
+        lating: LatLng,
       });
       data.isLoading = false;
 
@@ -134,7 +143,13 @@ export default defineComponent({
       }
     };
 
-    return { ...toRefs(data), getRoomLists, goRoom, roomName, onCreateRoom };
+    return {
+      isCreateRoom,
+      ...toRefs(data),
+      getRoomLists,
+      goRoom,
+      onCreateRoom,
+    };
   },
 });
 </script>
