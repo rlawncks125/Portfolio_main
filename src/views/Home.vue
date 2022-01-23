@@ -4,6 +4,7 @@
   <section class="자기소개">
     <div>주저리 주저리 주저리</div>
   </section>
+
   <section class="기술 소개">
     <div>기술소개</div>
   </section>
@@ -55,6 +56,7 @@ import { defineComponent } from "vue";
 import { useStore } from "../store/index";
 
 export default defineComponent({
+  components: {},
   setup() {
     const store = useStore();
 

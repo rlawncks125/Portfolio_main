@@ -52,6 +52,7 @@
           </div>
 
           <p class="mr-4">지역 이름 {{ vieFormData.location }}</p>
+          <star-fill :starNum="5" :starSize="2" :fill="vieFormData.avgStar" />
           <p>평균 별점 {{ vieFormData.avgStar }}</p>
           <div v-if="vieFormData.hashTags.length > 0" class="flex gap-1">
             <template v-for="tag in vieFormData.hashTags" :key="tag.id">
@@ -136,7 +137,18 @@
           </div>
         </div>
       </div>
+      <!-- 댓글 달기 -->
       <div class="mt-4 flex flex-col text-left">
+        <star-touch-event
+          :starNum="5"
+          :starSize="2"
+          :fill="star"
+          @clickStar="
+            (starValue) => {
+              star = starValue;
+            }
+          "
+        />
         <label for="">추가 댓글 달기 :</label>
         <textarea class="" v-model="message" />
         <button @click="onAddCommentRestaurantById">댓글 추가</button>
@@ -151,6 +163,8 @@ import {
   EnumAddRestaurantCommentByIdIdInputDtoRole,
   RestaurantInfoDto,
 } from "@/assets/swagger";
+import StarFill from "@/components/StarFill.vue";
+import StarTouchEvent from "@/components/StarTouchEvent.vue";
 import {
   defineComponent,
   onMounted,
@@ -175,7 +189,7 @@ export default defineComponent({
     isRoomSuperUser: Boolean,
   },
   emits: ["viewClose", "DeleteRestrunt", "UpdateRestaurantById"],
-
+  components: { StarFill, StarTouchEvent },
   setup(props, { emit }) {
     const store = useStore();
     const isSuperUser = ref(false);
@@ -193,7 +207,7 @@ export default defineComponent({
       childMessage: "",
       editChildMessage: "",
       editMessage: "",
-      start: 0,
+      star: 5,
     });
 
     const setcommentId = (id: number) => {
@@ -250,6 +264,7 @@ export default defineComponent({
     };
 
     const onClose = () => {
+      resetFormData();
       emit("viewClose");
     };
 
@@ -264,7 +279,7 @@ export default defineComponent({
         restaurantId: id,
         role: EnumAddRestaurantCommentByIdIdInputDtoRole.User,
         message: addFormData.message,
-        star: 2,
+        star: addFormData.star,
       });
       if (ok) {
         addFormData.message = "";
@@ -335,7 +350,16 @@ export default defineComponent({
     };
 
     const updateRestaurant = () => {
+      resetFormData();
       emit("UpdateRestaurantById", props.vieFormData?.id);
+    };
+
+    const resetFormData = () => {
+      addFormData.message = "";
+      addFormData.childMessage = "";
+      addFormData.editChildMessage = "";
+      addFormData.editMessage = "";
+      addFormData.star = 5;
     };
 
     watch(
