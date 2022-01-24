@@ -28,8 +28,9 @@
                 class="hidden"
                 @change.prevent="onChangeFile"
                 type="file"
-                name=""
+                accept="image/*"
                 id="imageFile"
+                name=""
               />
               <div class="h-12">
                 <template v-if="!isFileStatus">
