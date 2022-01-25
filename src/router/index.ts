@@ -24,10 +24,26 @@ const routes: Array<RouteRecordRaw> = [
     children: [
       {
         path: "",
+        name: "myRoomList",
+        component: () =>
+          import(
+            /* webpackChunkName: "router" */ "../views/FoodChat/MyRoomList.vue"
+          ),
+      },
+      {
+        path: "search",
         name: "RoomList",
         component: () =>
           import(
-            /* webpackChunkName: "router" */ "../views/FoodChat/RoomList.vue"
+            /* webpackChunkName: "router" */ "../views/FoodChat/SearchRoomList.vue"
+          ),
+      },
+      {
+        path: "MyPage",
+        name: "MyPage",
+        component: () =>
+          import(
+            /* webpackChunkName: "router" */ "../views/FoodChat/MyPage.vue"
           ),
       },
       {

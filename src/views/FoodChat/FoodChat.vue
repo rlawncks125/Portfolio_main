@@ -9,7 +9,7 @@
   </div>
   <div class="flex justify-between">
     <button @click="onLeaveRoom">방 나가기</button>
-    <button @click.prevent="router.go(-1)">방으로 돌아가기</button>
+    <button @click.prevent="router.push('/foodChat')">방으로 돌아가기</button>
   </div>
 
   <div id="map" class="w-11/12 h-96 mx-auto"></div>

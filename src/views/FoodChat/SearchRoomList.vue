@@ -1,7 +1,6 @@
 <template>
   <loding :isLoding="isLoading" />
-  <button @click="getRoomLists">Loom List 얻기</button>
-
+  <p>방 찾기</p>
   <!-- 방만들기 버튼 -->
   <button @click="isCreateRoom = true">방 만들기</button>
   <room-create-form
@@ -27,21 +26,6 @@
       @click.prevent="goRoom(item.uuid)"
     >
       참여 하기
-    </button>
-  </div>
-  <p>내가 접속중인 방</p>
-  <div
-    v-for="item in myJoinRoomLists"
-    :key="item.id"
-    class="grid grid-cols-1 gap-y-2 border-2"
-  >
-    <p>uuid : {{ item.uuid }}</p>
-    <p>roomName : {{ item.roomName }}</p>
-    <button
-      class="text-pink-500 bg-slate-700 border-2 w-3/6 mx-auto"
-      @click.prevent="goRoom(item.uuid)"
-    >
-      입장
     </button>
   </div>
 </template>
@@ -102,15 +86,6 @@ export default defineComponent({
       }
     };
 
-    onMounted(async () => {
-      data.isLoading = true;
-      const { ok, myRooms } = await getJoinRoomList();
-      data.isLoading = false;
-      if (ok) {
-        data.myJoinRoomLists = myRooms;
-      }
-    });
-
     const onCreateRoom = async ({
       LatLng,
       roomName,
@@ -142,6 +117,14 @@ export default defineComponent({
         goRoom(room.uuid);
       }
     };
+
+    onMounted(async () => {
+      const { ok, myRooms } = await getJoinRoomList();
+      if (ok) {
+        data.myJoinRoomLists = myRooms;
+      }
+      getRoomLists();
+    });
 
     return {
       isCreateRoom,

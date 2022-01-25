@@ -10,6 +10,7 @@
     class="h-5/6 flex items-center justify-center w-full text-3xl"
   >
     <p>{{ token }}</p>
+    <!-- 회원가입 -->
     <form
       v-if="isSignUp"
       class="max-w-xl w-full px-4 bg-gray-400 py-4 mt-4 rounded-xl border-4 shadow-xl gird sm:grid-cols-1"
@@ -30,6 +31,7 @@
         </button>
       </div>
     </form>
+    <!-- 로그인 -->
     <form
       v-else
       class="max-w-xl w-full px-4 bg-gray-400 py-4 mt-4 rounded-xl border-4 shadow-xl gird"
@@ -54,6 +56,20 @@
     <br />
     <!-- 페이지 갱신 문제로 key값 추가 -->
     <router-view :key="route.fullPath" />
+    <!-- 모바일 하단 -->
+    <div class="absolute bottom-0 left-0 w-full h-20 py-4 bg-gray-400">
+      <div class="flex w-full justify-around h-full">
+        <div class="cursor-pointer" @click="router.push('/foodChat')">
+          <img class="h-full" src="@/assets/images/home-icon.png" alt="" />
+        </div>
+        <div class="cursor-pointer" @click="router.push('/foodChat/search')">
+          <img class="h-full" src="@/assets/images/search.png" alt="" />
+        </div>
+        <div class="cursor-pointer" @click="router.push('/foodChat/MyPage')">
+          <img class="h-full" src="@/assets/images/user-shape.png" alt="" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 

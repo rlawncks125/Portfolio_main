@@ -16,15 +16,22 @@ create시 정보 emit로 전달하기,
 마커로 마크한 좌표 표시 ( 1개만 )
 )
 
-# addForm 유효성 검사 ( validation )
+# 유효성 검사 ( validation )
 
 - 에러 알리는 방법 ( Error text , alert )
+- addFrom은 레스토랑 이름만 검사하면 될듯
+- userCreateForm 검사
+- userLoginForm 검사
+
+# 레스토랑 정보 수정
 
 # 방찾기 할때도 필터 ( 방 제목 , 만든 유저 )
-
-# 모바일에서 레스토랑 이미지 파일 찾을수 있게 작업
 
 # UI/UX 예제 찾기
 
 - tailwind template보고 윤곽잡기 or
 - bootstrap 테마 구매 고민
+
+# 모바일 하단
+
+방찾기 | 현재 들어가 있는 방 | 마이 페이지
