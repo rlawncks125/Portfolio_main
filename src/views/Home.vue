@@ -2,10 +2,16 @@
   <div>자기소개하기</div>
   <div class="image"></div>
   <img class="h-12" src="~@/assets/images/search.png" alt="" />
+
+  <input-file
+    class="w-full h-80"
+    @cahngeFile="(data) => (imageFileData = data)"
+  />
+
   <section class="자기소개">
     <div>주저리 주저리 주저리</div>
   </section>
-
+  <button @click="puts">콘솔</button>
   <section class="기술 소개">
     <div>기술소개</div>
   </section>
@@ -53,15 +59,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import { useStore } from "../store/index";
+import InputFile, {
+  FileDataType,
+} from "@/components/common/Input/File-multi.vue";
 
 export default defineComponent({
-  components: {},
+  components: { InputFile },
   setup() {
     const store = useStore();
 
-    return {};
+    // const imageFileData = ref<FileDataType>();
+
+    // const puts = () => {
+    //   console.log(imageFileData.value);
+    // };
+
+    return {
+      // imageFileData, puts
+    };
   },
 });
 </script>

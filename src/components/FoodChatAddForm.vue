@@ -14,63 +14,11 @@
           class="border-2 p-2 mx-4 rounded-2xl grid max-w-full grid-cols-1 justify-items-center"
         >
           <legend class="text-center px-4">음식점 추가</legend>
-          <!-- 이미지 드래그 앤 드롭 -->
-          <label
-            for="imageFile"
-            @drop="onDropFile"
-            @dragover="isFileStatus = 'dragover'"
-            @dragleave="isFileStatus = ''"
-            class="bg-red-200 py-24 px-4 w-9/12 my-2"
-            :style="[isFileStatus === 'dragover' ? classOverFile : {}]"
-          >
-            <div class="pointer-events-none">
-              <input
-                class="hidden"
-                @change.prevent="onChangeFile"
-                type="file"
-                accept="image/*"
-                id="imageFile"
-                name=""
-              />
-              <div class="h-12">
-                <template v-if="!isFileStatus">
-                  <div></div>
-                  <p>이 구역을 클릭하시거나.</p>
-                  <p>올리 이미지들을 여기에 끌어다 올리세요.</p>
-                </template>
-                <template v-else-if="isFileStatus === 'dragover'">
-                  <p>이미지를 놓으세요</p>
-                </template>
-              </div>
-            </div>
-          </label>
-          <!-- 이미지 출력 -->
-          <div
-            v-if="files.length > 0"
-            class="flex justify-between max-w-full overflow-auto my-2 max-h-60"
-          >
-            <template v-for="file in files" :key="file.id">
-              <img
-                class="h-full"
-                v-if="file.type === 'image'"
-                :src="file.data"
-              />
-            </template>
-          </div>
-
-          <label for="restaurntName" class="mr-4">음식점 이름</label>
-          <input
-            class="border-2 rounded-md focus:outline-green-400"
-            type="text"
-            name="restaurntName"
-            v-model="restaurantName"
-          />
-          <label for="location" class="mr-4">지역 이름</label>
-          <input
-            class="border-2 rounded-md focus:outline-green-400"
-            type="text"
-            name="location"
-            v-model="location"
+          <!-- 음식점 이미지  -->
+          <input-file
+            ref="inputFileComponet"
+            class="w-6/12 h-60"
+            @cahngeFile="(data) => (imageFile = data)"
           />
           <!-- 전문 분야들 -->
           <div class="flex flex-wrap justify-between items-center">
@@ -153,9 +101,12 @@ import { CreateRestaurantInputDto } from "@/assets/swagger/index";
 import { createRestaurant } from "@/api/Restaurant";
 import axios from "axios";
 import Loding from "./Loding.vue";
+import InputFile, {
+  FileDataType,
+} from "@/components/common/Input/File-one.vue";
 
 export default defineComponent({
-  components: { Loding },
+  components: { Loding, InputFile },
   props: {
     formPushData: Object as PropType<IFormPushData>,
   },
@@ -169,62 +120,12 @@ export default defineComponent({
       specializations: [] as string[],
       tag: "" as string,
       tags: [] as string[],
-      files: [] as { type: string; data: any; fileName: any; file: File }[],
     });
     const isFileStatus = ref<string>();
     const isLoading = ref(false);
 
-    const classData = reactive({
-      classOverFile: {
-        backgroundColor: "thistle",
-      },
-    });
-
-    const onDropFile = (e: any) => {
-      const files = e.dataTransfer?.files;
-      isFileStatus.value = "";
-      isLoading.value = true;
-      // console.log(files);
-
-      if (files.length > 1) {
-        for (let i = 0; i < files.length; i++) {
-          fileRender(files[i]);
-        }
-      } else {
-        fileRender(files[0]);
-      }
-      isLoading.value = false;
-    };
-    const onChangeFile = (e: any) => {
-      const files = e.target.files;
-
-      isLoading.value = true;
-      if (files.length > 1) {
-        for (let i = 0; i < files.length; i++) {
-          fileRender(files[i]);
-        }
-      } else {
-        fileRender(files[0]);
-      }
-      isLoading.value = false;
-    };
-
-    const fileRender = (file: any) => {
-      // console.log(file);
-      if (file.type.split("/")[0] !== "image") return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        const type = file.type.split("/")[0];
-        reader.result &&
-          formData.files.push({
-            type,
-            data: reader.result,
-            fileName: file.name,
-            file,
-          });
-      };
-      reader.readAsDataURL(file);
-    };
+    const inputFileComponet = ref<InstanceType<typeof InputFile>>();
+    const imageFile = ref<FileDataType>();
 
     const addTag = (e: any) => {
       e.preventDefault();
@@ -248,13 +149,9 @@ export default defineComponent({
       let imageUrl = "";
 
       isLoading.value = true;
-      if (formData.files.length > 0) {
+      if (imageFile.value?.type === "image") {
         const postForm = new FormData();
-        postForm.append(
-          "file",
-          formData.files[0].file,
-          formData.files[0].fileName
-        );
+        postForm.append("file", imageFile.value.file, imageFile.value.fileName);
 
         // 이미지 url 작업
         imageUrl = await axios
@@ -306,9 +203,11 @@ export default defineComponent({
     const formDataReset = () => {
       formData.restaurantName = "";
       formData.location = "";
-      formData.files = [];
+      formData.specialization = "";
       formData.specializations = [];
+      formData.tag = "";
       formData.tags = [];
+      inputFileComponet.value?.resetFile();
     };
 
     const preventDefaultDrag = (e: any) => {
@@ -324,9 +223,8 @@ export default defineComponent({
     });
 
     return {
-      onDropFile,
-      onChangeFile,
-      ...toRefs(classData),
+      imageFile,
+      inputFileComponet,
       isFileStatus,
       closeForm,
       addResturant,
