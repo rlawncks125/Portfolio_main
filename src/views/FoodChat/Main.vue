@@ -51,22 +51,59 @@
     </form>
   </div>
 
+  <!-- 로그인 됐을시 -->
   <div v-else>
     <button class="border-2" @click.prevent="userLogOut">LogOut</button>
     <br />
+
     <!-- 페이지 갱신 문제로 key값 추가 -->
     <router-view :key="route.fullPath" />
+
     <!-- 모바일 하단 -->
-    <div class="absolute bottom-0 left-0 w-full h-20 py-4 bg-gray-400">
-      <div class="flex w-full justify-around h-full">
-        <div class="cursor-pointer" @click="router.push('/foodChat')">
-          <img class="h-full" src="@/assets/images/home-icon.png" alt="" />
+    <div
+      class="absolute bottom-0 left-0 w-full h-20 py-4 bg-gray-400 sm:flex-col sm:inset-y-0 sm:w-16 sm:h-full sm:px-1 sm:hover:w-48"
+    >
+      <div
+        class="flex w-full justify-around h-full sm:flex-col sm:justify-start sm:gap-12 sm:pt-40 sm:overflow-hidden"
+      >
+        <div
+          class="cursor-pointer sm:h-16 sm:mx-auto sm:w-full"
+          @click="router.push('/foodChat')"
+        >
+          <div class="h-full sm:flex">
+            <img
+              class="h-full sm:w-14"
+              src="@/assets/images/home-icon.png"
+              alt=""
+            />
+            <p class="hidden sm:inline">방</p>
+          </div>
         </div>
-        <div class="cursor-pointer" @click="router.push('/foodChat/search')">
-          <img class="h-full" src="@/assets/images/search.png" alt="" />
+        <div
+          class="cursor-pointer sm:h-16 sm:mx-auto sm:w-full"
+          @click="router.push('/foodChat/search')"
+        >
+          <div class="h-full sm:flex">
+            <img
+              class="h-full sm:w-14"
+              src="@/assets/images/search.png"
+              alt=""
+            />
+            <p class="hidden sm:inline">사치</p>
+          </div>
         </div>
-        <div class="cursor-pointer" @click="router.push('/foodChat/MyPage')">
-          <img class="h-full" src="@/assets/images/user-shape.png" alt="" />
+        <div
+          class="cursor-pointer sm:h-16 sm:mx-auto sm:w-full"
+          @click="router.push('/foodChat/MyPage')"
+        >
+          <div class="h-full sm:flex">
+            <img
+              class="h-full sm:w-14"
+              src="@/assets/images/user-shape.png"
+              alt=""
+            />
+            <p class="hidden sm:inline">마이 페이지</p>
+          </div>
         </div>
       </div>
     </div>

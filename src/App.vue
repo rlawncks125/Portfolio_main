@@ -1,6 +1,6 @@
 <template>
   <input class="out-checkd" type="checkbox" v-model="isCehckd" />
-  <div id="nav">
+  <div id="nav" :class="{ 'sm:pl-14': route.path.includes('foodChat') }">
     <div class="nav-home" @click="changePage">
       <router-link to="/">
         <img src="@/assets/images/HOME.png" alt="" />
@@ -12,16 +12,21 @@
       <router-link to="/">준비중</router-link>
       <router-link to="/">준비중</router-link>
     </div>
+
     <!-- <input class="in-checkd" type="checkbox" v-model="isCehckd" /> -->
   </div>
 
-  <div class="render-view">
+  <div
+    class="render-view"
+    :class="{ 'sm:pl-14': route.path.includes('foodChat') }"
+  >
     <router-view />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { useStore } from "./store";
 
 export default defineComponent({
@@ -29,11 +34,13 @@ export default defineComponent({
     const store = useStore();
     const isCehckd = ref();
 
+    const route = useRoute();
+
     const changePage = () => {
       isCehckd.value = false;
     };
 
-    return { isCehckd, changePage };
+    return { isCehckd, changePage, route };
   },
 });
 </script>
@@ -56,13 +63,13 @@ html {
   }
 
   @include tablet() {
-    font-size: 14px;
+    font-size: 13px;
   }
   @include laptop() {
-    font-size: 14px;
+    font-size: 13px;
   }
   @include desktop() {
-    font-size: 14px;
+    font-size: 13px;
   }
 }
 
