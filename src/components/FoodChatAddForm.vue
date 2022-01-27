@@ -14,6 +14,10 @@
           class="border-2 p-2 mx-4 rounded-2xl grid max-w-full grid-cols-1 justify-items-center"
         >
           <legend class="text-center px-4">음식점 추가</legend>
+          <div class="flex items-center">
+            <label for="">레스토랑 이름: </label>
+            <input type="text" v-model="restaurantName" />
+          </div>
           <!-- 음식점 이미지  -->
           <input-file
             ref="inputFileComponet"
@@ -124,6 +128,7 @@ export default defineComponent({
     const isFileStatus = ref<string>();
     const isLoading = ref(false);
 
+    // input File
     const inputFileComponet = ref<InstanceType<typeof InputFile>>();
     const imageFile = ref<FileDataType>();
 

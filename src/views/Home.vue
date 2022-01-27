@@ -3,11 +3,6 @@
   <div class="image"></div>
   <img class="h-12" src="~@/assets/images/search.png" alt="" />
 
-  <input-file
-    class="w-full h-80"
-    @cahngeFile="(data) => (imageFileData = data)"
-  />
-
   <loading-btn
     class="mt-4 h-20 w-64"
     :isLoading="isLoading"
@@ -68,14 +63,11 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { useStore } from "../store/index";
-import InputFile, {
-  FileDataType,
-} from "@/components/common/Input/File-multi.vue";
 
 import LoadingBtn from "@/components/common/Input/LoadingBtn.vue";
 
 export default defineComponent({
-  components: { InputFile, LoadingBtn },
+  components: { LoadingBtn },
   setup() {
     const store = useStore();
 

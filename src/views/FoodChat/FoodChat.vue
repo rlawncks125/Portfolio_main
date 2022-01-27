@@ -14,14 +14,14 @@
 
   <div id="map" class="w-11/12 h-96 mx-auto"></div>
   <foot-chat-add-form
-    v-show="isFromActive"
     :formPushData="formPushData"
+    v-show="isFromActive"
     @closeForm="closeForm"
     @createMaker="createMaker"
   />
   <foot-chat-view-form
     v-show="isViewActive"
-    :vieFormData="viewPushData"
+    ref="refCompoViewForm"
     :isRoomSuperUser="isSpuerUser"
     @viewClose="onCloseView"
     @DeleteRestrunt="onDeleteRestaurnt"
@@ -129,10 +129,8 @@ export default defineComponent({
     });
     // view
     const isViewActive = ref<boolean>(false);
-    const viewPushData = ref({
-      specialization: [] as string[],
-      hashTags: [] as string[],
-    } as RestaurantInfoDto);
+    const refCompoViewForm = ref<InstanceType<typeof FootChatViewForm>>();
+
     // 필터
     const selectedText = ref("");
 
@@ -183,13 +181,11 @@ export default defineComponent({
 
         // const findRestaurantId = 11;
 
-        // viewPushData.value = RestaurantInfo.filter(
-        //   (v) => v.id === findRestaurantId
-        // )[0];
-
-        viewPushData.value = makers.filter(
+        const viewRestaurant = makers.filter(
           (v) => v.restaurantData.id === restaurantId
         )[0].restaurantData;
+
+        refCompoViewForm.value?.setOpenViewData(viewRestaurant);
 
         isViewActive.value = true;
       });
@@ -257,10 +253,11 @@ export default defineComponent({
             return v;
           }
         });
+
         // 보고있는 view 값 갱신
-        viewPushData.value = makers.filter(
-          (v) => v.restaurantData.id === id
-        )[0].restaurantData;
+        if (refCompoViewForm.value?.viewData.id === id) {
+          refCompoViewForm.value?.setOpenViewData(restaurant);
+        }
       } else {
         console.log(err);
       }
@@ -435,6 +432,7 @@ export default defineComponent({
     };
 
     return {
+      refCompoViewForm,
       isLoding,
       isFromActive,
       isSpuerUser,
@@ -445,7 +443,7 @@ export default defineComponent({
       onLeaveRoom,
       onDeleteRoom,
       isViewActive,
-      viewPushData,
+
       onCloseView,
       onDeleteRestaurnt,
       onUpdateRestaurant,

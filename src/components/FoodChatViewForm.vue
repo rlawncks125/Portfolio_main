@@ -28,15 +28,15 @@
         >
           <legend class="text-center px-4">음식점 정보</legend>
           <h1 class="mr-4 text-4xl">
-            음식점 이름 {{ vieFormData.restaurantName }}
+            {{ viewData.restaurantName }}
           </h1>
           <div
-            v-if="vieFormData.specialization.length > 0"
+            v-if="viewData.specialization.length > 0"
             class="flex gap-1 items-center my-2"
           >
             <span> 전문 분야 : </span>
             <template
-              v-for="special in vieFormData.specialization"
+              v-for="special in viewData.specialization"
               :key="special.id"
             >
               <p class="text-gray-500 bg-yellow-400 rounded-full py-1 px-3">
@@ -51,11 +51,11 @@
             />
           </div>
 
-          <p class="mr-4">지역 이름 {{ vieFormData.location }}</p>
-          <star-fill :starNum="5" :starSize="2" :fill="vieFormData.avgStar" />
-          <p>평균 별점 {{ vieFormData.avgStar }}</p>
-          <div v-if="vieFormData.hashTags.length > 0" class="flex gap-1">
-            <template v-for="tag in vieFormData.hashTags" :key="tag.id">
+          <p class="mr-4">지역 이름 {{ viewData.location }}</p>
+          <star-fill :starNum="5" :starSize="2" :fill="viewData.avgStar" />
+          <p>평균 별점 {{ viewData.avgStar }}</p>
+          <div v-if="viewData.hashTags.length > 0" class="flex gap-1">
+            <template v-for="tag in viewData.hashTags" :key="tag.id">
               <p class="px-1 text-indigo-100 bg-cyan-500 rounded-full">
                 {{ tag }}
               </p>
@@ -68,7 +68,7 @@
         {{ activeMessage }}
         <div
           class="px-4"
-          v-for="comment in vieFormData.comments"
+          v-for="comment in viewData.comments"
           :key="comment.id"
         >
           <div class="flex justify-between">
@@ -185,7 +185,6 @@ import {
 
 export default defineComponent({
   props: {
-    vieFormData: Object as PropType<RestaurantInfoDto>,
     isRoomSuperUser: Boolean,
   },
   emits: ["viewClose", "DeleteRestrunt", "UpdateRestaurantById"],
@@ -201,6 +200,25 @@ export default defineComponent({
     const restaurantImageUrl = ref(
       "https://res.cloudinary.com/dhdq4v4ar/image/upload/v1603952836/sample.jpg"
     );
+
+    const viewData = ref<RestaurantInfoDto>({
+      id: 999999,
+      resturantSuperUser: {
+        id: 999999,
+        nickName: "",
+      },
+      restaurantName: "",
+      restaurantImageUrl: "",
+      location: "",
+      comments: [],
+      avgStar: 0,
+      lating: {
+        x: 0,
+        y: 0,
+      },
+      hashTags: [],
+      specialization: [],
+    });
 
     const addFormData = reactive({
       message: "",
@@ -263,17 +281,42 @@ export default defineComponent({
       return outPutTime;
     };
 
+    const setOpenViewData = (data: RestaurantInfoDto) => {
+      if (!data) return;
+      viewData.value = data;
+
+      if (
+        viewData.value.restaurantImageUrl !== null &&
+        typeof viewData.value.restaurantImageUrl === "string" &&
+        (viewData.value.restaurantImageUrl as string).length > 10
+      ) {
+        restaurantImageUrl.value = viewData.value.restaurantImageUrl;
+      } else {
+        restaurantImageUrl.value =
+          "https://res.cloudinary.com/dhdq4v4ar/image/upload/v1603952836/sample.jpg";
+      }
+
+      if (viewData.value.resturantSuperUser.nickName === store.state.userName) {
+        isSuperUser.value = true;
+      } else if (props.isRoomSuperUser) {
+        isSuperUser.value = true;
+      } else {
+        isSuperUser.value = false;
+      }
+      console.log(viewData.value);
+    };
+
     const onClose = () => {
       resetFormData();
       emit("viewClose");
     };
 
     const onDeleteRestaurnt = () => {
-      emit("DeleteRestrunt", props.vieFormData?.id);
+      emit("DeleteRestrunt", viewData.value?.id);
     };
 
     const onAddCommentRestaurantById = async () => {
-      const { id } = props.vieFormData!;
+      const { id } = viewData.value!;
 
       const { ok, err } = await addRestaurantCommentById({
         restaurantId: id,
@@ -351,7 +394,8 @@ export default defineComponent({
 
     const updateRestaurant = () => {
       resetFormData();
-      emit("UpdateRestaurantById", props.vieFormData?.id);
+
+      emit("UpdateRestaurantById", viewData.value!.id);
     };
 
     const resetFormData = () => {
@@ -362,34 +406,9 @@ export default defineComponent({
       addFormData.star = 5;
     };
 
-    watch(
-      () => props.vieFormData,
-      () => {
-        if (
-          props.vieFormData?.restaurantImageUrl !== null &&
-          typeof props.vieFormData?.restaurantImageUrl === "string" &&
-          (props.vieFormData?.restaurantImageUrl as string).length > 10
-        ) {
-          restaurantImageUrl.value = props.vieFormData!.restaurantImageUrl;
-        } else {
-          restaurantImageUrl.value =
-            "https://res.cloudinary.com/dhdq4v4ar/image/upload/v1603952836/sample.jpg";
-        }
-
-        if (
-          props.vieFormData?.resturantSuperUser.nickName ===
-          store.state.userName
-        ) {
-          isSuperUser.value = true;
-        } else if (props.isRoomSuperUser) {
-          isSuperUser.value = true;
-        } else {
-          isSuperUser.value = false;
-        }
-      }
-    );
-
     return {
+      viewData,
+      setOpenViewData,
       store,
       isSuperUser,
       getDateData,
