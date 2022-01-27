@@ -8,6 +8,13 @@
     @cahngeFile="(data) => (imageFileData = data)"
   />
 
+  <loading-btn
+    class="mt-4 h-20 w-64"
+    :isLoading="isLoading"
+    :Msg="'버튼을 누르세요'"
+    @click="consoleLog('클릭')"
+  />
+
   <section class="자기소개">
     <div>주저리 주저리 주저리</div>
   </section>
@@ -65,10 +72,14 @@ import InputFile, {
   FileDataType,
 } from "@/components/common/Input/File-multi.vue";
 
+import LoadingBtn from "@/components/common/Input/LoadingBtn.vue";
+
 export default defineComponent({
-  components: { InputFile },
+  components: { InputFile, LoadingBtn },
   setup() {
     const store = useStore();
+
+    const isLoading = ref(false);
 
     // const imageFileData = ref<FileDataType>();
 
@@ -76,7 +87,17 @@ export default defineComponent({
     //   console.log(imageFileData.value);
     // };
 
+    const consoleLog = (e: any) => {
+      isLoading.value = true;
+      setTimeout(() => {
+        isLoading.value = false;
+      }, 1000);
+      console.log(e);
+    };
+
     return {
+      isLoading,
+      consoleLog,
       // imageFileData, puts
     };
   },

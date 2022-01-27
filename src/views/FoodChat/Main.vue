@@ -12,7 +12,7 @@
     <p>{{ token }}</p>
     <!-- 회원가입 -->
     <form
-      v-if="isSignUp"
+      v-if="isPageSigUp"
       class="max-w-xl w-full px-4 bg-gray-400 py-4 mt-4 rounded-xl border-4 shadow-xl gird sm:grid-cols-1"
     >
       <p>회원 가입 페이지</p>
@@ -26,7 +26,7 @@
         <button @click.prevent="userCreate" class="border-2">
           계정 만들기
         </button>
-        <button class="border-2" @click.prevent="isSignUp = false">
+        <button class="border-2" @click.prevent="isPageSigUp = false">
           돌아가기
         </button>
       </div>
@@ -44,7 +44,7 @@
       ><input type="password" id="password" v-model="password" />
       <div class="flex justify-between">
         <button class="border-2" @click.prevent="userLogin">Login</button>
-        <button class="border-2" @click.prevent="isSignUp = true">
+        <button class="border-2" @click.prevent="isPageSigUp = true">
           Sign Up(회원가입)
         </button>
       </div>
@@ -128,16 +128,18 @@ export default defineComponent({
       userName: computed(() => store.state.userName),
     });
     const isLogin = ref(userData.token.length > 2);
-    const isSignUp = ref(false);
+    const isPageSigUp = ref(false);
 
     const formData = reactive({
       username: "",
       password: "",
     });
+
     const resetFormData = () => {
       formData.username = "";
       formData.password = "";
     };
+
     const userCreate = async () => {
       isLoading.value = true;
 
@@ -148,7 +150,7 @@ export default defineComponent({
       isLoading.value = false;
       if (ok) {
         alert("아이디가 만들어졌습니다.");
-        isSignUp.value = false;
+        isPageSigUp.value = false;
       } else {
         alert(`아이디 만들기에 실패하였습니다 : ${err}`);
       }
@@ -187,7 +189,7 @@ export default defineComponent({
     );
 
     watch(
-      () => isSignUp.value,
+      () => isPageSigUp.value,
       () => {
         resetFormData();
       }
@@ -200,7 +202,7 @@ export default defineComponent({
       userLogOut,
       isLogin,
       userCreate,
-      isSignUp,
+      isPageSigUp,
       isLoading,
       router,
       route,
