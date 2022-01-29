@@ -105,6 +105,10 @@ export default defineComponent({
       }
     };
 
+    watch(props, () => {
+      overFillStarWrap.width = `${starWidth * (fill.value / starNum.value)}rem`;
+    });
+
     return {
       overStarWrap,
       overBinStarWrap,

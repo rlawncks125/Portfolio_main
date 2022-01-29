@@ -5,7 +5,7 @@
     <button v-if="isSpuerUser" @click="onDeleteRoom">방 삭제하기</button>
   </div>
   <div class="flex flex-col justify-between">
-    <p>{{ formPushData.uuid }} 방</p>
+    <p>{{ route.params.uuid }} 방</p>
   </div>
   <div class="flex justify-between">
     <button @click="onLeaveRoom">방 나가기</button>
@@ -14,16 +14,16 @@
 
   <div id="map" class="w-11/12 h-96 mx-auto"></div>
   <foot-chat-add-form
-    :formPushData="formPushData"
-    v-show="isFromActive"
-    @closeForm="closeForm"
+    v-show="isAddFromActive"
+    ref="refCompoAddForm"
+    @closeAddForm="() => (isAddFromActive = false)"
     @createMaker="createMaker"
   />
   <foot-chat-view-form
     v-show="isViewActive"
     ref="refCompoViewForm"
     :isRoomSuperUser="isSpuerUser"
-    @viewClose="onCloseView"
+    @closeViewForm="() => (isViewActive = false)"
     @DeleteRestrunt="onDeleteRestaurnt"
     @UpdateRestaurantById="onUpdateRestaurant"
   />
@@ -57,15 +57,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  onMounted,
-  reactive,
-  Ref,
-  ref,
-  toRefs,
-  watch,
-} from "vue";
+import { defineComponent, onMounted, reactive, ref, toRefs, watch } from "vue";
 import FootChatAddForm from "@/components/FoodChatAddForm.vue";
 import FootChatViewForm from "@/components/FoodChatViewForm.vue";
 import { useRoute, useRouter } from "vue-router";
@@ -83,12 +75,6 @@ import {
 import { deleteRestaurant, getRestaurantById } from "@/api/Restaurant";
 import { useStore } from "@/store/index";
 import axios from "axios";
-
-interface IFormPushData {
-  map?: naver.maps.Map;
-  position?: naver.maps.Coord;
-  uuid: string;
-}
 
 enum EnumFilter {
   RestaurantName = "레스토랑 이름",
@@ -120,13 +106,10 @@ export default defineComponent({
       restaurantData: RestaurantInfoDto;
     }> = [];
 
-    // form
-    const isFromActive = ref<boolean>(false);
-    const formPushData = reactive<IFormPushData>({
-      map: map.value,
-      position: {} as naver.maps.Coord,
-      uuid,
-    });
+    // addform
+    const isAddFromActive = ref<boolean>(false);
+    const refCompoAddForm = ref<InstanceType<typeof FootChatAddForm>>();
+
     // view
     const isViewActive = ref<boolean>(false);
     const refCompoViewForm = ref<InstanceType<typeof FootChatViewForm>>();
@@ -211,13 +194,6 @@ export default defineComponent({
       });
     };
 
-    const closeForm = () => {
-      isFromActive.value = false;
-    };
-    const onCloseView = () => {
-      isViewActive.value = false;
-    };
-
     const createMaker = ({
       maker,
       restaurant,
@@ -225,7 +201,7 @@ export default defineComponent({
       maker: naver.maps.Marker;
       restaurant: Restaurant;
     }) => {
-      isFromActive.value = false;
+      isAddFromActive.value = false;
 
       console.log("createMaker", restaurant);
 
@@ -276,6 +252,7 @@ export default defineComponent({
             return true;
           }
 
+          // 클라우드에 있는 이미지 삭제
           if (
             v.restaurantData.restaurantImageUrl !== null &&
             v.restaurantData.restaurantImageUrl.length > 1
@@ -295,88 +272,29 @@ export default defineComponent({
           }
 
           v.maker.onRemove();
-          isViewActive.value = false;
           makerInfoWindow.close();
           makers = makers.filter((v) => v.restaurantData.id !== id);
           console.log(makers);
           updateFilterInfo();
+          isViewActive.value = false;
           isLoding.value = false;
+
           return false;
         }
         return true;
       });
     };
 
+    // 필터 처리
+    watch([selectedText, () => filterResult.filterName], () => {
+      updateFilterResult();
+    });
+
     const updateFilterInfo = () => {
       filterResult.fillterArry = makers.map(
         (v) => v.restaurantData.restaurantName
       );
     };
-
-    onMounted(async () => {
-      isLoding.value = true;
-      const { ok, roomInfo, users, RestaurantInfo } = await getRoomInfo({
-        uuid: route.params.uuid as string,
-      });
-      console.log(roomInfo);
-      // console.log(users);
-      console.log(RestaurantInfo);
-
-      if (roomInfo.superUserInfo.username === store.state.userName) {
-        isSpuerUser.value = true;
-      }
-
-      // const { ok: superRoomOk, myRooms } = await getMySuperRooms();
-      // if (superRoomOk) {
-      //   const findUser = myRooms.find((v) => v.uuid === uuid);
-      //   if (findUser) {
-      //     isSpuerUser.value = true;
-      //   }
-      // }
-
-      const mapOptions = {
-        center: new naver.maps.LatLng(roomInfo.lating.y, roomInfo.lating.x),
-        zoom: 14,
-        // 지도 줌 컨트롤러
-        scaleControl: false,
-        logoControl: false,
-        mapDataControl: false,
-        zoomControl: true,
-        minZoom: 6,
-        //
-      } as naver.maps.MapOptions;
-
-      const mapEl = document.getElementById("map");
-      map.value = new naver.maps.Map(mapEl!, mapOptions);
-
-      RestaurantInfo.forEach((v) => {
-        const maker = new naver.maps.Marker({
-          position: {
-            x: v.lating.x,
-            y: v.lating.y,
-          },
-          map: map.value,
-        });
-        markerCommonEvent(maker);
-        makers.push({ maker, restaurantData: v });
-      });
-
-      // 마커 클릭(추가) 리스너 ( 폼에 보낼 데이터 설정 )
-      // 지도에서 빈곳 클릭시 레스토랑 챗 생성 폼 Active
-      naver.maps.Event.addListener(map.value, "click", (e) => {
-        isFromActive.value = true;
-        formPushData.map = map.value;
-        formPushData.position = e.coord;
-      });
-      isLoding.value = false;
-      console.log("maksers", makers);
-
-      updateFilterInfo();
-    });
-
-    watch([selectedText, () => filterResult.filterName], () => {
-      updateFilterResult();
-    });
 
     const updateFilterResult = () => {
       if (!selectedText.value) return;
@@ -431,20 +349,85 @@ export default defineComponent({
       }
     };
 
+    onMounted(async () => {
+      isLoding.value = true;
+      const { ok, roomInfo, users, RestaurantInfo } = await getRoomInfo({
+        uuid: route.params.uuid as string,
+      });
+      console.log(roomInfo);
+      // console.log(users);
+      console.log(RestaurantInfo);
+
+      if (roomInfo.superUserInfo.username === store.state.userName) {
+        isSpuerUser.value = true;
+      }
+
+      // const { ok: superRoomOk, myRooms } = await getMySuperRooms();
+      // if (superRoomOk) {
+      //   const findUser = myRooms.find((v) => v.uuid === uuid);
+      //   if (findUser) {
+      //     isSpuerUser.value = true;
+      //   }
+      // }
+
+      const mapOptions = {
+        center: new naver.maps.LatLng(roomInfo.lating.y, roomInfo.lating.x),
+        zoom: 14,
+        // 지도 줌 컨트롤러
+        scaleControl: false,
+        logoControl: false,
+        mapDataControl: false,
+        zoomControl: true,
+        minZoom: 6,
+        //
+      } as naver.maps.MapOptions;
+
+      const mapEl = document.getElementById("map");
+      map.value = new naver.maps.Map(mapEl!, mapOptions);
+
+      RestaurantInfo.forEach((v) => {
+        const maker = new naver.maps.Marker({
+          position: {
+            x: v.lating.x,
+            y: v.lating.y,
+          },
+          map: map.value,
+        });
+        markerCommonEvent(maker);
+        makers.push({ maker, restaurantData: v });
+      });
+
+      // 마커 클릭(추가) 리스너 ( 폼에 보낼 데이터 설정 )
+      // 지도에서 빈곳 클릭시 레스토랑 챗 addFrom Active
+      naver.maps.Event.addListener(map.value, "click", (e) => {
+        isAddFromActive.value = true;
+
+        refCompoAddForm.value?.setOpenData({
+          uuid: route.params.uuid as string,
+          map: map.value,
+          position: e.coord,
+        });
+      });
+      isLoding.value = false;
+      console.log("maksers", makers);
+
+      updateFilterInfo();
+    });
+
     return {
       refCompoViewForm,
+      refCompoAddForm,
       isLoding,
-      isFromActive,
+      isAddFromActive,
       isSpuerUser,
-      formPushData,
-      closeForm,
+
       createMaker,
       router,
+      route,
       onLeaveRoom,
       onDeleteRoom,
       isViewActive,
 
-      onCloseView,
       onDeleteRestaurnt,
       onUpdateRestaurant,
       ...toRefs(filterResult),

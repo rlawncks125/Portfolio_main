@@ -85,7 +85,7 @@
 </template>
 
 <script lang="ts">
-interface IFormPushData {
+interface ICreatedRoomData {
   map?: naver.maps.Map;
   position?: naver.maps.Coord;
   uuid: string;
@@ -95,13 +95,11 @@ import {
   defineComponent,
   onMounted,
   onUnmounted,
-  PropType,
   reactive,
   ref,
-  toRaw,
   toRefs,
 } from "vue";
-import { CreateRestaurantInputDto } from "@/assets/swagger/index";
+
 import { createRestaurant } from "@/api/Restaurant";
 import axios from "axios";
 import Loding from "./Loding.vue";
@@ -111,12 +109,11 @@ import InputFile, {
 
 export default defineComponent({
   components: { Loding, InputFile },
-  props: {
-    formPushData: Object as PropType<IFormPushData>,
-  },
-  emits: ["closeForm", "createMaker"],
+  emits: ["closeAddForm", "createMaker"],
   setup(props, { emit }) {
     const formRef = ref<HTMLFormElement>();
+    const createdRoomData = ref<ICreatedRoomData>();
+
     const formData = reactive({
       restaurantName: "",
       location: "",
@@ -131,6 +128,10 @@ export default defineComponent({
     // input File
     const inputFileComponet = ref<InstanceType<typeof InputFile>>();
     const imageFile = ref<FileDataType>();
+
+    const setOpenData = (data: ICreatedRoomData) => {
+      createdRoomData.value = data;
+    };
 
     const addTag = (e: any) => {
       e.preventDefault();
@@ -149,8 +150,9 @@ export default defineComponent({
     };
 
     const addResturant = async () => {
-      if (!props.formPushData) return;
-      const { map, position, uuid } = props.formPushData;
+      if (!createdRoomData.value) return;
+      const { map, position, uuid } = createdRoomData.value;
+
       let imageUrl = "";
 
       isLoading.value = true;
@@ -202,7 +204,7 @@ export default defineComponent({
     };
     const closeForm = () => {
       formDataReset();
-      emit("closeForm");
+      emit("closeAddForm");
     };
 
     const formDataReset = () => {
@@ -228,6 +230,7 @@ export default defineComponent({
     });
 
     return {
+      setOpenData,
       imageFile,
       inputFileComponet,
       isFileStatus,

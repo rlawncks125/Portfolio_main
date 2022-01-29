@@ -163,8 +163,8 @@ import {
   EnumAddRestaurantCommentByIdIdInputDtoRole,
   RestaurantInfoDto,
 } from "@/assets/swagger";
-import StarFill from "@/components/StarFill.vue";
-import StarTouchEvent from "@/components/StarTouchEvent.vue";
+import StarFill from "@/components/common/StarFill.vue";
+import StarTouchEvent from "@/components/common/StarTouchEvent.vue";
 import {
   defineComponent,
   onMounted,
@@ -187,7 +187,7 @@ export default defineComponent({
   props: {
     isRoomSuperUser: Boolean,
   },
-  emits: ["viewClose", "DeleteRestrunt", "UpdateRestaurantById"],
+  emits: ["closeViewForm", "DeleteRestrunt", "UpdateRestaurantById"],
   components: { StarFill, StarTouchEvent },
   setup(props, { emit }) {
     const store = useStore();
@@ -308,7 +308,7 @@ export default defineComponent({
 
     const onClose = () => {
       resetFormData();
-      emit("viewClose");
+      emit("closeViewForm");
     };
 
     const onDeleteRestaurnt = () => {
@@ -394,7 +394,6 @@ export default defineComponent({
 
     const updateRestaurant = () => {
       resetFormData();
-
       emit("UpdateRestaurantById", viewData.value!.id);
     };
 
@@ -430,10 +429,6 @@ export default defineComponent({
     };
   },
 });
-// 나머지 api구현
-// ui/ux
-// 댓글 or 대댓글이 성공적으로 추가했을시
-// 해당레스토랑 정보 다시 받아서 업데이트
 </script>
 
 <style lang="scss"></style>
