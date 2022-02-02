@@ -3,6 +3,7 @@
     class="fixed bg-gray-600 inset-0 w-screen h-screen text-2xl sm:text-base"
     style="z-index: 1001"
   >
+    <loding :isLoding="isLoading" />
     <div
       class="relative overflow-auto max-w-5xl p-2 h-full bg-yellow-100 inset-0 sm:w-11/12 sm:h-5/6 sm:mx-auto sm:my-12 sm:rounded-xl sm:overflow-y-auto sm:p-4"
     >
@@ -31,16 +32,30 @@
             </p>
           </div>
         </div>
+
+        <input-file
+          ref="inputFileComponet"
+          :isStyleRounded="true"
+          class="w-64 h-64 bg-transparent"
+          @cahngeFile="(data) => (imageFile = data)"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, ref, toRefs } from "vue";
+import { defineComponent, onMounted, reactive, ref, toRefs, watch } from "vue";
+import InputFile, {
+  FileDataType,
+} from "@/components/common/Input/File-one.vue";
+import axios from "axios";
+import Loding from "@/components/Loding.vue";
+import { createRoom } from "@/api/Room";
 
 export default defineComponent({
-  emits: ["createRoom", "onClose"],
+  emits: ["onCreated", "onClose"],
+  components: { InputFile, Loding },
   setup(props, { emit }) {
     let map: naver.maps.Map;
     let marker: naver.maps.Marker;
@@ -52,14 +67,49 @@ export default defineComponent({
       findAddrs: [] as any[],
     });
 
-    const onCreateRoom = () => {
-      emit("createRoom", {
-        LatLng: marker.getPosition(),
+    const isLoading = ref(false);
+
+    // 이미지 처리 관련
+    const inputFileComponet = ref<InstanceType<typeof InputFile>>();
+    const imageFile = ref<FileDataType>();
+
+    const onCreateRoom = async () => {
+      let markeImageUrl = "";
+
+      isLoading.value = true;
+      // 이미지 url 작업
+      if (imageFile.value?.type === "image") {
+        const postForm = new FormData();
+        postForm.append("file", imageFile.value.file, imageFile.value.fileName);
+
+        markeImageUrl = await axios
+          .post("/api/file", postForm, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+          .then((res) => res.data.url);
+      }
+
+      const { ok, room } = await createRoom({
         roomName: roomName.value,
+        lating: marker.getPosition(),
+        markeImageUrl,
       });
+
+      if (ok) {
+        inputFileComponet.value?.resetFile();
+        emit("onCreated", {
+          ok,
+          room,
+        });
+      }
+
+      isLoading.value = false;
     };
 
     const onClose = () => {
+      inputFileComponet.value?.resetFile();
       emit("onClose", false);
     };
 
@@ -128,6 +178,9 @@ export default defineComponent({
     });
 
     return {
+      isLoading,
+      inputFileComponet,
+      imageFile,
       serachAddr,
       addr,
       onMoveMarkerAddress,

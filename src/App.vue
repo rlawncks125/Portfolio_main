@@ -17,7 +17,7 @@
   </div>
 
   <div
-    class="render-view"
+    class="render-view pb-16"
     :class="{ 'sm:pl-14': route.path.includes('foodChat') }"
   >
     <router-view />

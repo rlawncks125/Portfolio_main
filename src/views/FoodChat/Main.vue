@@ -61,7 +61,7 @@
 
     <!-- 모바일 하단 -->
     <div
-      class="absolute bottom-0 left-0 w-full h-20 py-4 bg-gray-400 sm:flex-col sm:inset-y-0 sm:w-16 sm:h-full sm:px-1 sm:hover:w-48"
+      class="fixed bottom-0 left-0 w-full h-20 py-4 bg-gray-400 sm:flex-col sm:inset-y-0 sm:w-16 sm:h-full sm:px-1 sm:hover:w-48"
     >
       <div
         class="flex w-full justify-around h-full sm:flex-col sm:justify-start sm:gap-12 sm:pt-40 sm:overflow-hidden"

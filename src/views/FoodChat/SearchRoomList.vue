@@ -5,7 +5,7 @@
   <button @click="isCreateRoom = true">방 만들기</button>
   <room-create-form
     v-if="isCreateRoom"
-    @createRoom="onCreateRoom"
+    @onCreated="onCreateRoom"
     @onClose="
       (isActive) => {
         isCreateRoom = isActive;
@@ -15,28 +15,38 @@
 
   <div
     v-for="item in roomLists"
-    :key="item.key"
-    class="grid grid-cols-1 gap-y-2 border-2"
+    :key="item.id"
+    class="flex flex-col border-2 mt-4"
   >
-    <p>uuid : {{ item.uuid }}</p>
-    <p>roomName : {{ item.roomName }}</p>
-    <p>방장유저 : {{ item.superUserinfo.username }}</p>
-    <button
-      class="text-pink-500 bg-slate-700 border-2 w-3/6 mx-auto"
-      @click.prevent="goRoom(item.uuid)"
-    >
-      참여 하기
-    </button>
+    <div class="room-info">
+      <div class="room-marke">
+        <div>
+          <img
+            :src="item.markeImageUrl ? item.markeImageUrl : baseRoomMarke"
+            class="w-full h-full bg-cover bg-center"
+          />
+        </div>
+      </div>
+      <p class="room-name">{{ item.roomName }}</p>
+      <p class="room-super-user">👑{{ item.superUserinfo.username }}</p>
+      <button
+        class="text-pink-500 bg-slate-700 border-2"
+        @click.prevent="goRoom(item.uuid)"
+      >
+        참여 하기
+      </button>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { MyRoomsinfoDto, roomInfoDto } from "@/assets/swagger";
+import { MyRoomsinfoDto, roomInfoDto, RoomOutPutDto } from "@/assets/swagger";
 import { defineComponent, onMounted, reactive, ref, toRefs } from "vue";
-import { createRoom, getJoinRoomList, getRoomList, joinRoom } from "@/api/Room";
+import { getJoinRoomList, getRoomList, joinRoom } from "@/api/Room";
 import { useRouter } from "vue-router";
 import Loding from "@/components/Loding.vue";
 import RoomCreateForm from "@/components/RoomCreateForm.vue";
+import baseImage from "@/assets/images/user-shape.png";
 
 export default defineComponent({
   components: { Loding, RoomCreateForm },
@@ -46,6 +56,7 @@ export default defineComponent({
       roomLists: [] as Array<roomInfoDto>,
       myJoinRoomLists: [] as Array<MyRoomsinfoDto>,
       isLoading: false,
+      baseRoomMarke: baseImage,
     });
 
     const isCreateRoom = ref(false);
@@ -87,19 +98,12 @@ export default defineComponent({
     };
 
     const onCreateRoom = async ({
-      LatLng,
-      roomName,
+      ok,
+      room,
     }: {
-      LatLng: { x: number; y: number };
-      roomName: string;
+      ok: boolean;
+      room: RoomOutPutDto;
     }) => {
-      data.isLoading = true;
-      const { ok, room } = await createRoom({
-        roomName: roomName,
-        lating: LatLng,
-      });
-      data.isLoading = false;
-
       if (ok && room) {
         data.myJoinRoomLists.push({
           id: room.id,
@@ -107,6 +111,8 @@ export default defineComponent({
           roomName: room.roomName,
           lating: room.lating,
           restaurantInfo: [],
+          markeImageUrl: room.markeImageUrl,
+          superUser: room.superUser,
           joinUsersInfo: [
             {
               id: room.superUser.id,
@@ -137,4 +143,4 @@ export default defineComponent({
 });
 </script>
 
-<style></style>
+<style lang="scss"></style>

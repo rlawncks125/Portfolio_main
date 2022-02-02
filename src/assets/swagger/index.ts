@@ -683,6 +683,23 @@ export interface Lating {
   y: number;
 }
 
+export interface User {
+  /** id */
+  id: number;
+
+  /** password */
+  password: string;
+
+  /** 유저 이름입니다. */
+  username: string;
+
+  /** 내용물 */
+  dsc: string;
+
+  /** 권한 있는 방들 */
+  superRooms: string[];
+}
+
 export interface SuperUserDto {
   /** 유저 아이디 */
   id: number;
@@ -729,8 +746,14 @@ export interface MyRoomsinfoDto {
   /** 방 이름입니다.. */
   roomName: string;
 
+  /** 방마크 입니다. */
+  markeImageUrl: string;
+
   /** 방 시작 좌표입니다. */
   lating: CombinedLatingTypes;
+
+  /** 방장 입니다. */
+  superUser: CombinedSuperUserTypes;
 
   /** 레스토랑 정보 */
   restaurantInfo: MyRoomsRestaurantInfoDto[];
@@ -762,6 +785,9 @@ export interface roomInfoDto {
   /** 방 이름입니다.. */
   roomName: string;
 
+  /** 방마크 입니다. */
+  markeImageUrl: string;
+
   /** 방장 유저 정보 */
   superUserinfo: CombinedSuperUserinfoTypes;
 }
@@ -781,25 +807,11 @@ export interface CreateRoomInputDto {
   /** 방 이름입니다.. */
   roomName: string;
 
+  /** 방마크 입니다. */
+  markeImageUrl: string;
+
   /** 방 시작 좌표입니다. */
   lating: CombinedLatingTypes;
-}
-
-export interface User {
-  /** id */
-  id: number;
-
-  /** password */
-  password: string;
-
-  /** 유저 이름입니다. */
-  username: string;
-
-  /** 내용물 */
-  dsc: string;
-
-  /** 권한 있는 방들 */
-  superRooms: string[];
 }
 
 export interface RoomOutPutDto {
@@ -811,6 +823,9 @@ export interface RoomOutPutDto {
 
   /** 방 이름입니다.. */
   roomName: string;
+
+  /** 방마크 입니다. */
+  markeImageUrl: string;
 
   /** 방 시작 좌표입니다. */
   lating: CombinedLatingTypes;
@@ -887,6 +902,9 @@ export interface Room {
 
   /** 방 이름입니다.. */
   roomName: string;
+
+  /** 방마크 입니다. */
+  markeImageUrl: string;
 
   /** 방 시작 좌표입니다. */
   lating: CombinedLatingTypes;
@@ -1169,8 +1187,8 @@ export enum EnumEventTriggerTypes {
 }
 export type CombinedResturantSuperUserTypes = SuperUserDto;
 export type CombinedLatingTypes = Lating;
-export type CombinedSuperUserinfoTypes = superUserInfoDto;
 export type CombinedSuperUserTypes = User;
+export type CombinedSuperUserinfoTypes = superUserInfoDto;
 export type CombinedRoomTypes = RoomOutPutDto;
 export type CombinedSuperUserInfoTypes = RoomUsersDto;
 export type CombinedParentRoomTypes = Room;
