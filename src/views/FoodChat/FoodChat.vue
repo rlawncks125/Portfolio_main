@@ -13,21 +13,24 @@
   </div>
 
   <div id="map" class="w-11/12 h-96 mx-auto"></div>
-  <foot-chat-add-form
-    v-show="isAddFromActive"
-    ref="refCompoAddForm"
-    @closeAddForm="() => (isAddFromActive = false)"
-    @createMaker="createMaker"
-  />
-  <foot-chat-view-form
-    v-show="isViewActive"
-    ref="refCompoViewForm"
-    :isRoomSuperUser="isSpuerUser"
-    @closeViewForm="() => (isViewActive = false)"
-    @DeleteRestrunt="onDeleteRestaurnt"
-    @UpdateRestaurantById="onUpdateRestaurant"
-  />
-
+  <transition name="ani-fade">
+    <foot-chat-add-form
+      v-show="isAddFromActive"
+      ref="refCompoAddForm"
+      @closeAddForm="() => (isAddFromActive = false)"
+      @createMaker="createMaker"
+    />
+  </transition>
+  <transition name="ani-fade">
+    <foot-chat-view-form
+      v-show="isViewActive"
+      ref="refCompoViewForm"
+      :isRoomSuperUser="isSpuerUser"
+      @closeViewForm="() => (isViewActive = false)"
+      @DeleteRestrunt="onDeleteRestaurnt"
+      @UpdateRestaurantById="onUpdateRestaurant"
+    />
+  </transition>
   <!-- 필터 -->
   <div>음식점 리스트 필터 ( 태그 , 지역 , 등등등)</div>
 

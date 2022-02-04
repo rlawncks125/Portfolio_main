@@ -593,14 +593,6 @@ Ensure the default browser behavior of the `hidden` attribute.
   height: 24rem;
 }
 
-.h-72 {
-  height: 18rem;
-}
-
-.h-32 {
-  height: 8rem;
-}
-
 .h-12 {
   height: 3rem;
 }
@@ -611,6 +603,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .h-5\/6 {
   height: 83.333333%;
+}
+
+.h-0 {
+  height: 0px;
 }
 
 .w-screen {
@@ -633,10 +629,6 @@ Ensure the default browser behavior of the `hidden` attribute.
   width: 50%;
 }
 
-.w-32 {
-  width: 8rem;
-}
-
 .w-64 {
   width: 16rem;
 }
@@ -647,6 +639,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .w-1\/4 {
   width: 25%;
+}
+
+.w-0 {
+  width: 0px;
 }
 
 .max-w-5xl {
@@ -815,6 +811,10 @@ Ensure the default browser behavior of the `hidden` attribute.
   background-color: rgb(252 165 165 / var(--tw-bg-opacity));
 }
 
+.bg-transparent {
+  background-color: transparent;
+}
+
 .bg-gray-400 {
   --tw-bg-opacity: 1;
   background-color: rgb(156 163 175 / var(--tw-bg-opacity));
@@ -830,25 +830,12 @@ Ensure the default browser behavior of the `hidden` attribute.
   background-color: rgb(254 202 202 / var(--tw-bg-opacity));
 }
 
-.bg-amber-200 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(253 230 138 / var(--tw-bg-opacity));
-}
-
-.bg-transparent {
-  background-color: transparent;
-}
-
 .bg-opacity-50 {
   --tw-bg-opacity: 0.5;
 }
 
 .bg-gradient-to-r {
   background-image: linear-gradient(to right, var(--tw-gradient-stops));
-}
-
-.bg-none {
-  background-image: none;
 }
 
 .from-indigo-600 {
@@ -1037,15 +1024,16 @@ Ensure the default browser behavior of the `hidden` attribute.
   filter: var(--tw-filter);
 }
 
-.backdrop-filter-none {
-  -webkit-backdrop-filter: none;
-          backdrop-filter: none;
-}
-
 .transition {
   transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.transition-all {
+  transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }

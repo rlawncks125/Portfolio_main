@@ -3,16 +3,17 @@
   <p>방 찾기</p>
   <!-- 방만들기 버튼 -->
   <button @click="isCreateRoom = true">방 만들기</button>
-  <room-create-form
-    v-if="isCreateRoom"
-    @onCreated="onCreateRoom"
-    @onClose="
-      (isActive) => {
-        isCreateRoom = isActive;
-      }
-    "
-  />
-
+  <transition name="ani-fade">
+    <room-create-form
+      v-if="isCreateRoom"
+      @onCreated="onCreateRoom"
+      @onClose="
+        (isActive) => {
+          isCreateRoom = isActive;
+        }
+      "
+    />
+  </transition>
   <div
     v-for="item in roomLists"
     :key="item.id"
