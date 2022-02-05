@@ -1,6 +1,6 @@
 <template>
   <label
-    class="checkd-label bg-center bg-cover block sm:hidden"
+    class="checkd-label w-12 h-12 bg-center bg-cover cursor-pointer justify-self-start sm:hidden"
     :style="isCehckd ? styleChecked : styleNonChecked"
     for="checkd-menu"
   ></label>
@@ -39,8 +39,8 @@
 import { defineComponent, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from "./store";
-import checkedImage from "@/assets/images/search.png";
-import noneCheckedImage from "@/assets/images/user-shape.png";
+import checkedImage from "@/assets/images/outline_close_black_24dp.png";
+import noneCheckedImage from "@/assets/images/outline_reorder_black_24dp.png";
 
 export default defineComponent({
   setup() {
@@ -225,15 +225,14 @@ a:-webkit-any-link {
 .out-checkd,
 .checkd-label {
   grid-area: out-checkd;
-  display: none;
-  // width: $checkd-width;
-  // height: $checkd-height;
-  width: 3rem;
-  height: 3rem;
-  // position: fixed;
-  // top: 0px;
-  // left: 0px;
+  display: block;
+
   z-index: 100;
+}
+
+.out-checkd {
+  width: 0;
+  height: 0;
 
   &:checked ~ #nav {
     .nav-wrap {
