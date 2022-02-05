@@ -1,10 +1,10 @@
 <template>
   <button :class="{ 'pointer-events-none': isLoading }">
-    <div class="px-2 py-2 w-full">
+    <div class="px-2 py-2 w-full h-full flex justify-center flex-col">
       <template v-if="isLoading">
         <radial-progress-bar
-          class="animate-spin h-full m-auto"
-          :diameter="50"
+          class="animate-spin w-full h-full m-auto"
+          :diameter="size"
           :totalSteps="20"
           :completedSteps="3"
           :strokeWidth="7"
@@ -30,6 +30,7 @@ export default defineComponent({
   props: {
     isLoading: Boolean,
     Msg: String,
+    size: Number,
   },
   components: { RadialProgressBar },
   setup() {

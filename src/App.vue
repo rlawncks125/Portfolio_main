@@ -1,6 +1,17 @@
 <template>
-  <input class="out-checkd" type="checkbox" v-model="isCehckd" />
-  <div id="nav" :class="{ 'sm:pl-14': route.path.includes('foodChat') }">
+  <label
+    class="checkd-label bg-center bg-cover block sm:hidden"
+    :style="isCehckd ? styleChecked : styleNonChecked"
+    for="checkd-menu"
+  ></label>
+
+  <input
+    id="checkd-menu"
+    class="out-checkd"
+    type="checkbox"
+    v-model="isCehckd"
+  />
+  <div id="nav" :class="{ 'sm:pl-20': route.path.includes('foodChat') }">
     <div class="nav-home" @click="changePage">
       <router-link to="/">
         <img src="@/assets/images/HOME.png" alt="" />
@@ -18,7 +29,7 @@
 
   <div
     class="render-view pb-16"
-    :class="{ 'sm:pl-14': route.path.includes('foodChat') }"
+    :class="{ 'sm:pl-20': route.path.includes('foodChat') }"
   >
     <router-view />
   </div>
@@ -28,11 +39,23 @@
 import { defineComponent, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from "./store";
+import checkedImage from "@/assets/images/search.png";
+import noneCheckedImage from "@/assets/images/user-shape.png";
 
 export default defineComponent({
   setup() {
     const store = useStore();
     const isCehckd = ref();
+
+    const styleChecked = {
+      background: `url(${checkedImage}) center/contain no-repeat`,
+      color: "red",
+    };
+
+    const styleNonChecked = {
+      background: `url(${noneCheckedImage}) center/contain no-repeat`,
+      color: "yellow",
+    };
 
     const route = useRoute();
 
@@ -40,7 +63,13 @@ export default defineComponent({
       isCehckd.value = false;
     };
 
-    return { isCehckd, changePage, route };
+    return {
+      isCehckd,
+      changePage,
+      route,
+      styleChecked,
+      styleNonChecked,
+    };
   },
 });
 </script>
@@ -193,13 +222,14 @@ a:-webkit-any-link {
   }
 }
 
-.out-checkd {
+.out-checkd,
+.checkd-label {
   grid-area: out-checkd;
   display: none;
   // width: $checkd-width;
   // height: $checkd-height;
-  width: 50%;
-  height: 50%;
+  width: 3rem;
+  height: 3rem;
   // position: fixed;
   // top: 0px;
   // left: 0px;
@@ -224,9 +254,6 @@ a:-webkit-any-link {
       opacity: 0.5;
       background-color: black;
     }
-  }
-  @include mobile() {
-    display: block;
   }
 }
 

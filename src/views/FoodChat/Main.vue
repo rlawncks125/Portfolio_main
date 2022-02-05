@@ -1,5 +1,4 @@
 <template>
-  <loding :isLoding="isLoading" />
   <div class="underline">음식 채팅방 메인방</div>
   <div>
     <button @click="getMyRoomlist">토큰 테스트</button>
@@ -23,9 +22,14 @@
       ><input type="password" id="password" v-model="password" /><br />
 
       <div class="flex justify-between">
-        <button @click.prevent="userCreate" class="border-2">
-          계정 만들기
-        </button>
+        <loading-btn
+          class="border-2 w-40 h-12"
+          Msg="계정 만들기"
+          :size="35"
+          :isLoading="isLoadingSigUp"
+          @click.prevent="userCreate"
+        />
+
         <button class="border-2" @click.prevent="isPageSigUp = false">
           돌아가기
         </button>
@@ -43,7 +47,13 @@
       <label for="password">패스워드</label
       ><input type="password" id="password" v-model="password" />
       <div class="flex justify-between">
-        <button class="border-2" @click.prevent="userLogin">Login</button>
+        <loading-btn
+          class="border-2 w-32 h-12"
+          Msg="Login"
+          :size="35"
+          :isLoading="isLoadingLogin"
+          @click.prevent="userLogin"
+        />
         <button class="border-2" @click.prevent="isPageSigUp = true">
           Sign Up(회원가입)
         </button>
@@ -59,9 +69,9 @@
     <!-- 페이지 갱신 문제로 key값 추가 -->
     <router-view :key="route.fullPath" />
 
-    <!-- 모바일 하단 -->
+    <!-- 모바일 하단 & sm 이상 사이드바 -->
     <div
-      class="fixed bottom-0 left-0 w-full h-20 py-4 bg-gray-400 sm:flex-col sm:inset-y-0 sm:w-16 sm:h-full sm:px-1 sm:hover:w-48"
+      class="fixed bottom-0 left-0 w-full h-20 py-4 bg-gray-400 sm:flex-col sm:inset-y-0 sm:w-20 sm:h-full sm:hover:w-52 sm:transition-all sm:whitespace-nowrap sm:pl-2"
     >
       <div
         class="flex w-full justify-around h-full sm:flex-col sm:justify-start sm:gap-12 sm:pt-40 sm:overflow-hidden"
@@ -76,7 +86,7 @@
               src="@/assets/images/home-icon.png"
               alt=""
             />
-            <p class="hidden sm:inline">방</p>
+            <p class="hidden sm:inline pl-4">방</p>
           </div>
         </div>
         <div
@@ -89,7 +99,7 @@
               src="@/assets/images/search.png"
               alt=""
             />
-            <p class="hidden sm:inline">사치</p>
+            <p class="hidden sm:inline pl-4">서치</p>
           </div>
         </div>
         <div
@@ -102,7 +112,7 @@
               src="@/assets/images/user-shape.png"
               alt=""
             />
-            <p class="hidden sm:inline">마이 페이지</p>
+            <p class="hidden sm:inline pl-4">마이 페이지</p>
           </div>
         </div>
       </div>
@@ -116,19 +126,24 @@ import { computed, defineComponent, reactive, ref, toRefs, watch } from "vue";
 import { createUser, logIn, logOut } from "@/api/auth";
 import { useRoute, useRouter } from "vue-router";
 import { getJoinRoomList } from "@/api/Room";
+import LoadingBtn from "@/components/common/Input/LoadingBtn.vue";
 
 export default defineComponent({
+  components: { LoadingBtn },
   setup() {
     const store = useStore();
     const route = useRoute();
     const router = useRouter();
-    const isLoading = ref(false);
+
     const userData = reactive({
       token: computed(() => store.state.token),
       userName: computed(() => store.state.userName),
     });
+
     const isLogin = ref(userData.token.length > 2);
     const isPageSigUp = ref(false);
+    const isLoadingLogin = ref(false);
+    const isLoadingSigUp = ref(false);
 
     const formData = reactive({
       username: "",
@@ -141,13 +156,14 @@ export default defineComponent({
     };
 
     const userCreate = async () => {
-      isLoading.value = true;
+      isLoadingSigUp.value = true;
 
       const { ok, err } = await createUser({
         username: formData.username,
         password: formData.password,
       });
-      isLoading.value = false;
+
+      isLoadingSigUp.value = false;
       if (ok) {
         alert("아이디가 만들어졌습니다.");
         isPageSigUp.value = false;
@@ -157,13 +173,17 @@ export default defineComponent({
     };
 
     const userLogin = async () => {
-      const { ok, token } = await logIn({
+      isLoadingLogin.value = true;
+      const { ok, token, err } = await logIn({
         username: formData.username,
         password: formData.password,
       });
       if (ok) {
         alert("로그인 되었습니다.");
+      } else {
+        alert(`실패 하셔습니다 : ${err}`);
       }
+      isLoadingLogin.value = false;
       resetFormData();
       // console.log(data.token);
     };
@@ -203,7 +223,9 @@ export default defineComponent({
       isLogin,
       userCreate,
       isPageSigUp,
-      isLoading,
+
+      isLoadingLogin,
+      isLoadingSigUp,
       router,
       route,
       getMyRoomlist,
