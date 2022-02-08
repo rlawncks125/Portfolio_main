@@ -4,7 +4,7 @@
     style="z-index: 1001"
   >
     <div
-      class="relative overflow-auto max-w-5xl p-2 pt-0 h-full bg-yellow-100 inset-0 sm:w-11/12 sm:h-5/6 sm:mx-auto sm:my-12 sm:rounded-xl sm:overflow-y-auto sm:p-4"
+      class="relative overflow-auto max-w-5xl p-2 pt-0 pb-12 h-full bg-yellow-100 inset-0 sm:w-11/12 sm:h-5/6 sm:mx-auto sm:my-12 sm:rounded-xl sm:overflow-y-auto sm:p-4"
     >
       <div
         class="sticky sm:hidden p-2 py-4 top-0 flex justify-between bg-yellow-100"
@@ -138,7 +138,7 @@
         </div>
       </div>
       <!-- 댓글 달기 -->
-      <div class="mt-4 flex flex-col text-left">
+      <div class="mt-4 flex flex-col text-left pb-14">
         <star-touch-event
           :starNum="5"
           :starSize="2"

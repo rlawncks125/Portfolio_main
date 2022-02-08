@@ -264,8 +264,12 @@ export class RoomService {
    * 방 목록 ( roomList )
    */
   static roomControllerRoomList(
+    params: {
+      /** requestBody */
+      body?: RoomListInputDto;
+    } = {} as any,
     options: IRequestOptions = {}
-  ): Promise<roomListOutPutDto> {
+  ): Promise<RoomListOutPutDto> {
     return new Promise((resolve, reject) => {
       let url = basePath + "/room/list";
 
@@ -276,7 +280,7 @@ export class RoomService {
         options
       );
 
-      let data = null;
+      let data = params.body;
 
       configs.data = data;
       axios(configs, resolve, reject);
@@ -773,6 +777,14 @@ export interface MyRoomsOutPutDto {
   myRooms: MyRoomsinfoDto[];
 }
 
+export interface RoomListInputDto {
+  /** 서치 유형 */
+  searchType: EnumRoomListInputDtoSearchType;
+
+  /** 값 */
+  value?: string;
+}
+
 export interface superUserInfoDto {
   /** 유저 이름입니다. */
   username: string;
@@ -792,7 +804,7 @@ export interface roomInfoDto {
   superUserinfo: CombinedSuperUserinfoTypes;
 }
 
-export interface roomListOutPutDto {
+export interface RoomListOutPutDto {
   /** 성공 여부입니다. */
   ok: boolean;
 
@@ -1188,6 +1200,11 @@ export enum EnumEventTriggerTypes {
 export type CombinedResturantSuperUserTypes = SuperUserDto;
 export type CombinedLatingTypes = Lating;
 export type CombinedSuperUserTypes = User;
+export enum EnumRoomListInputDtoSearchType {
+  "All" = "All",
+  "RoomName" = "RoomName",
+  "SuperUser" = "SuperUser",
+}
 export type CombinedSuperUserinfoTypes = superUserInfoDto;
 export type CombinedRoomTypes = RoomOutPutDto;
 export type CombinedSuperUserInfoTypes = RoomUsersDto;

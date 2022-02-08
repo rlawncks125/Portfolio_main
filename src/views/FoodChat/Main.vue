@@ -6,7 +6,7 @@
   </div>
   <div
     v-if="!isLogin"
-    class="h-5/6 flex items-center justify-center w-full text-3xl"
+    class="h-5/6 flex py-4 items-start justify-center w-full text-3xl"
   >
     <p>{{ token }}</p>
     <!-- 회원가입 -->
@@ -62,7 +62,7 @@
   </div>
 
   <!-- 로그인 됐을시 -->
-  <div v-else>
+  <div class="relative" :style="viewStyles" v-else>
     <button class="border-2" @click.prevent="userLogOut">LogOut</button>
     <br />
 
@@ -71,7 +71,8 @@
 
     <!-- 모바일 하단 & sm 이상 사이드바 -->
     <div
-      class="fixed bottom-0 left-0 w-full h-20 py-4 bg-gray-400 sm:flex-col sm:inset-y-0 sm:w-20 sm:h-full sm:hover:w-52 sm:transition-all sm:whitespace-nowrap sm:pl-2"
+      class="fixed bottom-0 left-0 w-full h-14 py-4 bg-gray-400 sm:flex-col sm:inset-y-0 sm:w-20 sm:h-full sm:hover:w-52 sm:transition-all sm:whitespace-nowrap sm:pl-2"
+      style="z-index: 101"
     >
       <div
         class="flex w-full justify-around h-full sm:flex-col sm:justify-start sm:gap-12 sm:pt-40 sm:overflow-hidden"
@@ -122,7 +123,16 @@
 
 <script lang="ts">
 import { useStore } from "@/store";
-import { computed, defineComponent, reactive, ref, toRefs, watch } from "vue";
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  onUnmounted,
+  reactive,
+  ref,
+  toRefs,
+  watch,
+} from "vue";
 import { createUser, logIn, logOut } from "@/api/auth";
 import { useRoute, useRouter } from "vue-router";
 import { getJoinRoomList } from "@/api/Room";
@@ -145,6 +155,7 @@ export default defineComponent({
     const isLoadingLogin = ref(false);
     const isLoadingSigUp = ref(false);
 
+    // form
     const formData = reactive({
       username: "",
       password: "",
@@ -155,6 +166,24 @@ export default defineComponent({
       formData.password = "";
     };
 
+    // render view 넓이 설정 css
+    const viewStyles = ref({
+      height: "calc(100vh - 14.75rem)",
+    });
+
+    const setViewStyles = () => {
+      if (window.innerWidth < 640) {
+        viewStyles.value = {
+          height: "calc(100vh - 17rem)",
+        };
+      } else {
+        viewStyles.value = {
+          height: "calc(100vh - 12.75rem)",
+        };
+      }
+    };
+
+    // CRUD
     const userCreate = async () => {
       isLoadingSigUp.value = true;
 
@@ -215,6 +244,14 @@ export default defineComponent({
       }
     );
 
+    onMounted(() => {
+      setViewStyles();
+      window.addEventListener("resize", setViewStyles);
+    });
+    onUnmounted(() => {
+      window.removeEventListener("resize", setViewStyles);
+    });
+
     return {
       ...toRefs(userData),
       ...toRefs(formData),
@@ -223,12 +260,12 @@ export default defineComponent({
       isLogin,
       userCreate,
       isPageSigUp,
-
       isLoadingLogin,
       isLoadingSigUp,
       router,
       route,
       getMyRoomlist,
+      viewStyles,
     };
   },
 });

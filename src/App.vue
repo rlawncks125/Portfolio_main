@@ -28,7 +28,7 @@
   </div>
 
   <div
-    class="render-view pb-16"
+    class="render-view pb-12"
     :class="{ 'sm:pl-20': route.path.includes('foodChat') }"
   >
     <router-view />
@@ -115,7 +115,7 @@ body {
   color: #2c3e50;
 
   display: grid;
-  margin: 1rem;
+  margin: 0;
   margin-top: 0;
 
   grid-template:
@@ -127,15 +127,16 @@ body {
   @include mobile() {
     grid-template:
       "out-checkd nav ." 5rem
-      "render-view render-view render-view" minmax(50px, auto)
+      "render-view render-view render-view" minmax(calc(100vh - 5rem), auto)
       / 1fr 1fr 1fr;
     align-items: center;
   }
   @include tablet() {
     grid-template:
-      "nav nav nav nav" 8rem
+      "nav nav nav nav" 4rem
       "render-view render-view render-view render-view" minmax(50px, auto)
       / 1fr 1fr 1fr 1fr;
+    justify-items: center;
   }
 }
 
@@ -272,8 +273,10 @@ a:-webkit-any-link {
 
 .render-view {
   grid-area: render-view;
+  // grid 마지막 col에 하나가 더껴있어서 거기까지 index지정으로 늘림
+  grid-column-end: 7;
   width: 100%;
   height: 100%;
-  max-width: $max-width;
+  // max-width: $max-width;
 }
 </style>

@@ -4,15 +4,12 @@
     <span class="text-red-800" v-if="isSpuerUser">방 주인입니다.</span>
     <button v-if="isSpuerUser" @click="onDeleteRoom">방 삭제하기</button>
   </div>
-  <div class="flex flex-col justify-between">
-    <p>{{ route.params.uuid }} 방</p>
-  </div>
   <div class="flex justify-between">
     <button @click="onLeaveRoom">방 나가기</button>
     <button @click.prevent="router.push('/foodChat')">방으로 돌아가기</button>
   </div>
 
-  <div id="map" class="w-11/12 h-96 mx-auto"></div>
+  <div id="map" class="w-full h-full mx-auto"></div>
   <transition name="ani-fade">
     <foot-chat-add-form
       v-show="isAddFromActive"
@@ -31,8 +28,25 @@
       @UpdateRestaurantById="onUpdateRestaurant"
     />
   </transition>
+  <!-- 팝업 등등  -->
+  <div class="absolute top-20 w-full flex justify-center">
+    <p v-if="roomInfoData">{{ roomInfoData.roomName }} 방</p>
+  </div>
+
+  <div
+    v-show="isOpenRestaurantInfo"
+    class="absolute bottom-0 w-full flex justify-center"
+  >
+    <div
+      class="bg-cyan-200 w-4/6 h-32 text-center rounded-xl flex flex-col justify-center cursor-pointer"
+      @click="onClickViewRestrauntInfo"
+      v-if="RestaurantInfoData"
+    >
+      {{ RestaurantInfoData.restaurantName }}
+    </div>
+  </div>
   <!-- 필터 -->
-  <div>음식점 리스트 필터 ( 태그 , 지역 , 등등등)</div>
+  <!-- <div>음식점 리스트 필터 ( 태그 , 지역 , 등등등)</div>
 
   <select v-model="selectedText">
     <option class="hidden" disabled value="">필터할 종류</option>
@@ -53,10 +67,10 @@
     "
     :value="filterName"
   />
-  <br />
+  <br /> -->
 
   <!-- 필터 결과값 -->
-  {{ fillterArry }}
+  <!-- {{ fillterArry }} -->
 </template>
 
 <script lang="ts">
@@ -68,6 +82,7 @@ import {
   CreateRestaurantOutPutDto,
   Restaurant,
   RestaurantInfoDto,
+  RoominfoDto,
 } from "@/assets/swagger";
 import {
   deleteRoom,
@@ -96,6 +111,7 @@ export default defineComponent({
     const route = useRoute();
     const store = useStore();
 
+    const roomInfoData = ref<RoominfoDto>();
     const uuid = route.params.uuid as string;
     const isLoding = ref(false);
     const isSpuerUser = ref(false);
@@ -132,6 +148,10 @@ export default defineComponent({
       fillterArry: [] as (string | undefined)[],
     });
 
+    // 레스토랑 정보창
+    const isOpenRestaurantInfo = ref(false);
+    const RestaurantInfoData = ref<RestaurantInfoDto>();
+
     const onLeaveRoom = async () => {
       if (!window.confirm("방을 나가실겁니까?")) return;
 
@@ -160,26 +180,10 @@ export default defineComponent({
     };
 
     const markerCommonEvent = (maker: naver.maps.Marker) => {
-      maker.addListener("dblclick", () => {
-        // 방법 1 ) 레스토랑 값 찾아서 view에 보낼 데이터 변경
-        const restaurantId = makers.filter((v) => v.maker === maker)[0]
-          .restaurantData.id;
-
-        // const findRestaurantId = 11;
-
-        const viewRestaurant = makers.filter(
-          (v) => v.restaurantData.id === restaurantId
-        )[0].restaurantData;
-
-        refCompoViewForm.value?.setOpenViewData(viewRestaurant);
-
-        isViewActive.value = true;
-      });
-      // document.getElementById('')?.addEventListener('mouseleave')
-      // 마커 클릭시 레스토랑 정보 보여주기
       maker.addListener("click", () => {
         if (makerInfoWindow.getMap()) {
           makerInfoWindow.close();
+          closeViewRestaurantInfo();
         } else {
           let restaurant = makers.filter((v) => v.maker === maker)[0]
             .restaurantData;
@@ -193,8 +197,22 @@ export default defineComponent({
           makerInfoWindow.setContent(infoContent);
 
           makerInfoWindow.open(map.value!, maker);
+          openViewRestaurantInfo(restaurant);
         }
       });
+    };
+
+    // 레스토랑 정보창
+    const openViewRestaurantInfo = (restaurnt: RestaurantInfoDto) => {
+      isOpenRestaurantInfo.value = true;
+      RestaurantInfoData.value = restaurnt;
+    };
+    const closeViewRestaurantInfo = () => {
+      isOpenRestaurantInfo.value = false;
+    };
+    const onClickViewRestrauntInfo = () => {
+      refCompoViewForm.value?.setOpenViewData(RestaurantInfoData.value!);
+      isViewActive.value = true;
     };
 
     const createMaker = ({
@@ -357,6 +375,8 @@ export default defineComponent({
       const { ok, roomInfo, users, RestaurantInfo } = await getRoomInfo({
         uuid: route.params.uuid as string,
       });
+      roomInfoData.value = roomInfo;
+
       console.log(roomInfo);
       // console.log(users);
       console.log(RestaurantInfo);
@@ -436,6 +456,11 @@ export default defineComponent({
       ...toRefs(filterResult),
       selectedText,
       selectedFilter,
+
+      roomInfoData,
+      isOpenRestaurantInfo,
+      RestaurantInfoData,
+      onClickViewRestrauntInfo,
     };
   },
 });

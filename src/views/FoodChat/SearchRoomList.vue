@@ -41,7 +41,12 @@
 </template>
 
 <script lang="ts">
-import { MyRoomsinfoDto, roomInfoDto, RoomOutPutDto } from "@/assets/swagger";
+import {
+  EnumRoomListInputDtoSearchType,
+  MyRoomsinfoDto,
+  roomInfoDto,
+  RoomOutPutDto,
+} from "@/assets/swagger";
 import { defineComponent, onMounted, reactive, ref, toRefs } from "vue";
 import { getJoinRoomList, getRoomList, joinRoom } from "@/api/Room";
 import { useRouter } from "vue-router";
@@ -62,9 +67,19 @@ export default defineComponent({
 
     const isCreateRoom = ref(false);
 
+    // 서치 필터
+    const searchType = ref<EnumRoomListInputDtoSearchType>(
+      EnumRoomListInputDtoSearchType.All
+    );
+    const searchValue = ref("");
+
     const getRoomLists = async () => {
       data.isLoading = true;
-      const { ok, err, roomList } = await getRoomList();
+
+      const { ok, err, roomList } = await getRoomList({
+        searchType: searchType.value,
+        value: searchValue.value,
+      });
       data.isLoading = false;
 
       if (ok) {

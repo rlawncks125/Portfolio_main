@@ -1,7 +1,11 @@
 module.exports = {
   content: ["./src/**/*.{html,vue}"],
   theme: {
-    extend: {},
+    extend: {
+      mapHeight: {
+        mobile: "calc(100vh - 19rem)",
+      },
+    },
     screens: {
       sm: "640px",
       // => @media (min-width: 640px) { ... }

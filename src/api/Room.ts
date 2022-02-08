@@ -7,11 +7,12 @@ import {
   roomInfoDto,
   RoomInfoInputDto,
   RoomInfoOutPutDto,
-  roomListOutPutDto,
   RoomOutPutDto,
   JoinRoomInputDto,
   LeaveRoomOutPutDto,
   MyCreateRoomsOutPutDto,
+  RoomListInputDto,
+  RoomListOutPutDto,
 } from "@/assets/swagger";
 import axios from "axios";
 import { AuthHeaders } from "./auth";
@@ -24,9 +25,11 @@ export const createRoom = async (
   });
 };
 
-export const getRoomList = async (): Promise<roomListOutPutDto> => {
-  return axios.get("api/room/list", AuthHeaders).then((res: any) => {
-    return res.data! as roomListOutPutDto;
+export const getRoomList = async (
+  data: RoomListInputDto
+): Promise<RoomListOutPutDto> => {
+  return axios.post("api/room/list", data, AuthHeaders).then((res: any) => {
+    return res.data! as RoomListOutPutDto;
   });
 };
 
