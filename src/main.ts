@@ -5,6 +5,7 @@ import router from "./router";
 import { store, key } from "./store";
 import "@/assets/css/TailwindOutput.css";
 import LoadingComponent from "@/components/Loding.vue";
+import { FontAwesomeIcon } from "@/plugin/font-awesome";
 
 createApp(App)
   .mixin({
@@ -17,4 +18,5 @@ createApp(App)
   .use(store, key)
   .use(router)
   .component("loding", LoadingComponent)
+  .component("fa-icon", FontAwesomeIcon)
   .mount("#app");

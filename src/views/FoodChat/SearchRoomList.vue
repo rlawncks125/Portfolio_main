@@ -23,9 +23,11 @@
       <div class="room-marke">
         <div>
           <img
-            :src="item.markeImageUrl ? item.markeImageUrl : baseRoomMarke"
+            v-if="item.markeImageUrl"
+            :src="item.markeImageUrl"
             class="w-full h-full bg-cover bg-center"
           />
+          <fa-icon v-else class="h-full" :icon="['fa', 'users']" />
         </div>
       </div>
       <p class="room-name">{{ item.roomName }}</p>
@@ -52,7 +54,6 @@ import { getJoinRoomList, getRoomList, joinRoom } from "@/api/Room";
 import { useRouter } from "vue-router";
 import Loding from "@/components/Loding.vue";
 import RoomCreateForm from "@/components/RoomCreateForm.vue";
-import baseImage from "@/assets/images/user-shape.png";
 
 export default defineComponent({
   components: { Loding, RoomCreateForm },
@@ -62,7 +63,6 @@ export default defineComponent({
       roomLists: [] as Array<roomInfoDto>,
       myJoinRoomLists: [] as Array<MyRoomsinfoDto>,
       isLoading: false,
-      baseRoomMarke: baseImage,
     });
 
     const isCreateRoom = ref(false);

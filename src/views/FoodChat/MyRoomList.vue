@@ -12,9 +12,11 @@
       <div class="room-marke">
         <div>
           <img
-            :src="item.markeImageUrl ? item.markeImageUrl : baseRoomMarke"
+            v-if="item.markeImageUrl"
+            :src="item.markeImageUrl"
             class="w-full h-full bg-cover bg-center"
           />
+          <fa-icon v-else class="h-full" :icon="['fa', 'users']" />
         </div>
       </div>
       <p class="room-name">{{ item.roomName }}</p>
@@ -34,12 +36,10 @@ import { getJoinRoomList, joinRoom } from "@/api/Room";
 import { MyRoomsinfoDto } from "@/assets/swagger";
 import { defineComponent, onMounted, reactive, toRefs } from "vue";
 import { useRouter } from "vue-router";
-import baseImage from "@/assets/images/user-shape.png";
 
 export default defineComponent({
   setup() {
     const router = useRouter();
-    const baseRoomMarke = baseImage;
 
     const data = reactive({
       myJoinRoomLists: [] as Array<MyRoomsinfoDto>,
@@ -79,7 +79,6 @@ export default defineComponent({
     });
 
     return {
-      baseRoomMarke,
       ...toRefs(data),
       goRoom,
     };

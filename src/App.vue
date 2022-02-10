@@ -1,9 +1,14 @@
 <template>
   <label
     class="checkd-label w-12 h-12 bg-center bg-cover cursor-pointer justify-self-start sm:hidden"
-    :style="isCehckd ? styleChecked : styleNonChecked"
     for="checkd-menu"
-  ></label>
+  >
+    <!-- cheked icon -->
+    <div class="w-full h-full flex flex-col justify-center">
+      <fa-icon v-if="isCehckd" class="w-full h-full" :icon="['fa', 'xmark']" />
+      <fa-icon v-else class="w-full h-4/6" :icon="['fa', 'align-justify']" />
+    </div>
+  </label>
 
   <input
     id="checkd-menu"
@@ -18,7 +23,11 @@
       </router-link>
     </div>
     <div class="nav-wrap text-three-dot" @click="changePage">
-      <router-link to="/foodChat">음식 채팅방</router-link>
+      <router-link
+        to="/foodChat"
+        :class="{ '!text-green-400': route.path.includes('foodChat') }"
+        >음식 채팅방</router-link
+      >
       <router-link to="/">준비중</router-link>
       <router-link to="/">준비중</router-link>
       <router-link to="/">준비중</router-link>
@@ -39,23 +48,23 @@
 import { defineComponent, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from "./store";
-import checkedImage from "@/assets/images/outline_close_black_24dp.png";
-import noneCheckedImage from "@/assets/images/outline_reorder_black_24dp.png";
+// import checkedImage from "@/assets/images/outline_close_black_24dp.png";
+// import noneCheckedImage from "@/assets/images/outline_reorder_black_24dp.png";
 
 export default defineComponent({
   setup() {
     const store = useStore();
     const isCehckd = ref();
 
-    const styleChecked = {
-      background: `url(${checkedImage}) center/contain no-repeat`,
-      color: "red",
-    };
+    // const styleChecked = {
+    //   background: `url(${checkedImage}) center/contain no-repeat`,
+    //   color: "red",
+    // };
 
-    const styleNonChecked = {
-      background: `url(${noneCheckedImage}) center/contain no-repeat`,
-      color: "yellow",
-    };
+    // const styleNonChecked = {
+    //   background: `url(${noneCheckedImage}) center/contain no-repeat`,
+    //   color: "yellow",
+    // };
 
     const route = useRoute();
 
@@ -67,8 +76,8 @@ export default defineComponent({
       isCehckd,
       changePage,
       route,
-      styleChecked,
-      styleNonChecked,
+      // styleChecked,
+      // styleNonChecked,
     };
   },
 });

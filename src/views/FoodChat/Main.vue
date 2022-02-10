@@ -82,11 +82,7 @@
           @click="router.push('/foodChat')"
         >
           <div class="h-full sm:flex">
-            <img
-              class="h-full sm:w-14"
-              src="@/assets/images/home-icon.png"
-              alt=""
-            />
+            <fa-icon :icon="['fa', 'house']" />
             <p class="hidden sm:inline pl-4">방</p>
           </div>
         </div>
@@ -95,11 +91,7 @@
           @click="router.push('/foodChat/search')"
         >
           <div class="h-full sm:flex">
-            <img
-              class="h-full sm:w-14"
-              src="@/assets/images/search.png"
-              alt=""
-            />
+            <fa-icon :icon="['fa', 'magnifying-glass']" />
             <p class="hidden sm:inline pl-4">서치</p>
           </div>
         </div>
@@ -108,11 +100,8 @@
           @click="router.push('/foodChat/MyPage')"
         >
           <div class="h-full sm:flex">
-            <img
-              class="h-full sm:w-14"
-              src="@/assets/images/user-shape.png"
-              alt=""
-            />
+            <fa-icon :icon="['fa', 'users']" />
+
             <p class="hidden sm:inline pl-4">마이 페이지</p>
           </div>
         </div>

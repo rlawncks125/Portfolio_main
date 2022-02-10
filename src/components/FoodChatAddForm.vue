@@ -15,8 +15,14 @@
         >
           <legend class="text-center px-4">음식점 추가</legend>
           <div class="flex items-center">
-            <label for="">레스토랑 이름: </label>
-            <input type="text" v-model="restaurantName" />
+            <div>
+              <label for="">레스토랑 이름: </label>
+              <input type="text" v-model="restaurantName" />
+            </div>
+            <div>
+              <label for="">지역: </label>
+              <input type="text" v-model="location" />
+            </div>
           </div>
           <!-- 음식점 이미지  -->
           <input-file
@@ -151,6 +157,12 @@ export default defineComponent({
 
     const addResturant = async () => {
       if (!createdRoomData.value) return;
+
+      if (formData.restaurantName === "" || formData.location === "") {
+        alert("만들수 없음 정보를 채우세요");
+        return;
+      }
+
       const { map, position, uuid } = createdRoomData.value;
 
       let imageUrl = "";

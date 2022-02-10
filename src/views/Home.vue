@@ -1,7 +1,7 @@
 <template>
   <div>자기소개하기</div>
-  <div class="image"></div>
-  <img class="h-12" src="~@/assets/images/search.png" alt="" />
+
+  <fa-icon :icon="['fa', 'coffee']" class="block" style="height: 50px" />
 
   <loading-btn
     class="mt-4 h-20 w-64"
@@ -97,13 +97,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.image {
-  width: 100px;
-  height: 100px;
-  border: 1px solid black;
-  background: url("~@/assets/images/home-icon.png") center/cover;
-}
-
 section {
   margin: 10rem 0;
 }

@@ -28,24 +28,32 @@
       @UpdateRestaurantById="onUpdateRestaurant"
     />
   </transition>
-  <!-- 팝업 등등  -->
+  <!-- 현재 접속 중인방  -->
   <div class="absolute top-20 w-full flex justify-center">
     <p v-if="roomInfoData">{{ roomInfoData.roomName }} 방</p>
   </div>
 
+  <!-- 레스토랑 정보 창 -->
   <div
     v-show="isOpenRestaurantInfo"
     class="absolute bottom-0 w-full flex justify-center"
   >
     <div
-      class="bg-cyan-200 w-4/6 h-32 text-center rounded-xl flex flex-col justify-center cursor-pointer"
+      class="bg-slate-100 w-4/6 max-w-3xl h-32 text-center rounded-xl flex flex-col justify-center cursor-pointer shadow-lg shadow-black/40 hover:scale-110"
       @click="onClickViewRestrauntInfo"
       v-if="RestaurantInfoData"
     >
       {{ RestaurantInfoData.restaurantName }}
     </div>
   </div>
-  <!-- 필터 -->
+
+  <!-- 밑에 상단에 서치 버튼 추가  -->
+
+  <!-- 서치 버튼 클릭시 보여주기 -->
+  <!-- form?  -->
+  <!-- 클릭시 마커로 이동  -->
+
+  <!-- 필터 임시 구현 -->
   <!-- <div>음식점 리스트 필터 ( 태그 , 지역 , 등등등)</div>
 
   <select v-model="selectedText">
@@ -120,6 +128,7 @@ export default defineComponent({
     let map = ref<naver.maps.Map>();
     const makerInfoWindow = new naver.maps.InfoWindow({ content: "" });
 
+    // 마커 & 레스토랑 데이터
     let makers: Array<{
       maker: naver.maps.Marker;
       restaurantData: RestaurantInfoDto;
@@ -129,7 +138,7 @@ export default defineComponent({
     const isAddFromActive = ref<boolean>(false);
     const refCompoAddForm = ref<InstanceType<typeof FootChatAddForm>>();
 
-    // view
+    // view Form
     const isViewActive = ref<boolean>(false);
     const refCompoViewForm = ref<InstanceType<typeof FootChatViewForm>>();
 
@@ -151,6 +160,18 @@ export default defineComponent({
     // 레스토랑 정보창
     const isOpenRestaurantInfo = ref(false);
     const RestaurantInfoData = ref<RestaurantInfoDto>();
+
+    const openViewRestaurantInfo = (restaurnt: RestaurantInfoDto) => {
+      isOpenRestaurantInfo.value = true;
+      RestaurantInfoData.value = restaurnt;
+    };
+    const closeViewRestaurantInfo = () => {
+      isOpenRestaurantInfo.value = false;
+    };
+    const onClickViewRestrauntInfo = () => {
+      refCompoViewForm.value?.setOpenViewData(RestaurantInfoData.value!);
+      isViewActive.value = true;
+    };
 
     const onLeaveRoom = async () => {
       if (!window.confirm("방을 나가실겁니까?")) return;
@@ -200,19 +221,6 @@ export default defineComponent({
           openViewRestaurantInfo(restaurant);
         }
       });
-    };
-
-    // 레스토랑 정보창
-    const openViewRestaurantInfo = (restaurnt: RestaurantInfoDto) => {
-      isOpenRestaurantInfo.value = true;
-      RestaurantInfoData.value = restaurnt;
-    };
-    const closeViewRestaurantInfo = () => {
-      isOpenRestaurantInfo.value = false;
-    };
-    const onClickViewRestrauntInfo = () => {
-      refCompoViewForm.value?.setOpenViewData(RestaurantInfoData.value!);
-      isViewActive.value = true;
     };
 
     const createMaker = ({
