@@ -8,6 +8,11 @@ import {
   faUsers,
   faXmark,
   faAlignJustify,
+  faPlus,
+  faGear,
+  faBan,
+  faAngleUp,
+  faAngleDown,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -16,7 +21,12 @@ library.add(
   faMagnifyingGlass,
   faUsers,
   faXmark,
-  faAlignJustify
+  faAlignJustify,
+  faPlus,
+  faGear,
+  faBan,
+  faAngleUp,
+  faAngleDown
 );
 
 export { FontAwesomeIcon };

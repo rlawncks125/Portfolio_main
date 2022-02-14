@@ -312,7 +312,7 @@ export default defineComponent({
     };
 
     const onDeleteRestaurnt = () => {
-      emit("DeleteRestrunt", viewData.value?.id);
+      emit("DeleteRestrunt", viewData.value!.id);
     };
 
     const onAddCommentRestaurantById = async () => {
@@ -393,8 +393,8 @@ export default defineComponent({
     };
 
     const updateRestaurant = () => {
-      resetFormData();
       emit("UpdateRestaurantById", viewData.value!.id);
+      resetFormData();
     };
 
     const resetFormData = () => {

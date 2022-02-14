@@ -10,15 +10,15 @@
   align-content: center;
 
   grid-template:
-    "makre name" 2rem
-    "makre super" 2rem
-    "makre joinBtn" 4rem
-    / 16rem 2fr;
+    "makre name name" 2rem
+    "makre super super" 2rem
+    "makre joinBtn joinBtn" 3rem
+    / minmax(auto, 12rem) minmax(6rem, 1fr) minmax(6rem, 1fr);
 
   @include mobile() {
     grid-template:
-      "makre name" 1.5rem
-      "makre super" 1.5rem
+      "makre name" 2.5rem
+      "makre super" 2.5rem
       "makre joinBtn" 3rem
       / 12rem 2fr;
   }

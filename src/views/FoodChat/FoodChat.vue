@@ -29,8 +29,13 @@
     />
   </transition>
   <!-- 현재 접속 중인방  -->
-  <div class="absolute top-20 w-full flex justify-center">
-    <p v-if="roomInfoData">{{ roomInfoData.roomName }} 방</p>
+  <div
+    class="absolute top-20 w-full flex justify-center text-center pointer-events-none"
+  >
+    <div>
+      <p v-if="roomInfoData">{{ roomInfoData.roomName }} 방</p>
+      <p class="text-red-400" v-show="isActiveAdd">생성 할곳을 클릭하세요</p>
+    </div>
   </div>
 
   <!-- 레스토랑 정보 창 -->
@@ -48,6 +53,67 @@
   </div>
 
   <!-- 밑에 상단에 서치 버튼 추가  -->
+  <div class="absolute bottom-0 right-4">
+    <transition name="acodi">
+      <div
+        class="overflow-hidden mb-2 flex flex-col gap-1"
+        v-show="isOptionsCheckd"
+      >
+        <!-- 방 설정 버튼 -->
+        <div
+          class="w-16 h-16 rounded-full flex flex-col justify-center text-center cursor-pointer bg-gray-500 bg-opacity-50 sm:hidden"
+          @click="consoleTest('방설정')"
+        >
+          <fa-icon :icon="['fa', 'gear']" class="text-white" />
+        </div>
+        <!-- 서치 버튼 -->
+        <div
+          class="w-16 h-16 rounded-full flex flex-col justify-center text-center cursor-pointer bg-gray-500 bg-opacity-50"
+          @click="onClickFilterBtn"
+        >
+          <fa-icon :icon="['fa', 'magnifying-glass']" class="text-white" />
+        </div>
+        <!-- 레스토랑 추가 & 취소 버튼 -->
+        <div
+          class="w-16 h-16 rounded-full flex flex-col justify-center text-center cursor-pointer bg-gray-500 bg-opacity-50"
+          @click="isActiveAdd = !isActiveAdd"
+        >
+          <fa-icon
+            v-if="!isActiveAdd"
+            :icon="['fa', 'plus']"
+            class="text-white"
+          />
+          <fa-icon
+            v-else
+            :icon="['fa', 'ban']"
+            class="text-red-500 bg-opacity-50"
+          />
+        </div>
+      </div>
+    </transition>
+
+    <!-- 클릭 체크 -->
+    <label
+      type="checkbox"
+      class="w-16 h-16 rounded-full flex flex-col justify-center text-center cursor-pointer bg-opacity-60"
+      :class="isOptionsCheckd ? 'bg-cyan-300' : 'bg-gray-500'"
+      for="option"
+    >
+      <fa-icon
+        v-if="isOptionsCheckd"
+        :icon="['fa', 'angle-down']"
+        class="text-white"
+        size="2x"
+      />
+      <fa-icon v-else :icon="['fa', 'angle-up']" class="text-white" size="2x" />
+    </label>
+    <input
+      class="hidden"
+      type="checkbox"
+      id="option"
+      v-model="isOptionsCheckd"
+    />
+  </div>
 
   <!-- 서치 버튼 클릭시 보여주기 -->
   <!-- form?  -->
@@ -79,12 +145,93 @@
 
   <!-- 필터 결과값 -->
   <!-- {{ fillterArry }} -->
+
+  <!-- 사이드바 -->
+  <!-- sm 이상 사이드바 -->
+  <div
+    class="hidden sm:flex w-20 h-full fixed left-0 px-2 flex-col text-center inset-y-0 transition-all whitespace-nowrap bg-gray-400 shadow-lg shadow-slate-500"
+    style="z-index: 101"
+  >
+    <!-- 아이콘 & 클릭 트리거 -->
+    <div
+      class="flex h-full flex-col justify-start gap-12 pt-40 overflow-hidden"
+    >
+      <div v-for="item in sideBarInfo" :key="item.id">
+        <div
+          class="cursor-pointer h-16 mx-auto w-full"
+          @click="
+            () => {
+              isSideBarActive = true;
+              sideBarClickedText = item.eventTrigger;
+            }
+          "
+        >
+          <div class="flex flex-col">
+            <fa-icon
+              :icon="['fa', item.faIcon]"
+              :size="item.faSize"
+              :class="
+                sideBarClickedText === item.eventTrigger
+                  ? 'text-yellow-500'
+                  : ''
+              "
+            />
+            <p class="inline text-base">{{ item.text }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 사이드바 정보창 -->
+  <div
+    class="hidden sm:flex h-full fixed left-20 flex-col inset-y-0 transition-all bg-white shadow-lg shadow-slate-500"
+    :class="isSideBarActive ? 'w-96' : 'w-0'"
+    style="z-index: 101"
+  >
+    <!-- 화살표 -->
+    <div
+      class="absolute w-10 h-10 bottom-2/4 bg-teal-600 cursor-pointer transition-all"
+      :class="isSideBarActive ? 'left-96' : 'left-0'"
+      @click="
+        () => {
+          isSideBarActive = !isSideBarActive;
+          sideBarClickedText = '';
+        }
+      "
+    >
+      <p v-if="!isSideBarActive">화</p>
+      <p v-else>수</p>
+    </div>
+    <!-- 콘텐츠 랜더 -->
+    <div class="overflow-auto h-full">
+      <div v-for="item in sideBarInfo" :key="item.id">
+        <div
+          class="w-full px-2"
+          v-show="sideBarClickedText === item.eventTrigger"
+        >
+          <component :is="item.renderCompo" />
+          <!-- <MyRooms class="w-full" /> -->
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, ref, toRefs, watch } from "vue";
+import {
+  Component,
+  defineComponent,
+  onMounted,
+  reactive,
+  ref,
+  toRefs,
+  watch,
+} from "vue";
 import FootChatAddForm from "@/components/FoodChatAddForm.vue";
 import FootChatViewForm from "@/components/FoodChatViewForm.vue";
+import MyPage from "@/views/FoodChat/MyPage.vue";
+import MyRooms from "@/views/FoodChat/MyRoomList.vue";
+import SearchRoom from "@/views/FoodChat/SearchRoomList.vue";
 import { useRoute, useRouter } from "vue-router";
 import {
   CreateRestaurantOutPutDto,
@@ -109,12 +256,27 @@ enum EnumFilter {
   Location = "지역",
 }
 
+interface ISaideBar {
+  eventTrigger: string;
+  faIcon: string;
+  faSize: string;
+  text: string;
+  renderCompo: Component;
+}
+
 export default defineComponent({
   components: {
     FootChatAddForm,
     FootChatViewForm,
+    MyPage,
+    MyRooms,
+    SearchRoom,
   },
   setup() {
+    const consoleTest = (s: any) => {
+      console.log(s);
+    };
+
     const router = useRouter();
     const route = useRoute();
     const store = useStore();
@@ -123,6 +285,8 @@ export default defineComponent({
     const uuid = route.params.uuid as string;
     const isLoding = ref(false);
     const isSpuerUser = ref(false);
+
+    const isOptionsCheckd = ref(false);
 
     // 네이버 api
     let map = ref<naver.maps.Map>();
@@ -136,26 +300,40 @@ export default defineComponent({
 
     // addform
     const isAddFromActive = ref<boolean>(false);
+    const isActiveAdd = ref(false);
     const refCompoAddForm = ref<InstanceType<typeof FootChatAddForm>>();
 
     // view Form
     const isViewActive = ref<boolean>(false);
     const refCompoViewForm = ref<InstanceType<typeof FootChatViewForm>>();
 
-    // 필터
-    const selectedText = ref("");
+    // 사이드바
+    const isSideBarActive = ref(false);
+    const sideBarClickedText = ref("");
 
-    const selectedFilter = [
-      { type: EnumFilter.RestaurantName },
-      { type: EnumFilter.HashTag },
-      { type: EnumFilter.Specialization },
-      { type: EnumFilter.Location },
-    ];
-
-    const filterResult = reactive({
-      filterName: "",
-      fillterArry: [] as (string | undefined)[],
-    });
+    const sideBarInfo = [
+      {
+        eventTrigger: "room",
+        faIcon: "house",
+        faSize: "2x",
+        text: "내 방들",
+        renderCompo: MyRooms,
+      },
+      {
+        eventTrigger: "search",
+        faIcon: "magnifying-glass",
+        faSize: "2x",
+        text: "방 찾기",
+        renderCompo: SearchRoom,
+      },
+      {
+        eventTrigger: "myPage",
+        faIcon: "users",
+        faSize: "2x",
+        text: "내 정보창",
+        renderCompo: MyPage,
+      },
+    ] as ISaideBar[];
 
     // 레스토랑 정보창
     const isOpenRestaurantInfo = ref(false);
@@ -173,33 +351,26 @@ export default defineComponent({
       isViewActive.value = true;
     };
 
-    const onLeaveRoom = async () => {
-      if (!window.confirm("방을 나가실겁니까?")) return;
+    // 레스토랑 필터
+    const selectedText = ref("");
 
-      const { ok } = await leaveRoom({ uuid });
-      if (ok) {
-        router.go(-1);
-      }
+    const selectedFilter = [
+      { type: EnumFilter.RestaurantName },
+      { type: EnumFilter.HashTag },
+      { type: EnumFilter.Specialization },
+      { type: EnumFilter.Location },
+    ];
+
+    const filterResult = reactive({
+      filterName: "",
+      fillterArry: [] as (string | undefined)[],
+    });
+
+    const onClickFilterBtn = () => {
+      console.log("필터 진행");
     };
 
-    const onDeleteRoom = async () => {
-      if (window.confirm("정말로 삭제하시겠습니까??")) {
-        const { ok, err } = await deleteRoom(uuid);
-        if (ok) {
-          alert("삭제 되었습니다.");
-          router.push({
-            path: "/foodChat",
-          });
-          // .then(() => router.go(0));
-        } else {
-          alert(err);
-        }
-
-        return;
-      }
-      console.log("방 노삭제");
-    };
-
+    // 마커 이벤트
     const markerCommonEvent = (maker: naver.maps.Marker) => {
       maker.addListener("click", () => {
         if (makerInfoWindow.getMap()) {
@@ -241,7 +412,36 @@ export default defineComponent({
       makers.push({ maker, restaurantData: restaurant });
 
       console.log(makers);
+      isActiveAdd.value = false;
       updateFilterInfo();
+    };
+
+    // CRUD
+    const onLeaveRoom = async () => {
+      if (!window.confirm("방을 나가실겁니까?")) return;
+
+      const { ok } = await leaveRoom({ uuid });
+      if (ok) {
+        router.push("/foodChat");
+      }
+    };
+
+    const onDeleteRoom = async () => {
+      if (window.confirm("정말로 삭제하시겠습니까??")) {
+        const { ok, err } = await deleteRoom(uuid);
+        if (ok) {
+          alert("삭제 되었습니다.");
+          router.push({
+            path: "/foodChat",
+          });
+          // .then(() => router.go(0));
+        } else {
+          alert(err);
+        }
+
+        return;
+      }
+      console.log("방 노삭제");
     };
 
     const onUpdateRestaurant = async (id: number) => {
@@ -305,6 +505,7 @@ export default defineComponent({
           makers = makers.filter((v) => v.restaurantData.id !== id);
           console.log(makers);
           updateFilterInfo();
+          closeViewRestaurantInfo();
           isViewActive.value = false;
           isLoding.value = false;
 
@@ -416,6 +617,20 @@ export default defineComponent({
       const mapEl = document.getElementById("map");
       map.value = new naver.maps.Map(mapEl!, mapOptions);
 
+      // 방 초기 줌 위치 마커
+      new naver.maps.Marker({
+        position: {
+          x: roomInfo.lating.x,
+          y: roomInfo.lating.y,
+        },
+        map: map.value,
+        icon: {
+          url: "https://res.cloudinary.com/dhdq4v4ar/image/upload/v1644527647/back-Portfolio/Company_building_free_icon_4_sd6q06.png",
+          size: new naver.maps.Size(50, 50),
+        },
+        clickable: false,
+      });
+
       RestaurantInfo.forEach((v) => {
         const maker = new naver.maps.Marker({
           position: {
@@ -431,6 +646,7 @@ export default defineComponent({
       // 마커 클릭(추가) 리스너 ( 폼에 보낼 데이터 설정 )
       // 지도에서 빈곳 클릭시 레스토랑 챗 addFrom Active
       naver.maps.Event.addListener(map.value, "click", (e) => {
+        if (!isActiveAdd.value) return;
         isAddFromActive.value = true;
 
         refCompoAddForm.value?.setOpenData({
@@ -469,6 +685,17 @@ export default defineComponent({
       isOpenRestaurantInfo,
       RestaurantInfoData,
       onClickViewRestrauntInfo,
+
+      isActiveAdd,
+
+      onClickFilterBtn,
+
+      isOptionsCheckd,
+      isSideBarActive,
+      sideBarClickedText,
+      sideBarInfo,
+
+      consoleTest,
     };
   },
 });

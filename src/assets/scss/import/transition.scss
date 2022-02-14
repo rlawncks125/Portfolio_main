@@ -8,3 +8,18 @@
 .ani-fade-leave-to {
   opacity: 0;
 }
+
+.acodi-enter-active,
+.acodi-leave-active {
+  transition: max-height 0.2s;
+}
+
+.acodi-enter-from,
+.acodi-leave-to {
+  max-height: 0rem;
+}
+
+.acodi-enter-to,
+.acodi-leave-from {
+  max-height: 12rem;
+}

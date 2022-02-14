@@ -69,37 +69,26 @@
     <!-- 페이지 갱신 문제로 key값 추가 -->
     <router-view :key="route.fullPath" />
 
-    <!-- 모바일 하단 & sm 이상 사이드바 -->
+    <!-- 모바일 하단-->
     <div
-      class="fixed bottom-0 left-0 w-full h-14 py-4 bg-gray-400 sm:flex-col sm:inset-y-0 sm:w-20 sm:h-full sm:hover:w-52 sm:transition-all sm:whitespace-nowrap sm:pl-2"
+      class="fixed bottom-0 left-0 w-full h-14 py-4 bg-gray-400 sm:hidden"
       style="z-index: 101"
     >
-      <div
-        class="flex w-full justify-around h-full sm:flex-col sm:justify-start sm:gap-12 sm:pt-40 sm:overflow-hidden"
-      >
-        <div
-          class="cursor-pointer sm:h-16 sm:mx-auto sm:w-full"
-          @click="router.push('/foodChat')"
-        >
-          <div class="h-full sm:flex">
+      <div class="flex w-full justify-around h-full">
+        <div class="cursor-pointer" @click="router.push('/foodChat')">
+          <div class="h-full">
             <fa-icon :icon="['fa', 'house']" />
             <p class="hidden sm:inline pl-4">방</p>
           </div>
         </div>
-        <div
-          class="cursor-pointer sm:h-16 sm:mx-auto sm:w-full"
-          @click="router.push('/foodChat/search')"
-        >
-          <div class="h-full sm:flex">
+        <div class="cursor-pointer" @click="router.push('/foodChat/search')">
+          <div class="h-full">
             <fa-icon :icon="['fa', 'magnifying-glass']" />
             <p class="hidden sm:inline pl-4">서치</p>
           </div>
         </div>
-        <div
-          class="cursor-pointer sm:h-16 sm:mx-auto sm:w-full"
-          @click="router.push('/foodChat/MyPage')"
-        >
-          <div class="h-full sm:flex">
+        <div class="cursor-pointer" @click="router.push('/foodChat/MyPage')">
+          <div class="h-full">
             <fa-icon :icon="['fa', 'users']" />
 
             <p class="hidden sm:inline pl-4">마이 페이지</p>

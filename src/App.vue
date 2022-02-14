@@ -16,7 +16,7 @@
     type="checkbox"
     v-model="isCehckd"
   />
-  <div id="nav" :class="{ 'sm:pl-20': route.path.includes('foodChat') }">
+  <div id="nav" :class="{ 'sm:pl-20': route.path.includes('foodChat/') }">
     <div class="nav-home" @click="changePage">
       <router-link to="/">
         <img src="@/assets/images/HOME.png" alt="" />
@@ -38,7 +38,7 @@
 
   <div
     class="render-view pb-12"
-    :class="{ 'sm:pl-20': route.path.includes('foodChat') }"
+    :class="{ 'sm:pl-20': route.path.includes('foodChat/') }"
   >
     <router-view />
   </div>

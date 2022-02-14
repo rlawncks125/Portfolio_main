@@ -16,7 +16,7 @@
             :src="item.markeImageUrl"
             class="w-full h-full bg-cover bg-center"
           />
-          <fa-icon v-else class="h-full" :icon="['fa', 'users']" />
+          <fa-icon v-else class="w-full h-full" :icon="['fa', 'users']" />
         </div>
       </div>
       <p class="room-name">{{ item.roomName }}</p>
