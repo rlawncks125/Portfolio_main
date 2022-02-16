@@ -34,9 +34,13 @@
       <p class="room-super-user">👑{{ item.superUserinfo.username }}</p>
       <button
         class="text-pink-500 bg-slate-700 border-2"
-        @click.prevent="goRoom(item.uuid)"
+        @click.prevent="joinReqRoom(item.uuid)"
       >
-        참여 하기
+        {{
+          approvalWaitRooms.find((v) => v.id === item.id)
+            ? "승인 대기중"
+            : "참여 하기"
+        }}
       </button>
     </div>
   </div>
@@ -44,13 +48,19 @@
 
 <script lang="ts">
 import {
+  approvalWaitRoomInfo,
   EnumRoomListInputDtoSearchType,
   MyRoomsinfoDto,
   roomInfoDto,
   RoomOutPutDto,
 } from "@/assets/swagger";
 import { defineComponent, onMounted, reactive, ref, toRefs } from "vue";
-import { getJoinRoomList, getRoomList, joinRoom } from "@/api/Room";
+import {
+  getJoinRoomList,
+  getRoomList,
+  joinRoom,
+  getApprovalWaitRooms,
+} from "@/api/Room";
 import { useRouter } from "vue-router";
 import Loding from "@/components/Loding.vue";
 import RoomCreateForm from "@/components/RoomCreateForm.vue";
@@ -63,6 +73,7 @@ export default defineComponent({
       roomLists: [] as Array<roomInfoDto>,
       myJoinRoomLists: [] as Array<MyRoomsinfoDto>,
       isLoading: false,
+      approvalWaitRooms: [] as Array<{ id: number }>,
     });
 
     const isCreateRoom = ref(false);
@@ -91,8 +102,31 @@ export default defineComponent({
         else return true;
       });
     };
+
+    const joinReqRoom = async (uuid: string) => {
+      console.log(`요청 보냄 ${uuid}`);
+      data.isLoading = true;
+      const { ok } = await joinRoom({ uuid });
+      if (ok) {
+        myApprovalWaitRooms();
+      }
+      data.isLoading = false;
+    };
+
+    const myApprovalWaitRooms = async () => {
+      const { ok, rooms, err } = await getApprovalWaitRooms();
+      if (ok) {
+        data.approvalWaitRooms = rooms.map((v) => {
+          return {
+            id: v.id,
+          };
+        });
+      } else {
+        console.log(`err : ${err}`);
+      }
+    };
+
     const goRoom = async (uuid: string) => {
-      console.log(`go ${uuid}`);
       const isExist = data.myJoinRoomLists.find((v) => v.uuid === uuid);
       if (isExist) {
         router.push({
@@ -135,6 +169,7 @@ export default defineComponent({
               username: room.superUser.username,
             },
           ],
+          approvalWaitUsers: [],
         });
         goRoom(room.uuid);
       }
@@ -146,13 +181,14 @@ export default defineComponent({
         data.myJoinRoomLists = myRooms;
       }
       getRoomLists();
+      myApprovalWaitRooms();
     });
 
     return {
       isCreateRoom,
       ...toRefs(data),
       getRoomLists,
-      goRoom,
+      joinReqRoom,
       onCreateRoom,
     };
   },

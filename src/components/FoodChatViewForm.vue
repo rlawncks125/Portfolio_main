@@ -22,7 +22,7 @@
       <button v-if="isSuperUser" @click="onDeleteRestaurnt">삭제 버튼</button>
 
       <!-- 레스토랑 정보 -->
-      <form class="text-center pt-10">
+      <form class="text-center pt-20">
         <fieldset
           class="border-2 p-2 mx-4 rounded-2xl grid max-w-full grid-cols-1 justify-items-center"
         >

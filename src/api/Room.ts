@@ -13,6 +13,10 @@ import {
   MyCreateRoomsOutPutDto,
   RoomListInputDto,
   RoomListOutPutDto,
+  approvalWaitRoomInfo,
+  myApprovalWaitRoomsOutPutDto,
+  AcceptUserOutPutDto,
+  AcceptUserInPutDto,
 } from "@/assets/swagger";
 import axios from "axios";
 import { AuthHeaders } from "./auth";
@@ -42,6 +46,24 @@ export const getRoomInfo = async ({
       return res.data! as RoomInfoOutPutDto;
     });
 };
+
+export const getApprovalWaitRooms =
+  async (): Promise<myApprovalWaitRoomsOutPutDto> => {
+    return axios
+      .get("api/room/myApprovalWait", AuthHeaders)
+      .then((res: any) => {
+        return res.data! as myApprovalWaitRoomsOutPutDto;
+      });
+  };
+
+export const postAccept = async (
+  data: AcceptUserInPutDto
+): Promise<AcceptUserOutPutDto> => {
+  return axios.post("api/room/accept", data, AuthHeaders).then((res: any) => {
+    return res.data! as AcceptUserOutPutDto;
+  });
+};
+
 export const getMySuperRooms = async (): Promise<MyCreateRoomsOutPutDto> => {
   return axios.get("api/room/mySuperRooms", AuthHeaders).then((res: any) => {
     return res.data! as MyCreateRoomsOutPutDto;

@@ -261,6 +261,28 @@ export class RoomService {
     });
   }
   /**
+   * 참여 신청한 방목록 ( myApprovalWait )
+   */
+  static roomControllerMyApprovalWait(
+    options: IRequestOptions = {}
+  ): Promise<myApprovalWaitRoomsOutPutDto> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + "/room/myApprovalWait";
+
+      const configs: IRequestConfig = getConfigs(
+        "get",
+        "application/json",
+        url,
+        options
+      );
+
+      let data = null;
+
+      configs.data = data;
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
    * 방 목록 ( roomList )
    */
   static roomControllerRoomList(
@@ -274,7 +296,7 @@ export class RoomService {
       let url = basePath + "/room/list";
 
       const configs: IRequestConfig = getConfigs(
-        "get",
+        "post",
         "application/json",
         url,
         options
@@ -336,7 +358,59 @@ export class RoomService {
     });
   }
   /**
-   * 방 참여하기 ( joinRoom )
+   * 방 내의 정보들( roomInfo )
+   */
+  static roomControllerRoomInfo(
+    params: {
+      /** requestBody */
+      body?: RoomInfoInputDto;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<RoomInfoOutPutDto> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + "/room/info";
+
+      const configs: IRequestConfig = getConfigs(
+        "post",
+        "application/json",
+        url,
+        options
+      );
+
+      let data = params.body;
+
+      configs.data = data;
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   * 방 정보 수정 ( edtiRoom )
+   */
+  static roomControllerEditRoom(
+    params: {
+      /** requestBody */
+      body?: EditRoomInPutDto;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<EditRoomInPutDto> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + "/room/edit";
+
+      const configs: IRequestConfig = getConfigs(
+        "patch",
+        "application/json",
+        url,
+        options
+      );
+
+      let data = params.body;
+
+      configs.data = data;
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   * 방 참여 요청 보내기 ( joinRoom )
    */
   static roomControllerJoinRoom(
     params: {
@@ -362,17 +436,17 @@ export class RoomService {
     });
   }
   /**
-   * 방 내의 정보들( roomInfo )
+   * 유저 승인 ( AcceptUser )
    */
-  static roomControllerRoomInfo(
+  static roomControllerAcceptUser(
     params: {
       /** requestBody */
-      body?: RoomInfoInputDto;
+      body?: AcceptUserInPutDto;
     } = {} as any,
     options: IRequestOptions = {}
-  ): Promise<RoomInfoOutPutDto> {
+  ): Promise<AcceptUserOutPutDto> {
     return new Promise((resolve, reject) => {
-      let url = basePath + "/room/info";
+      let url = basePath + "/room/accept";
 
       const configs: IRequestConfig = getConfigs(
         "post",
@@ -740,6 +814,14 @@ export interface MyRoomsJoinUserInfoDto {
   username: string;
 }
 
+export interface ApprovalWaitUsersInfoDto {
+  /** id */
+  id: number;
+
+  /** 유저 이름입니다. */
+  username: string;
+}
+
 export interface MyRoomsinfoDto {
   /** id */
   id: number;
@@ -764,6 +846,9 @@ export interface MyRoomsinfoDto {
 
   /** 방 내의 유저 정보들 */
   joinUsersInfo: MyRoomsJoinUserInfoDto[];
+
+  /** 승인 대기중인 유저들 */
+  approvalWaitUsers: ApprovalWaitUsersInfoDto[];
 }
 
 export interface MyRoomsOutPutDto {
@@ -775,6 +860,25 @@ export interface MyRoomsOutPutDto {
 
   /** 방 정보들 */
   myRooms: MyRoomsinfoDto[];
+}
+
+export interface approvalWaitRoomInfo {
+  /** id */
+  id: number;
+
+  /** 방 이름입니다.. */
+  roomName: string;
+}
+
+export interface myApprovalWaitRoomsOutPutDto {
+  /** 성공 여부입니다. */
+  ok: boolean;
+
+  /** 에러 메세지입니다. */
+  err?: string;
+
+  /** 룸정보 */
+  rooms: approvalWaitRoomInfo[];
 }
 
 export interface RoomListInputDto {
@@ -791,6 +895,9 @@ export interface superUserInfoDto {
 }
 
 export interface roomInfoDto {
+  /** id */
+  id: number;
+
   /** 방고유아이디입니다. */
   uuid: string;
 
@@ -868,19 +975,6 @@ export interface MyCreateRoomsOutPutDto {
   myRooms: MyRoomsinfoDto[];
 }
 
-export interface JoinRoomInputDto {
-  /** 방고유아이디입니다. */
-  uuid: string;
-}
-
-export interface JoinRoomOutPutDto {
-  /** 성공 여부입니다. */
-  ok: boolean;
-
-  /** 에러 메세지입니다. */
-  err?: string;
-}
-
 export interface RoomInfoInputDto {
   /** 방고유아이디입니다. */
   uuid: string;
@@ -903,6 +997,14 @@ export interface RoominfoDto {
 
   /** 방장 정보 */
   superUserInfo: CombinedSuperUserInfoTypes;
+}
+
+export interface ApprovalWaitUsersDto {
+  /** id */
+  id: number;
+
+  /** 유저 이름입니다. */
+  username: string;
 }
 
 export interface Room {
@@ -929,6 +1031,9 @@ export interface Room {
 
   /** 레스토랑 정보들 */
   restaurants: Restaurant[];
+
+  /** 승인대기 유저들 */
+  approvalWaitUsers: User[];
 }
 
 export interface Restaurant {
@@ -1047,8 +1152,54 @@ export interface RoomInfoOutPutDto {
   /** 방안에 유저들 */
   users: RoomUsersDto[];
 
+  /** 승인 대기 중인 유저들 */
+  ApprovalWaitUsers: ApprovalWaitUsersDto[];
+
   /** 레스토랑 정보들 */
   RestaurantInfo: RestaurantInfoDto[];
+}
+
+export interface EditRoomInPutDto {
+  /** 방고유아이디입니다. */
+  uuid: string;
+
+  /** 방 이름입니다.. */
+  roomName?: string;
+
+  /** 방마크 입니다. */
+  markeImageUrl?: string;
+
+  /** 방장 입니다. */
+  superUser?: CombinedSuperUserTypes;
+}
+
+export interface JoinRoomInputDto {
+  /** 방고유아이디입니다. */
+  uuid: string;
+}
+
+export interface JoinRoomOutPutDto {
+  /** 성공 여부입니다. */
+  ok: boolean;
+
+  /** 에러 메세지입니다. */
+  err?: string;
+}
+
+export interface AcceptUserInPutDto {
+  /** 방고유아이디입니다. */
+  uuid: string;
+
+  /** id */
+  id: number;
+}
+
+export interface AcceptUserOutPutDto {
+  /** 성공 여부입니다. */
+  ok: boolean;
+
+  /** 에러 메세지입니다. */
+  err?: string;
 }
 
 export interface LeaveRoomInputDto {

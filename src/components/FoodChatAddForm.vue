@@ -7,9 +7,9 @@
     <div
       class="relative overflow-auto max-w-5xl p-2 pt-0 h-full bg-yellow-100 inset-0 sm:w-11/12 sm:h-5/6 sm:mx-auto sm:my-12 sm:rounded-xl sm:overflow-y-auto sm:p-4"
     >
-      <button class="absolute top-0 right-4" @click="closeForm">X</button>
+      <button class="absolute top-2 right-4" @click="closeForm">X</button>
 
-      <form class="text-center py-10">
+      <form class="text-center py-20">
         <fieldset
           class="border-2 p-2 mx-4 rounded-2xl grid max-w-full grid-cols-1 justify-items-center"
         >

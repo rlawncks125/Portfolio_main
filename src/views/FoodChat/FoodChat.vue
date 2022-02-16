@@ -2,6 +2,13 @@
   <loding :isLoding="isLoding" />
   <div class="flex gap-2">
     <span class="text-red-800" v-if="isSpuerUser">방 주인입니다.</span>
+    <button @click="isActiveApprovalWait = true">신청 대기 유저</button>
+    <ApprovaWaitView
+      v-show="isActiveApprovalWait"
+      :lists="ApprovalWaitUserLists"
+      @updateLists="updateApprovaWatiUsers"
+      @close="isActiveApprovalWait = false"
+    />
     <button v-if="isSpuerUser" @click="onDeleteRoom">방 삭제하기</button>
   </div>
   <div class="flex justify-between">
@@ -229,11 +236,13 @@ import {
 } from "vue";
 import FootChatAddForm from "@/components/FoodChatAddForm.vue";
 import FootChatViewForm from "@/components/FoodChatViewForm.vue";
+import ApprovaWaitView from "@/components/ApprovaWaitView.vue";
 import MyPage from "@/views/FoodChat/MyPage.vue";
 import MyRooms from "@/views/FoodChat/MyRoomList.vue";
 import SearchRoom from "@/views/FoodChat/SearchRoomList.vue";
 import { useRoute, useRouter } from "vue-router";
 import {
+  ApprovalWaitUsersDto,
   CreateRestaurantOutPutDto,
   Restaurant,
   RestaurantInfoDto,
@@ -268,6 +277,7 @@ export default defineComponent({
   components: {
     FootChatAddForm,
     FootChatViewForm,
+    ApprovaWaitView,
     MyPage,
     MyRooms,
     SearchRoom,
@@ -297,6 +307,15 @@ export default defineComponent({
       maker: naver.maps.Marker;
       restaurantData: RestaurantInfoDto;
     }> = [];
+
+    // 승인 대기중인 유저들
+    const isActiveApprovalWait = ref(false);
+    const ApprovalWaitUserLists = ref<Array<ApprovalWaitUsersDto>>([]);
+
+    const updateApprovaWatiUsers = (updateData: ApprovalWaitUsersDto[]) => {
+      console.log(updateData);
+      ApprovalWaitUserLists.value = updateData;
+    };
 
     // addform
     const isAddFromActive = ref<boolean>(false);
@@ -581,14 +600,17 @@ export default defineComponent({
 
     onMounted(async () => {
       isLoding.value = true;
-      const { ok, roomInfo, users, RestaurantInfo } = await getRoomInfo({
-        uuid: route.params.uuid as string,
-      });
+      const { ok, roomInfo, users, RestaurantInfo, ApprovalWaitUsers } =
+        await getRoomInfo({
+          uuid: route.params.uuid as string,
+        });
       roomInfoData.value = roomInfo;
+      ApprovalWaitUserLists.value = ApprovalWaitUsers;
 
       console.log(roomInfo);
       // console.log(users);
       console.log(RestaurantInfo);
+      console.log(ApprovalWaitUsers);
 
       if (roomInfo.superUserInfo.username === store.state.userName) {
         isSpuerUser.value = true;
@@ -667,6 +689,10 @@ export default defineComponent({
       isLoding,
       isAddFromActive,
       isSpuerUser,
+
+      isActiveApprovalWait,
+      ApprovalWaitUserLists,
+      updateApprovaWatiUsers,
 
       createMaker,
       router,
