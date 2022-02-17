@@ -3,12 +3,6 @@
   <div class="flex gap-2">
     <span class="text-red-800" v-if="isSpuerUser">방 주인입니다.</span>
     <button @click="isActiveApprovalWait = true">신청 대기 유저</button>
-    <ApprovaWaitView
-      v-show="isActiveApprovalWait"
-      :lists="ApprovalWaitUserLists"
-      @updateLists="updateApprovaWatiUsers"
-      @close="isActiveApprovalWait = false"
-    />
     <button v-if="isSpuerUser" @click="onDeleteRoom">방 삭제하기</button>
   </div>
   <div class="flex justify-between">
@@ -33,6 +27,14 @@
       @closeViewForm="() => (isViewActive = false)"
       @DeleteRestrunt="onDeleteRestaurnt"
       @UpdateRestaurantById="onUpdateRestaurant"
+    />
+  </transition>
+  <transition name="ani-fade">
+    <ApprovaWaitView
+      v-show="isActiveApprovalWait"
+      :lists="ApprovalWaitUserLists"
+      @updateLists="updateApprovaWatiUsers"
+      @close="isActiveApprovalWait = false"
     />
   </transition>
   <!-- 현재 접속 중인방  -->
@@ -187,6 +189,11 @@
           </div>
         </div>
       </div>
+      <!-- 정보창 랜더 없는 아이콘 & 클릭 트리거 -->
+      <div @click="isActiveApprovalWait = true" class="cursor-pointer">
+        <fa-icon :icon="['fa', 'users']" size="2x" />
+        <p class="text-base">승인 요청</p>
+      </div>
     </div>
   </div>
   <!-- 사이드바 정보창 -->
@@ -313,7 +320,6 @@ export default defineComponent({
     const ApprovalWaitUserLists = ref<Array<ApprovalWaitUsersDto>>([]);
 
     const updateApprovaWatiUsers = (updateData: ApprovalWaitUsersDto[]) => {
-      console.log(updateData);
       ApprovalWaitUserLists.value = updateData;
     };
 
@@ -422,7 +428,7 @@ export default defineComponent({
     }) => {
       isAddFromActive.value = false;
 
-      console.log("createMaker", restaurant);
+      // console.log("createMaker", restaurant);
 
       if (!restaurant) return;
 
@@ -430,7 +436,7 @@ export default defineComponent({
 
       makers.push({ maker, restaurantData: restaurant });
 
-      console.log(makers);
+      // console.log(makers);
       isActiveAdd.value = false;
       updateFilterInfo();
     };
@@ -600,29 +606,31 @@ export default defineComponent({
 
     onMounted(async () => {
       isLoding.value = true;
+
+      await roomInit();
+
+      isLoding.value = false;
+      // console.log("maksers", makers);
+    });
+
+    // 방들어 올때 초기설정
+    const roomInit = async () => {
       const { ok, roomInfo, users, RestaurantInfo, ApprovalWaitUsers } =
         await getRoomInfo({
           uuid: route.params.uuid as string,
         });
+
+      // console.log(roomInfo);
+      // console.log(users);
+      // console.log(RestaurantInfo);
+      // console.log(ApprovalWaitUsers);
+
       roomInfoData.value = roomInfo;
       ApprovalWaitUserLists.value = ApprovalWaitUsers;
-
-      console.log(roomInfo);
-      // console.log(users);
-      console.log(RestaurantInfo);
-      console.log(ApprovalWaitUsers);
 
       if (roomInfo.superUserInfo.username === store.state.userName) {
         isSpuerUser.value = true;
       }
-
-      // const { ok: superRoomOk, myRooms } = await getMySuperRooms();
-      // if (superRoomOk) {
-      //   const findUser = myRooms.find((v) => v.uuid === uuid);
-      //   if (findUser) {
-      //     isSpuerUser.value = true;
-      //   }
-      // }
 
       const mapOptions = {
         center: new naver.maps.LatLng(roomInfo.lating.y, roomInfo.lating.x),
@@ -677,11 +685,13 @@ export default defineComponent({
           position: e.coord,
         });
       });
-      isLoding.value = false;
-      console.log("maksers", makers);
+      naver.maps.Event.addListener(map.value, "drag", () => {
+        makerInfoWindow.close();
+        closeViewRestaurantInfo();
+      });
 
       updateFilterInfo();
-    });
+    };
 
     return {
       refCompoViewForm,

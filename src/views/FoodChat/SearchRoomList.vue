@@ -1,6 +1,23 @@
 <template>
-  <loding :isLoding="isLoading" />
   <p>방 찾기</p>
+  <!-- 필터 -->
+  <div class="flex items-center">
+    <select v-model="serchFilter" class="flex-1 w-1/3">
+      <template v-for="(value, key) in searchOptions" :key="key">
+        <option :value="key">{{ key }}</option>
+      </template>
+    </select>
+    <input type="text" class="flex-1 w-1/3" v-model="searchValue" />
+
+    <LoadingBtn
+      class="h-10 w-20 flex-initial"
+      @click="getRoomLists"
+      :isLoading="isLoading"
+      Msg="서치"
+      :size="30"
+    />
+  </div>
+
   <!-- 방만들기 버튼 -->
   <button @click="isCreateRoom = true">방 만들기</button>
   <transition name="ani-fade">
@@ -54,7 +71,7 @@ import {
   roomInfoDto,
   RoomOutPutDto,
 } from "@/assets/swagger";
-import { defineComponent, onMounted, reactive, ref, toRefs } from "vue";
+import { defineComponent, onMounted, reactive, ref, toRefs, watch } from "vue";
 import {
   getJoinRoomList,
   getRoomList,
@@ -62,11 +79,12 @@ import {
   getApprovalWaitRooms,
 } from "@/api/Room";
 import { useRouter } from "vue-router";
-import Loding from "@/components/Loding.vue";
+
 import RoomCreateForm from "@/components/RoomCreateForm.vue";
+import LoadingBtn from "@/components/common/Input/LoadingBtn.vue";
 
 export default defineComponent({
-  components: { Loding, RoomCreateForm },
+  components: { RoomCreateForm, LoadingBtn },
   setup() {
     const router = useRouter();
     const data = reactive({
@@ -83,12 +101,18 @@ export default defineComponent({
       EnumRoomListInputDtoSearchType.All
     );
     const searchValue = ref("");
+    const serchFilter = ref<keyof typeof searchOptions>("All");
+    const searchOptions = {
+      All: EnumRoomListInputDtoSearchType.All,
+      "방 이름": EnumRoomListInputDtoSearchType.RoomName,
+      "방장 이름": EnumRoomListInputDtoSearchType.SuperUser,
+    };
 
     const getRoomLists = async () => {
       data.isLoading = true;
 
       const { ok, err, roomList } = await getRoomList({
-        searchType: searchType.value,
+        searchType: searchType.value!,
         value: searchValue.value,
       });
       data.isLoading = false;
@@ -175,6 +199,12 @@ export default defineComponent({
       }
     };
 
+    watch(serchFilter, () => {
+      const filter: keyof typeof searchOptions = serchFilter.value;
+
+      searchType.value = searchOptions[filter];
+    });
+
     onMounted(async () => {
       const { ok, myRooms } = await getJoinRoomList();
       if (ok) {
@@ -186,6 +216,10 @@ export default defineComponent({
 
     return {
       isCreateRoom,
+      searchType,
+      searchOptions,
+      serchFilter,
+      searchValue,
       ...toRefs(data),
       getRoomLists,
       joinReqRoom,

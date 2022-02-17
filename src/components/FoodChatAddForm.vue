@@ -14,14 +14,14 @@
           class="border-2 p-2 mx-4 rounded-2xl grid max-w-full grid-cols-1 justify-items-center"
         >
           <legend class="text-center px-4">음식점 추가</legend>
-          <div class="flex items-center">
+          <div class="grid grid-cols-2 gap-5 w-full items-center">
             <div>
               <label for="">레스토랑 이름: </label>
-              <input type="text" v-model="restaurantName" />
+              <input class="w-5/6" type="text" v-model="restaurantName" />
             </div>
             <div>
               <label for="">지역: </label>
-              <input type="text" v-model="location" />
+              <input class="w-5/6" type="text" v-model="location" />
             </div>
           </div>
           <!-- 음식점 이미지  -->
