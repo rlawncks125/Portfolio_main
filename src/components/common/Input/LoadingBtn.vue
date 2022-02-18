@@ -1,6 +1,9 @@
 <template>
   <button :class="{ 'pointer-events-none': isLoading }">
-    <div class="px-2 py-2 w-full h-full flex justify-center flex-col">
+    <div
+      class="px-2 py-2 w-full h-full flex justify-center flex-col"
+      :class="isLoading ? 'pointer-events-none' : ''"
+    >
       <template v-if="isLoading">
         <radial-progress-bar
           class="animate-spin w-full h-full m-auto"

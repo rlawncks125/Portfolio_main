@@ -78,7 +78,7 @@
         <!-- 서치 버튼 -->
         <div
           class="w-16 h-16 rounded-full flex flex-col justify-center text-center cursor-pointer bg-gray-500 bg-opacity-50"
-          @click="onClickFilterBtn"
+          @click="isActiveFilterSearch = !isActiveFilterSearch"
         >
           <fa-icon :icon="['fa', 'magnifying-glass']" class="text-white" />
         </div>
@@ -128,32 +128,51 @@
   <!-- form?  -->
   <!-- 클릭시 마커로 이동  -->
 
-  <!-- 필터 임시 구현 -->
-  <!-- <div>음식점 리스트 필터 ( 태그 , 지역 , 등등등)</div>
+  <!-- 레스토랑 필터  -->
+  <div
+    v-show="isActiveFilterSearch"
+    class="absolute top-40 w-3/4 left-0 right-0 mx-auto bg-white border-2 border-gray-500 border-opacity-50"
+  >
+    <div
+      class="flex justify-between items-center px-2 border-b-2 border-b-gray-500 border-opacity-50"
+    >
+      <select v-model="selectedText">
+        <option class="hidden" disabled value="">필터할 종류</option>
+        <template v-for="item in selectedFilter" :key="item.id">
+          <option>
+            {{ item.type }}
+          </option>
+        </template>
+      </select>
+      <input
+        type="text"
+        class="flex-1 w-1/3"
+        @input="
+          (e) => {
+            filterName = e.target.value;
+          }
+        "
+        :value="filterName"
+      />
+      <LoadingBtn Msg="검색" :isLoading="false" :size="20" class="h-10" />
+    </div>
 
-  <select v-model="selectedText">
-    <option class="hidden" disabled value="">필터할 종류</option>
-    <template v-for="item in selectedFilter" :key="item.id">
-      <option>
-        {{ item.type }}
-      </option>
-    </template>
-  </select>
+    <div class="overflow-auto" style="height: 36rem">
+      <div
+        v-for="restaurant in fillterArry"
+        :key="restaurant.id"
+        class="broder border-2 border-black"
+        @click.prevent="goRestaurantPostionById(restaurant.id)"
+      >
+        <!-- {{ restaurant }} -->
 
-  <label for=""> :</label>
-  <input
-    type="text"
-    @input="
-      (e) => {
-        filterName = e.target.value;
-      }
-    "
-    :value="filterName"
-  />
-  <br /> -->
-
-  <!-- 필터 결과값 -->
-  <!-- {{ fillterArry }} -->
+        <p>{{ restaurant.restaurantName }}</p>
+        <p>{{ restaurant.avgStar }}</p>
+        <p>{{ restaurant.hashTags }}</p>
+        <p>{{ restaurant.specialization }}</p>
+      </div>
+    </div>
+  </div>
 
   <!-- 사이드바 -->
   <!-- sm 이상 사이드바 -->
@@ -247,6 +266,7 @@ import ApprovaWaitView from "@/components/ApprovaWaitView.vue";
 import MyPage from "@/views/FoodChat/MyPage.vue";
 import MyRooms from "@/views/FoodChat/MyRoomList.vue";
 import SearchRoom from "@/views/FoodChat/SearchRoomList.vue";
+import LoadingBtn from "@/components/common/Input/LoadingBtn.vue";
 import { useRoute, useRouter } from "vue-router";
 import {
   ApprovalWaitUsersDto,
@@ -285,6 +305,7 @@ export default defineComponent({
     FootChatAddForm,
     FootChatViewForm,
     ApprovaWaitView,
+    LoadingBtn,
     MyPage,
     MyRooms,
     SearchRoom,
@@ -377,6 +398,7 @@ export default defineComponent({
     };
 
     // 레스토랑 필터
+    const isActiveFilterSearch = ref(false);
     const selectedText = ref("");
 
     const selectedFilter = [
@@ -388,11 +410,27 @@ export default defineComponent({
 
     const filterResult = reactive({
       filterName: "",
-      fillterArry: [] as (string | undefined)[],
+      fillterArry: [] as (RestaurantInfoDto | undefined)[],
     });
 
-    const onClickFilterBtn = () => {
-      console.log("필터 진행");
+    const goRestaurantPostionById = (id: number) => {
+      const maker = makers.filter((v) => v.restaurantData.id === +id);
+
+      const makerPosition = maker[0].maker.getPosition();
+
+      // const goPosition = new naver.maps.LatLngBounds(
+      //   new naver.maps.LatLng(
+      //     map.value!.getCenter().x,
+      //     map.value!.getCenter().y
+      //   ),
+      //   new naver.maps.LatLng(makerPosition.x, makerPosition.y)
+      // );
+
+      map.value!.setCenter(makerPosition);
+      map.value!.setZoom(14, true);
+      // map.value!.fitBounds(goPosition);
+
+      isActiveFilterSearch.value = false;
     };
 
     // 마커 이벤트
@@ -546,18 +584,14 @@ export default defineComponent({
     });
 
     const updateFilterInfo = () => {
-      filterResult.fillterArry = makers.map(
-        (v) => v.restaurantData.restaurantName
-      );
+      filterResult.fillterArry = makers.map((v) => v.restaurantData);
     };
 
     const updateFilterResult = () => {
       if (!selectedText.value) return;
 
       if (filterResult.filterName === "") {
-        filterResult.fillterArry = makers.map(
-          (v) => v.restaurantData.restaurantName
-        );
+        filterResult.fillterArry = makers.map((v) => v.restaurantData);
         console.log("모든값");
         return;
       }
@@ -569,7 +603,7 @@ export default defineComponent({
             .filter((v) =>
               v.restaurantData.restaurantName.includes(filterResult.filterName)
             )
-            .map((v) => v.restaurantData.restaurantName);
+            .map((v) => v.restaurantData);
 
           break;
         case EnumFilter.HashTag:
@@ -579,7 +613,7 @@ export default defineComponent({
             .filter((v) =>
               v.restaurantData.hashTags.includes(`#${filterResult.filterName}`)
             )
-            .map((v) => v.restaurantData.restaurantName);
+            .map((v) => v.restaurantData);
 
           break;
         case EnumFilter.Specialization:
@@ -588,7 +622,7 @@ export default defineComponent({
             .filter((v) =>
               v.restaurantData.specialization.includes(filterResult.filterName)
             )
-            .map((v) => v.restaurantData.restaurantName);
+            .map((v) => v.restaurantData);
           break;
         case EnumFilter.Location:
           console.log(EnumFilter.Location);
@@ -596,7 +630,7 @@ export default defineComponent({
             .filter((v) =>
               v.restaurantData.location.includes(filterResult.filterName)
             )
-            .map((v) => v.restaurantData.restaurantName);
+            .map((v) => v.restaurantData);
           break;
         default:
           console.log("나무지값");
@@ -724,7 +758,8 @@ export default defineComponent({
 
       isActiveAdd,
 
-      onClickFilterBtn,
+      isActiveFilterSearch,
+      goRestaurantPostionById,
 
       isOptionsCheckd,
       isSideBarActive,

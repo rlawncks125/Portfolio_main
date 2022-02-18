@@ -1,5 +1,6 @@
 <template>
   <p>방 찾기</p>
+  <Loading :isLoding="isLoading" />
   <!-- 필터 -->
   <div class="flex items-center">
     <select v-model="serchFilter" class="flex-1 w-1/3">
@@ -12,8 +13,8 @@
     <LoadingBtn
       class="h-10 w-20 flex-initial"
       @click="getRoomLists"
-      :isLoading="isLoading"
-      Msg="서치"
+      :isLoading="isLoadingBtn"
+      Msg="찾기"
       :size="30"
     />
   </div>
@@ -79,18 +80,19 @@ import {
   getApprovalWaitRooms,
 } from "@/api/Room";
 import { useRouter } from "vue-router";
-
+import Loading from "@/components/Loding.vue";
 import RoomCreateForm from "@/components/RoomCreateForm.vue";
 import LoadingBtn from "@/components/common/Input/LoadingBtn.vue";
 
 export default defineComponent({
-  components: { RoomCreateForm, LoadingBtn },
+  components: { Loading, RoomCreateForm, LoadingBtn },
   setup() {
     const router = useRouter();
     const data = reactive({
       roomLists: [] as Array<roomInfoDto>,
       myJoinRoomLists: [] as Array<MyRoomsinfoDto>,
       isLoading: false,
+      isLoadingBtn: false,
       approvalWaitRooms: [] as Array<{ id: number }>,
     });
 
@@ -109,13 +111,13 @@ export default defineComponent({
     };
 
     const getRoomLists = async () => {
-      data.isLoading = true;
+      data.isLoadingBtn = true;
 
       const { ok, err, roomList } = await getRoomList({
         searchType: searchType.value!,
         value: searchValue.value,
       });
-      data.isLoading = false;
+      data.isLoadingBtn = false;
 
       if (ok) {
         data.roomLists = roomList;
@@ -216,7 +218,6 @@ export default defineComponent({
 
     return {
       isCreateRoom,
-      searchType,
       searchOptions,
       serchFilter,
       searchValue,
