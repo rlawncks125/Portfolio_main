@@ -209,20 +209,18 @@ export default defineComponent({
       searchType.value = searchOptions[filter];
     });
 
-    onMounted(async () => {
+    const UpdateRoomLists = async () => {
       const { ok, myRooms } = await getJoinRoomList();
       if (ok) {
         data.myJoinRoomLists = myRooms;
       }
       getRoomLists();
       myApprovalWaitRooms();
+    };
+    onMounted(async () => {
+      await UpdateRoomLists();
       webSocket.catchApprovaWait(async () => {
-        const { ok, myRooms } = await getJoinRoomList();
-        if (ok) {
-          data.myJoinRoomLists = myRooms;
-        }
-        getRoomLists();
-        myApprovalWaitRooms();
+        await UpdateRoomLists();
       });
     });
 

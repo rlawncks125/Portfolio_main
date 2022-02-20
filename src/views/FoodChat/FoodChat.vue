@@ -2,7 +2,9 @@
   <loding :isLoding="isLoding" />
   <div class="flex gap-2">
     <span class="text-red-800" v-if="isSpuerUser">방 주인입니다.</span>
-    <button @click="isActiveApprovalWait = true">신청 대기 유저</button>
+    <button @click="isActiveApprovalWait = true" v-if="isSpuerUser">
+      신청 대기 유저
+    </button>
     <button v-if="isSpuerUser" @click="onDeleteRoom">방 삭제하기</button>
   </div>
   <div class="flex justify-between">
@@ -13,9 +15,9 @@
   <div id="map" class="w-full h-full mx-auto"></div>
   <transition name="ani-fade">
     <foot-chat-add-form
-      v-show="isAddFromActive"
+      v-show="isAddFormActive"
       ref="refCompoAddForm"
-      @closeAddForm="() => (isAddFromActive = false)"
+      @closeAddForm="() => (isAddFormActive = false)"
       @createMaker="createMaker"
     />
   </transition>
@@ -348,7 +350,7 @@ export default defineComponent({
     };
 
     // addform
-    const isAddFromActive = ref<boolean>(false);
+    const isAddFormActive = ref<boolean>(false);
     const isActiveAdd = ref(false);
     const refCompoAddForm = ref<InstanceType<typeof FootChatAddForm>>();
 
@@ -467,7 +469,7 @@ export default defineComponent({
       maker: naver.maps.Marker;
       restaurant: Restaurant;
     }) => {
-      isAddFromActive.value = false;
+      isAddFormActive.value = false;
 
       // console.log("createMaker", restaurant);
 
@@ -476,7 +478,10 @@ export default defineComponent({
       markerCommonEvent(maker);
 
       makers.push({ maker, restaurantData: restaurant });
-
+      webSocket.createMaker({
+        uuid,
+        restaurantId: restaurant.id,
+      });
       // console.log(makers);
       isActiveAdd.value = false;
       updateFilterInfo();
@@ -576,6 +581,11 @@ export default defineComponent({
           v.maker.onRemove();
           makerInfoWindow.close();
           makers = makers.filter((v) => v.restaurantData.id !== id);
+          // 웹소켓 전달
+          webSocket.removeMaker({
+            uuid,
+            restaurantId: id,
+          });
           console.log(makers);
           updateFilterInfo();
           closeViewRestaurantInfo();
@@ -652,12 +662,11 @@ export default defineComponent({
       isLoding.value = true;
 
       await roomInit();
-      webSocket.joinRoom(route.params.uuid as string);
-      webSocket.catchUpdateRoom((data: any) => {
-        console.log("캐치", data);
+      webSocket.joinRoom(uuid);
+      webSocket.catchUpdateRoom((uuid) => {
+        console.log("업데이트 룸 : ", uuid);
       });
       webSocket.catchUpdateRestaurant(({ uuid: getUUID, restaurantId }) => {
-        // console.log(uuid, restaurantId);
         if (getUUID === uuid) {
           onUpdateRestaurant(restaurantId, true);
         }
@@ -667,6 +676,32 @@ export default defineComponent({
 
         ApprovalWaitUserLists.value = ApprovalWaitUsers;
       });
+      webSocket.catchCreateMaker(async (restaurntId) => {
+        const { ok, restaurant } = await getRestaurantById(restaurntId);
+
+        if (ok) {
+          const maker = new naver.maps.Marker({
+            position: {
+              x: restaurant.lating.x,
+              y: restaurant.lating.y,
+            },
+            map: map.value,
+          });
+          markerCommonEvent(maker);
+          makers.push({ maker, restaurantData: restaurant });
+        }
+      });
+
+      webSocket.catchRemoveMaker((restaurantId) => {
+        makers = makers.filter((v) => {
+          const isNotRemove = v.restaurantData.id !== restaurantId;
+          if (!isNotRemove) {
+            v.maker.onRemove();
+          }
+          return isNotRemove;
+        });
+      });
+
       isLoding.value = false;
       // console.log("maksers", makers);
     });
@@ -679,7 +714,7 @@ export default defineComponent({
     const roomInit = async () => {
       const { ok, roomInfo, users, RestaurantInfo, ApprovalWaitUsers } =
         await getRoomInfo({
-          uuid: route.params.uuid as string,
+          uuid,
         });
 
       // console.log(roomInfo);
@@ -739,7 +774,7 @@ export default defineComponent({
       // 지도에서 빈곳 클릭시 레스토랑 챗 addFrom Active
       naver.maps.Event.addListener(map.value, "click", (e) => {
         if (!isActiveAdd.value) return;
-        isAddFromActive.value = true;
+        isAddFormActive.value = true;
 
         refCompoAddForm.value?.setOpenData({
           uuid: route.params.uuid as string,
@@ -759,7 +794,7 @@ export default defineComponent({
       refCompoViewForm,
       refCompoAddForm,
       isLoding,
-      isAddFromActive,
+      isAddFormActive,
       isSpuerUser,
 
       isActiveApprovalWait,
