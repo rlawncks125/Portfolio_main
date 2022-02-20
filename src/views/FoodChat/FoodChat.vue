@@ -77,7 +77,8 @@
         </div>
         <!-- 서치 버튼 -->
         <div
-          class="w-16 h-16 rounded-full flex flex-col justify-center text-center cursor-pointer bg-gray-500 bg-opacity-50"
+          class="w-16 h-16 rounded-full flex flex-col justify-center text-center cursor-pointer bg-opacity-50"
+          :class="isActiveFilterSearch ? 'bg-red-400' : 'bg-gray-500'"
           @click="isActiveFilterSearch = !isActiveFilterSearch"
         >
           <fa-icon :icon="['fa', 'magnifying-glass']" class="text-white" />
@@ -255,6 +256,7 @@ import {
   Component,
   defineComponent,
   onMounted,
+  onUnmounted,
   reactive,
   ref,
   toRefs,
@@ -284,6 +286,7 @@ import {
 import { deleteRestaurant, getRestaurantById } from "@/api/Restaurant";
 import { useStore } from "@/store/index";
 import axios from "axios";
+import * as webSocket from "@/api/Socket";
 
 enum EnumFilter {
   RestaurantName = "레스토랑 이름",
@@ -507,7 +510,7 @@ export default defineComponent({
       console.log("방 노삭제");
     };
 
-    const onUpdateRestaurant = async (id: number) => {
+    const onUpdateRestaurant = async (id: number, isCallSocket = false) => {
       const { ok, restaurant, err } = await getRestaurantById(id);
 
       if (ok) {
@@ -521,6 +524,13 @@ export default defineComponent({
             return v;
           }
         });
+
+        if (!isCallSocket) {
+          webSocket.updateRestaurant({
+            uuid,
+            restaurantId: id,
+          });
+        }
 
         // 보고있는 view 값 갱신
         if (refCompoViewForm.value?.viewData.id === id) {
@@ -642,9 +652,27 @@ export default defineComponent({
       isLoding.value = true;
 
       await roomInit();
+      webSocket.joinRoom(route.params.uuid as string);
+      webSocket.catchUpdateRoom((data: any) => {
+        console.log("캐치", data);
+      });
+      webSocket.catchUpdateRestaurant(({ uuid: getUUID, restaurantId }) => {
+        // console.log(uuid, restaurantId);
+        if (getUUID === uuid) {
+          onUpdateRestaurant(restaurantId, true);
+        }
+      });
+      webSocket.catchReqApprovaWait(async () => {
+        const { ApprovalWaitUsers } = await getRoomInfo({ uuid });
 
+        ApprovalWaitUserLists.value = ApprovalWaitUsers;
+      });
       isLoding.value = false;
       // console.log("maksers", makers);
+    });
+
+    onUnmounted(() => {
+      webSocket.leaveRoom(uuid);
     });
 
     // 방들어 올때 초기설정
@@ -767,6 +795,7 @@ export default defineComponent({
       sideBarInfo,
 
       consoleTest,
+      webSocket,
     };
   },
 });

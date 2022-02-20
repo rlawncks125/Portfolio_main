@@ -83,6 +83,7 @@ import { useRouter } from "vue-router";
 import Loading from "@/components/Loding.vue";
 import RoomCreateForm from "@/components/RoomCreateForm.vue";
 import LoadingBtn from "@/components/common/Input/LoadingBtn.vue";
+import * as webSocket from "@/api/Socket";
 
 export default defineComponent({
   components: { Loading, RoomCreateForm, LoadingBtn },
@@ -135,6 +136,7 @@ export default defineComponent({
       const { ok } = await joinRoom({ uuid });
       if (ok) {
         myApprovalWaitRooms();
+        webSocket.updateReqApprovaWait(uuid);
       }
       data.isLoading = false;
     };
@@ -214,6 +216,14 @@ export default defineComponent({
       }
       getRoomLists();
       myApprovalWaitRooms();
+      webSocket.catchApprovaWait(async () => {
+        const { ok, myRooms } = await getJoinRoomList();
+        if (ok) {
+          data.myJoinRoomLists = myRooms;
+        }
+        getRoomLists();
+        myApprovalWaitRooms();
+      });
     });
 
     return {

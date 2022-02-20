@@ -115,6 +115,7 @@ import { createUser, logIn, logOut } from "@/api/auth";
 import { useRoute, useRouter } from "vue-router";
 import { getJoinRoomList } from "@/api/Room";
 import LoadingBtn from "@/components/common/Input/LoadingBtn.vue";
+import * as webScoket from "@/api/Socket";
 
 export default defineComponent({
   components: { LoadingBtn },
@@ -211,7 +212,13 @@ export default defineComponent({
     watch(
       () => userData.token,
       () => {
-        isLogin.value = userData.token.length > 2;
+        if (userData.token.length > 2) {
+          webScoket.init();
+          isLogin.value = true;
+        } else {
+          webScoket.close();
+          isLogin.value = false;
+        }
       }
     );
 
@@ -225,8 +232,10 @@ export default defineComponent({
     onMounted(() => {
       setViewStyles();
       window.addEventListener("resize", setViewStyles);
+      isLogin.value && webScoket.init();
     });
     onUnmounted(() => {
+      isLogin.value && webScoket.close();
       window.removeEventListener("resize", setViewStyles);
     });
 

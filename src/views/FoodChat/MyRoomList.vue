@@ -36,6 +36,7 @@ import { getJoinRoomList, joinRoom } from "@/api/Room";
 import { MyRoomsinfoDto } from "@/assets/swagger";
 import { defineComponent, onMounted, reactive, toRefs } from "vue";
 import { useRouter } from "vue-router";
+import * as webSocket from "@/api/Socket";
 
 export default defineComponent({
   setup() {
@@ -68,14 +69,21 @@ export default defineComponent({
       }
     };
 
-    onMounted(async () => {
-      data.isLoading = true;
+    const myRoomListUpdate = async () => {
       const { ok, myRooms } = await getJoinRoomList();
       console.log(myRooms);
-      data.isLoading = false;
       if (ok) {
         data.myJoinRoomLists = myRooms;
       }
+    };
+
+    onMounted(async () => {
+      data.isLoading = true;
+      await myRoomListUpdate();
+      data.isLoading = false;
+      webSocket.catchApprovaWait(async () => {
+        await myRoomListUpdate();
+      });
     });
 
     return {

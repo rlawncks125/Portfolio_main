@@ -33,8 +33,9 @@
 <script lang="ts">
 import { postAccept } from "@/api/Room";
 import { ApprovalWaitUsersDto } from "@/assets/swagger";
-import { defineComponent, PropType, ref, toRaw, toRefs } from "vue";
+import { defineComponent, onMounted, PropType, ref, toRaw, toRefs } from "vue";
 import { useRoute } from "vue-router";
+import * as webSocket from "@/api/Socket";
 
 export default defineComponent({
   props: {
@@ -46,13 +47,14 @@ export default defineComponent({
   setup(props, { emit }) {
     const isLoading = ref(false);
     const route = useRoute();
+    const uuid = route.params.uuid as string;
 
     const { lists } = toRefs(props);
 
     const onAccept = async (id: number) => {
       isLoading.value = true;
       const { ok, err } = await postAccept({
-        uuid: route.params.uuid + "",
+        uuid,
         id,
       });
 
@@ -62,6 +64,7 @@ export default defineComponent({
           copyLists = copyLists?.filter((v) => v.id !== id);
 
           emit("updateLists", copyLists);
+          webSocket.updateApprovaWait(id);
         }
       } else {
         console.log(`err : ${err}`);
