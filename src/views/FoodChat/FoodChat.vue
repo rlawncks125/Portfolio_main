@@ -72,8 +72,9 @@
       >
         <!-- 방 설정 버튼 -->
         <div
+          v-show="isSpuerUser"
           class="w-16 h-16 rounded-full flex flex-col justify-center text-center cursor-pointer bg-gray-500 bg-opacity-50 sm:hidden"
-          @click="consoleTest('방설정')"
+          @click="openEditRoom"
         >
           <fa-icon :icon="['fa', 'gear']" class="text-white" />
         </div>
@@ -130,6 +131,14 @@
   <!-- 서치 버튼 클릭시 보여주기 -->
   <!-- form?  -->
   <!-- 클릭시 마커로 이동  -->
+
+  <!-- 방 설정 -->
+  <edit-room
+    v-show="isEditRoomAcitve"
+    ref="refCompoEditRoom"
+    @close="isEditRoomAcitve = false"
+    @edit="onEditRoom"
+  />
 
   <!-- 레스토랑 필터  -->
   <div
@@ -267,6 +276,7 @@ import {
 import FootChatAddForm from "@/components/FoodChatAddForm.vue";
 import FootChatViewForm from "@/components/FoodChatViewForm.vue";
 import ApprovaWaitView from "@/components/ApprovaWaitView.vue";
+import EditRoom from "@/components/FoodCahtEditRoom.vue";
 import MyPage from "@/views/FoodChat/MyPage.vue";
 import MyRooms from "@/views/FoodChat/MyRoomList.vue";
 import SearchRoom from "@/views/FoodChat/SearchRoomList.vue";
@@ -310,6 +320,7 @@ export default defineComponent({
     FootChatAddForm,
     FootChatViewForm,
     ApprovaWaitView,
+    EditRoom,
     LoadingBtn,
     MyPage,
     MyRooms,
@@ -333,6 +344,7 @@ export default defineComponent({
 
     // 네이버 api
     let map = ref<naver.maps.Map>();
+    let mainMarker: naver.maps.Marker;
     const makerInfoWindow = new naver.maps.InfoWindow({ content: "" });
 
     // 마커 & 레스토랑 데이터
@@ -357,6 +369,31 @@ export default defineComponent({
     // view Form
     const isViewActive = ref<boolean>(false);
     const refCompoViewForm = ref<InstanceType<typeof FootChatViewForm>>();
+
+    // eidt room form
+    const isEditRoomAcitve = ref(false);
+    const refCompoEditRoom = ref<InstanceType<typeof EditRoom>>();
+
+    const openEditRoom = () => {
+      refCompoEditRoom.value?.setRoomInfo({
+        roomName: roomInfoData.value!.roomName,
+        lating: roomInfoData.value!.lating,
+      });
+      isEditRoomAcitve.value = true;
+    };
+
+    const onEditRoom = async (updateUUID: string, isWebsocket = false) => {      
+      if (uuid !== updateUUID) return;
+      const { ok, roomInfo } = await getRoomInfo({ uuid });
+      if (ok) {
+        roomInfoData.value = roomInfo;
+        mainMarker.onRemove();
+        rednerMainMarker();
+        if (!isWebsocket) {
+          webSocket.updateRoom(uuid);
+        }
+      }
+    };
 
     // 사이드바
     const isSideBarActive = ref(false);
@@ -579,7 +616,6 @@ export default defineComponent({
           }
 
           v.maker.onRemove();
-          makerInfoWindow.close();
           makers = makers.filter((v) => v.restaurantData.id !== id);
           // 웹소켓 전달
           webSocket.removeMaker({
@@ -588,6 +624,7 @@ export default defineComponent({
           });
           console.log(makers);
           updateFilterInfo();
+          makerInfoWindow.close();
           closeViewRestaurantInfo();
           isViewActive.value = false;
           isLoding.value = false;
@@ -664,8 +701,9 @@ export default defineComponent({
       await roomInit();
       webSocket.joinRoom(uuid);
       webSocket.catchUpdateRoom((uuid) => {
-        console.log("업데이트 룸 : ", uuid);
+        onEditRoom(uuid, true);
       });
+
       webSocket.catchUpdateRestaurant(({ uuid: getUUID, restaurantId }) => {
         if (getUUID === uuid) {
           onUpdateRestaurant(restaurantId, true);
@@ -697,6 +735,9 @@ export default defineComponent({
           const isNotRemove = v.restaurantData.id !== restaurantId;
           if (!isNotRemove) {
             v.maker.onRemove();
+            updateFilterInfo();
+            makerInfoWindow.close();
+            closeViewRestaurantInfo();
           }
           return isNotRemove;
         });
@@ -745,18 +786,7 @@ export default defineComponent({
       map.value = new naver.maps.Map(mapEl!, mapOptions);
 
       // 방 초기 줌 위치 마커
-      new naver.maps.Marker({
-        position: {
-          x: roomInfo.lating.x,
-          y: roomInfo.lating.y,
-        },
-        map: map.value,
-        icon: {
-          url: "https://res.cloudinary.com/dhdq4v4ar/image/upload/v1644527647/back-Portfolio/Company_building_free_icon_4_sd6q06.png",
-          size: new naver.maps.Size(50, 50),
-        },
-        clickable: false,
-      });
+      rednerMainMarker();
 
       RestaurantInfo.forEach((v) => {
         const maker = new naver.maps.Marker({
@@ -790,6 +820,21 @@ export default defineComponent({
       updateFilterInfo();
     };
 
+    const rednerMainMarker = () => {
+      mainMarker = new naver.maps.Marker({
+        position: {
+          x: roomInfoData.value!.lating.x,
+          y: roomInfoData.value!.lating.y,
+        },
+        map: map.value,
+        icon: {
+          url: "https://res.cloudinary.com/dhdq4v4ar/image/upload/v1644527647/back-Portfolio/Company_building_free_icon_4_sd6q06.png",
+          size: new naver.maps.Size(50, 50),
+        },
+        clickable: false,
+      });
+    };
+
     return {
       refCompoViewForm,
       refCompoAddForm,
@@ -807,6 +852,11 @@ export default defineComponent({
       onLeaveRoom,
       onDeleteRoom,
       isViewActive,
+
+      isEditRoomAcitve,
+      refCompoEditRoom,
+      onEditRoom,
+      openEditRoom,
 
       onDeleteRestaurnt,
       onUpdateRestaurant,

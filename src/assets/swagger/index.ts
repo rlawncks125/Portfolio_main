@@ -182,35 +182,6 @@ export class UserService {
   }
 }
 
-export class WebScoketChatService {
-  /**
-   * 이벤트 타입
-   */
-  static wsControllerFoodMapChat(
-    params: {
-      /** requestBody */
-      body?: EventTrigger;
-    } = {} as any,
-    options: IRequestOptions = {}
-  ): Promise<any> {
-    return new Promise((resolve, reject) => {
-      let url = basePath + "/WebScoket/chat";
-
-      const configs: IRequestConfig = getConfigs(
-        "get",
-        "application/json",
-        url,
-        options
-      );
-
-      let data = params.body;
-
-      configs.data = data;
-      axios(configs, resolve, reject);
-    });
-  }
-}
-
 export class RoomService {
   /**
    * 내가 들어간방들 정보 ( myRoomsInfo )
@@ -392,7 +363,7 @@ export class RoomService {
       body?: EditRoomInPutDto;
     } = {} as any,
     options: IRequestOptions = {}
-  ): Promise<EditRoomInPutDto> {
+  ): Promise<EdtiRoomOutPutDto> {
     return new Promise((resolve, reject) => {
       let url = basePath + "/room/edit";
 
@@ -746,11 +717,6 @@ export interface UserUpdateInputDto {
 
   /** 내용물 */
   dsc?: string;
-}
-
-export interface EventTrigger {
-  /**  */
-  Types: EnumEventTriggerTypes;
 }
 
 export interface Lating {
@@ -1169,8 +1135,19 @@ export interface EditRoomInPutDto {
   /** 방마크 입니다. */
   markeImageUrl?: string;
 
+  /** 방 시작 좌표입니다. */
+  lating?: CombinedLatingTypes;
+
   /** 방장 입니다. */
   superUser?: CombinedSuperUserTypes;
+}
+
+export interface EdtiRoomOutPutDto {
+  /** 성공 여부입니다. */
+  ok: boolean;
+
+  /** 에러 메세지입니다. */
+  err?: string;
 }
 
 export interface JoinRoomInputDto {
@@ -1342,11 +1319,6 @@ export interface RemoveMessageByIdOutPutDto {
 
   /** 에러 메세지입니다. */
   err?: string;
-}
-export enum EnumEventTriggerTypes {
-  "CREATEROOM" = "CREATEROOM",
-  "JOINUSER" = "JOINUSER",
-  "LEAVEROOM" = "LEAVEROOM",
 }
 export type CombinedResturantSuperUserTypes = SuperUserDto;
 export type CombinedLatingTypes = Lating;

@@ -17,6 +17,8 @@ import {
   myApprovalWaitRoomsOutPutDto,
   AcceptUserOutPutDto,
   AcceptUserInPutDto,
+  EditRoomInPutDto,
+  EdtiRoomOutPutDto,
 } from "@/assets/swagger";
 import axios from "axios";
 import { AuthHeaders } from "./auth";
@@ -81,6 +83,14 @@ export const joinRoom = async (
 ): Promise<JoinRoomOutPutDto> => {
   return axios.post("/api/room/join", data, AuthHeaders).then((res: any) => {
     return res.data as JoinRoomOutPutDto;
+  });
+};
+
+export const editRoom = async (
+  data: EditRoomInPutDto
+): Promise<EdtiRoomOutPutDto> => {
+  return axios.patch("api/room/edit", data, AuthHeaders).then((res) => {
+    return res.data as EdtiRoomOutPutDto;
   });
 };
 

@@ -52,6 +52,7 @@ import { useStore } from "./store";
 // import noneCheckedImage from "@/assets/images/outline_reorder_black_24dp.png";
 
 export default defineComponent({
+  components: {},
   setup() {
     const store = useStore();
     const isCehckd = ref();

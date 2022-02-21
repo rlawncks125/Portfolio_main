@@ -61,6 +61,7 @@ export const catchUpdateRoom = (catchWs: FuncUpdateData) => {
   });
 };
 
+// 방 마커
 export const createMaker = (data: { uuid: string; restaurantId: number }) => {
   socket.emit("createMaker", data);
 };
