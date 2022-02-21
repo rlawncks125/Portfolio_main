@@ -37,7 +37,7 @@
   </div>
 
   <div
-    class="render-view pb-12"
+    class="render-view mb-12"
     :class="{ 'sm:pl-20': route.path.includes('foodChat/') }"
   >
     <router-view />
@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from "./store";
 // import checkedImage from "@/assets/images/outline_close_black_24dp.png";
@@ -72,6 +72,17 @@ export default defineComponent({
     const changePage = () => {
       isCehckd.value = false;
     };
+
+    const mobileHeightSize = () => {
+      const dh = window.innerHeight;
+
+      document.documentElement.style.setProperty("--mobile--full", `${dh}px`);
+    };
+
+    onMounted(() => {
+      window.addEventListener("load", mobileHeightSize);
+      window.addEventListener("resize", mobileHeightSize);
+    });
 
     return {
       isCehckd,
@@ -137,7 +148,10 @@ body {
   @include mobile() {
     grid-template:
       "out-checkd nav ." 5rem
-      "render-view render-view render-view" minmax(calc(100vh - 5rem), auto)
+      "render-view render-view render-view" minmax(
+        calc(var(--mobile--full) - 5rem),
+        auto
+      )
       / 1fr 1fr 1fr;
     align-items: center;
   }

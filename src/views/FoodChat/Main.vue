@@ -62,7 +62,11 @@
   </div>
 
   <!-- 로그인 됐을시 -->
-  <div class="relative" :style="viewStyles" v-else>
+  <div
+    class="relative"
+    :style="[route.path.includes('foodChat/') ? mapViewStyles : {}]"
+    v-else
+  >
     <button class="border-2" @click.prevent="userLogOut">LogOut</button>
     <br />
 
@@ -71,7 +75,7 @@
 
     <!-- 모바일 하단-->
     <div
-      class="fixed bottom-0 left-0 w-full h-14 py-4 bg-gray-400 sm:hidden"
+      class="fixed bottom-0 left-0 py-4 w-full h-14 bg-gray-400 sm:hidden"
       style="z-index: 101"
     >
       <div class="flex w-full justify-around h-full">
@@ -146,18 +150,19 @@ export default defineComponent({
     };
 
     // render view 넓이 설정 css
-    const viewStyles = ref({
-      height: "calc(100vh - 14.75rem)",
+    const mapViewStyles = ref({
+      height: "calc(var(--mobile--full) - 14.75rem)",
     });
 
     const setViewStyles = () => {
       if (window.innerWidth < 640) {
-        viewStyles.value = {
-          height: "calc(100vh - 17rem)",
+        // 모바일 지도
+        mapViewStyles.value = {
+          height: "calc(var(--mobile--full) - 15.5rem)",
         };
       } else {
-        viewStyles.value = {
-          height: "calc(100vh - 12.75rem)",
+        mapViewStyles.value = {
+          height: "calc(var(--mobile--full) - 12.6rem)",
         };
       }
     };
@@ -252,10 +257,10 @@ export default defineComponent({
       router,
       route,
       getMyRoomlist,
-      viewStyles,
+      mapViewStyles,
     };
   },
 });
 </script>
 
-<style scoped></style>
+<style lang="scss"></style>

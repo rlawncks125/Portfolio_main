@@ -12,7 +12,79 @@
     <button @click.prevent="router.push('/foodChat')">방으로 돌아가기</button>
   </div>
 
-  <div id="map" class="w-full h-full mx-auto"></div>
+  <!-- 맵 -->
+  <div id="map" class="w-full h-full mx-auto relative">
+    <!-- 맵 하단에 서치 버튼 추가  -->
+    <div class="absolute bottom-10 right-4" style="z-index: 101">
+      <transition name="acodi">
+        <div
+          class="overflow-hidden mb-2 flex flex-col gap-1"
+          v-show="isOptionsCheckd"
+        >
+          <!-- 방 설정 버튼 -->
+          <div
+            v-show="isSpuerUser"
+            class="w-16 h-16 rounded-full flex flex-col justify-center text-center cursor-pointer bg-gray-500 bg-opacity-50 sm:hidden"
+            @click="openEditRoom"
+          >
+            <fa-icon :icon="['fa', 'gear']" class="text-white" />
+          </div>
+          <!-- 서치 버튼 -->
+          <div
+            class="w-16 h-16 rounded-full flex flex-col justify-center text-center cursor-pointer bg-opacity-50"
+            :class="isActiveFilterSearch ? 'bg-red-400' : 'bg-gray-500'"
+            @click="isActiveFilterSearch = !isActiveFilterSearch"
+          >
+            <fa-icon :icon="['fa', 'magnifying-glass']" class="text-white" />
+          </div>
+          <!-- 레스토랑 추가 & 취소 버튼 -->
+          <div
+            class="w-16 h-16 rounded-full flex flex-col justify-center text-center cursor-pointer bg-gray-500 bg-opacity-50"
+            @click="isActiveAdd = !isActiveAdd"
+          >
+            <fa-icon
+              v-if="!isActiveAdd"
+              :icon="['fa', 'plus']"
+              class="text-white"
+            />
+            <fa-icon
+              v-else
+              :icon="['fa', 'ban']"
+              class="text-red-500 bg-opacity-50"
+            />
+          </div>
+        </div>
+      </transition>
+
+      <!-- 클릭 체크 -->
+      <label
+        type="checkbox"
+        class="w-16 h-16 rounded-full flex flex-col justify-center text-center cursor-pointer bg-opacity-60"
+        :class="isOptionsCheckd ? 'bg-cyan-300' : 'bg-gray-500'"
+        for="option"
+      >
+        <fa-icon
+          v-if="isOptionsCheckd"
+          :icon="['fa', 'angle-down']"
+          class="text-white"
+          size="2x"
+        />
+        <fa-icon
+          v-else
+          :icon="['fa', 'angle-up']"
+          class="text-white"
+          size="2x"
+        />
+      </label>
+      <input
+        class="hidden"
+        type="checkbox"
+        id="option"
+        v-model="isOptionsCheckd"
+      />
+    </div>
+  </div>
+
   <transition name="ani-fade">
     <foot-chat-add-form
       v-show="isAddFormActive"
@@ -63,71 +135,6 @@
     </div>
   </div>
 
-  <!-- 밑에 상단에 서치 버튼 추가  -->
-  <div class="absolute bottom-0 right-4">
-    <transition name="acodi">
-      <div
-        class="overflow-hidden mb-2 flex flex-col gap-1"
-        v-show="isOptionsCheckd"
-      >
-        <!-- 방 설정 버튼 -->
-        <div
-          v-show="isSpuerUser"
-          class="w-16 h-16 rounded-full flex flex-col justify-center text-center cursor-pointer bg-gray-500 bg-opacity-50 sm:hidden"
-          @click="openEditRoom"
-        >
-          <fa-icon :icon="['fa', 'gear']" class="text-white" />
-        </div>
-        <!-- 서치 버튼 -->
-        <div
-          class="w-16 h-16 rounded-full flex flex-col justify-center text-center cursor-pointer bg-opacity-50"
-          :class="isActiveFilterSearch ? 'bg-red-400' : 'bg-gray-500'"
-          @click="isActiveFilterSearch = !isActiveFilterSearch"
-        >
-          <fa-icon :icon="['fa', 'magnifying-glass']" class="text-white" />
-        </div>
-        <!-- 레스토랑 추가 & 취소 버튼 -->
-        <div
-          class="w-16 h-16 rounded-full flex flex-col justify-center text-center cursor-pointer bg-gray-500 bg-opacity-50"
-          @click="isActiveAdd = !isActiveAdd"
-        >
-          <fa-icon
-            v-if="!isActiveAdd"
-            :icon="['fa', 'plus']"
-            class="text-white"
-          />
-          <fa-icon
-            v-else
-            :icon="['fa', 'ban']"
-            class="text-red-500 bg-opacity-50"
-          />
-        </div>
-      </div>
-    </transition>
-
-    <!-- 클릭 체크 -->
-    <label
-      type="checkbox"
-      class="w-16 h-16 rounded-full flex flex-col justify-center text-center cursor-pointer bg-opacity-60"
-      :class="isOptionsCheckd ? 'bg-cyan-300' : 'bg-gray-500'"
-      for="option"
-    >
-      <fa-icon
-        v-if="isOptionsCheckd"
-        :icon="['fa', 'angle-down']"
-        class="text-white"
-        size="2x"
-      />
-      <fa-icon v-else :icon="['fa', 'angle-up']" class="text-white" size="2x" />
-    </label>
-    <input
-      class="hidden"
-      type="checkbox"
-      id="option"
-      v-model="isOptionsCheckd"
-    />
-  </div>
-
   <!-- 서치 버튼 클릭시 보여주기 -->
   <!-- form?  -->
   <!-- 클릭시 마커로 이동  -->
@@ -143,7 +150,7 @@
   <!-- 레스토랑 필터  -->
   <div
     v-show="isActiveFilterSearch"
-    class="absolute top-40 w-3/4 left-0 right-0 mx-auto bg-white border-2 border-gray-500 border-opacity-50"
+    class="absolute top-40 w-3/4 h-1/2 left-0 overflow-hidden right-0 mx-auto bg-white border-2 border-gray-500 border-opacity-50"
   >
     <div
       class="flex justify-between items-center px-2 border-b-2 border-b-gray-500 border-opacity-50"
@@ -169,7 +176,7 @@
       <LoadingBtn Msg="검색" :isLoading="false" :size="20" class="h-10" />
     </div>
 
-    <div class="overflow-auto" style="height: 36rem">
+    <div class="overflow-auto h-full" style="padding-bottom: 3.5rem">
       <div
         v-for="restaurant in fillterArry"
         :key="restaurant.id"
@@ -382,7 +389,7 @@ export default defineComponent({
       isEditRoomAcitve.value = true;
     };
 
-    const onEditRoom = async (updateUUID: string, isWebsocket = false) => {      
+    const onEditRoom = async (updateUUID: string, isWebsocket = false) => {
       if (uuid !== updateUUID) return;
       const { ok, roomInfo } = await getRoomInfo({ uuid });
       if (ok) {
