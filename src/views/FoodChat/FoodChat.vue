@@ -382,10 +382,7 @@ export default defineComponent({
     const refCompoEditRoom = ref<InstanceType<typeof EditRoom>>();
 
     const openEditRoom = () => {
-      refCompoEditRoom.value?.setRoomInfo({
-        roomName: roomInfoData.value!.roomName,
-        lating: roomInfoData.value!.lating,
-      });
+      refCompoEditRoom.value?.setRoomInfo(roomInfoData.value!);
       isEditRoomAcitve.value = true;
     };
 
@@ -467,17 +464,8 @@ export default defineComponent({
 
       const makerPosition = maker[0].maker.getPosition();
 
-      // const goPosition = new naver.maps.LatLngBounds(
-      //   new naver.maps.LatLng(
-      //     map.value!.getCenter().x,
-      //     map.value!.getCenter().y
-      //   ),
-      //   new naver.maps.LatLng(makerPosition.x, makerPosition.y)
-      // );
-
-      map.value!.setCenter(makerPosition);
       map.value!.setZoom(14, true);
-      // map.value!.fitBounds(goPosition);
+      map.value!.setCenter(makerPosition);
 
       isActiveFilterSearch.value = false;
     };
@@ -622,7 +610,7 @@ export default defineComponent({
             }
           }
 
-          v.maker.onRemove();
+          updateByRemoveMarker(v.maker);
           makers = makers.filter((v) => v.restaurantData.id !== id);
           // 웹소켓 전달
           webSocket.removeMaker({
@@ -630,9 +618,6 @@ export default defineComponent({
             restaurantId: id,
           });
           console.log(makers);
-          updateFilterInfo();
-          makerInfoWindow.close();
-          closeViewRestaurantInfo();
           isViewActive.value = false;
           isLoding.value = false;
 
@@ -640,6 +625,13 @@ export default defineComponent({
         }
         return true;
       });
+    };
+
+    const updateByRemoveMarker = (maker: naver.maps.Marker) => {
+      maker.onRemove();
+      updateFilterInfo();
+      makerInfoWindow.close();
+      closeViewRestaurantInfo();
     };
 
     // 필터 처리
@@ -662,44 +654,27 @@ export default defineComponent({
 
       switch (selectedText.value) {
         case EnumFilter.RestaurantName:
-          console.log(EnumFilter.RestaurantName);
-          filterResult.fillterArry = makers
-            .filter((v) =>
-              v.restaurantData.restaurantName.includes(filterResult.filterName)
-            )
-            .map((v) => v.restaurantData);
-
-          break;
+          return FilterBySelectedText("restaurantName");
         case EnumFilter.HashTag:
-          console.log(EnumFilter.HashTag);
-
-          filterResult.fillterArry = makers
-            .filter((v) =>
-              v.restaurantData.hashTags.includes(`#${filterResult.filterName}`)
-            )
-            .map((v) => v.restaurantData);
-
-          break;
+          return FilterBySelectedText("hashTags");
         case EnumFilter.Specialization:
-          console.log(EnumFilter.Specialization);
-          filterResult.fillterArry = makers
-            .filter((v) =>
-              v.restaurantData.specialization.includes(filterResult.filterName)
-            )
-            .map((v) => v.restaurantData);
-          break;
+          return FilterBySelectedText("specialization");
         case EnumFilter.Location:
-          console.log(EnumFilter.Location);
-          filterResult.fillterArry = makers
-            .filter((v) =>
-              v.restaurantData.location.includes(filterResult.filterName)
-            )
-            .map((v) => v.restaurantData);
-          break;
+          return FilterBySelectedText("location");
         default:
           console.log("나무지값");
           break;
       }
+    };
+
+    const FilterBySelectedText = (
+      type: "restaurantName" | "hashTags" | "specialization" | "location"
+    ) => {
+      filterResult.fillterArry = makers
+        .filter((v) =>
+          v.restaurantData[type].includes(`${filterResult.filterName}`)
+        )
+        .map((v) => v.restaurantData);
     };
 
     onMounted(async () => {
@@ -741,10 +716,7 @@ export default defineComponent({
         makers = makers.filter((v) => {
           const isNotRemove = v.restaurantData.id !== restaurantId;
           if (!isNotRemove) {
-            v.maker.onRemove();
-            updateFilterInfo();
-            makerInfoWindow.close();
-            closeViewRestaurantInfo();
+            updateByRemoveMarker(v.maker);
           }
           return isNotRemove;
         });

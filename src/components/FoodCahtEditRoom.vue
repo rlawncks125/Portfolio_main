@@ -46,7 +46,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, reactive, ref, toRefs } from "vue";
 import LodingBtn from "@/components/common/Input/LoadingBtn.vue";
-import { EditRoomInPutDto, Lating } from "@/assets/swagger";
+import { EditRoomInPutDto, Lating, RoominfoDto } from "@/assets/swagger";
 import { useRoute } from "vue-router";
 import { editRoom } from "@/api/Room";
 
@@ -87,7 +87,7 @@ export default defineComponent({
       }
     };
 
-    const setRoomInfo = (data: { roomName: string; lating: Lating }) => {
+    const setRoomInfo = (data: RoominfoDto) => {
       if (data) {
         dataInfo.roomName = data.roomName!;
       }
