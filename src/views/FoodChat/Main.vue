@@ -64,7 +64,7 @@
   <!-- 로그인 됐을시 -->
   <div
     class="relative"
-    :style="[route.path.includes('foodChat/') ? mapViewStyles : {}]"
+    :style="[route.params.uuid ? mapViewStyles : {}]"
     v-else
   >
     <button class="border-2" @click.prevent="userLogOut">LogOut</button>

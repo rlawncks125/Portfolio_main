@@ -211,7 +211,7 @@ export default defineComponent({
 
       if (maker) {
         formDataReset();
-        emit("createMaker", { maker, restaurant: restaurant });
+        emit("createMaker", { maker, restaurant });
       }
     };
     const closeForm = () => {

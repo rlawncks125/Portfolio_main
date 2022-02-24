@@ -48,24 +48,12 @@ export default defineComponent({
     });
 
     const goRoom = async (uuid: string) => {
-      console.log(`go ${uuid}`);
       const isExist = data.myJoinRoomLists.find((v) => v.uuid === uuid);
       if (isExist) {
         router.push({
           name: "foodChatRoomJoin",
           params: { uuid },
         });
-      } else {
-        console.log("수락 기달리기");
-        data.isLoading = true;
-        const { ok } = await joinRoom({ uuid });
-        data.isLoading = false;
-        if (ok) {
-          router.push({
-            name: "foodChatRoomJoin",
-            params: { uuid },
-          });
-        }
       }
     };
 

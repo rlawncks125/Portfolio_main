@@ -237,7 +237,7 @@ export default defineComponent({
       activeMessage.value = id;
       addFormData.childMessage = "";
 
-      console.log(activeMessage.value);
+      // console.log(activeMessage.value);
     };
 
     const setChildCommentCreateTime = (createTime: string) => {
@@ -248,7 +248,7 @@ export default defineComponent({
 
       editActiveChildMessage.value = createTime;
       addFormData.childMessage = "";
-      console.log(editActiveChildMessage.value);
+      // console.log(editActiveChildMessage.value);
     };
 
     const setEditCommentId = (id: number) => {

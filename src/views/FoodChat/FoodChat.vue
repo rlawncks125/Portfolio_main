@@ -351,10 +351,10 @@ export default defineComponent({
 
     // 네이버 api
     let map = ref<naver.maps.Map>();
-    let mainMarker: naver.maps.Marker;
-    const makerInfoWindow = new naver.maps.InfoWindow({ content: "" });
 
     // 마커 & 레스토랑 데이터
+    const makerInfoWindow = new naver.maps.InfoWindow({ content: "" });
+    let mainMarker: naver.maps.Marker;
     let makers: Array<{
       maker: naver.maps.Marker;
       restaurantData: RestaurantInfoDto;
@@ -384,19 +384,6 @@ export default defineComponent({
     const openEditRoom = () => {
       refCompoEditRoom.value?.setRoomInfo(roomInfoData.value!);
       isEditRoomAcitve.value = true;
-    };
-
-    const onEditRoom = async (updateUUID: string, isWebsocket = false) => {
-      if (uuid !== updateUUID) return;
-      const { ok, roomInfo } = await getRoomInfo({ uuid });
-      if (ok) {
-        roomInfoData.value = roomInfo;
-        mainMarker.onRemove();
-        rednerMainMarker();
-        if (!isWebsocket) {
-          webSocket.updateRoom(uuid);
-        }
-      }
     };
 
     // 사이드바
@@ -443,34 +430,23 @@ export default defineComponent({
       isViewActive.value = true;
     };
 
-    // 레스토랑 필터
-    const isActiveFilterSearch = ref(false);
-    const selectedText = ref("");
+    // 마커 이벤트
 
-    const selectedFilter = [
-      { type: EnumFilter.RestaurantName },
-      { type: EnumFilter.HashTag },
-      { type: EnumFilter.Specialization },
-      { type: EnumFilter.Location },
-    ];
-
-    const filterResult = reactive({
-      filterName: "",
-      fillterArry: [] as (RestaurantInfoDto | undefined)[],
-    });
-
-    const goRestaurantPostionById = (id: number) => {
-      const maker = makers.filter((v) => v.restaurantData.id === +id);
-
-      const makerPosition = maker[0].maker.getPosition();
-
-      map.value!.setZoom(14, true);
-      map.value!.setCenter(makerPosition);
-
-      isActiveFilterSearch.value = false;
+    const rednerMainMarker = () => {
+      mainMarker = new naver.maps.Marker({
+        position: {
+          x: roomInfoData.value!.lating.x,
+          y: roomInfoData.value!.lating.y,
+        },
+        map: map.value,
+        icon: {
+          url: "https://res.cloudinary.com/dhdq4v4ar/image/upload/v1644527647/back-Portfolio/Company_building_free_icon_4_sd6q06.png",
+          size: new naver.maps.Size(50, 50),
+        },
+        clickable: false,
+      });
     };
 
-    // 마커 이벤트
     const markerCommonEvent = (maker: naver.maps.Marker) => {
       maker.addListener("click", () => {
         if (makerInfoWindow.getMap()) {
@@ -519,7 +495,14 @@ export default defineComponent({
       updateFilterInfo();
     };
 
-    // CRUD
+    const updateByRemoveMarker = (maker: naver.maps.Marker) => {
+      maker.onRemove();
+      updateFilterInfo();
+      makerInfoWindow.close();
+      closeViewRestaurantInfo();
+    };
+
+    // ROOM & Restaurant CRUD
     const onLeaveRoom = async () => {
       if (!window.confirm("방을 나가실겁니까?")) return;
 
@@ -545,6 +528,19 @@ export default defineComponent({
         return;
       }
       console.log("방 노삭제");
+    };
+
+    const onEditRoom = async (updateUUID: string, isWebsocket = false) => {
+      if (uuid !== updateUUID) return;
+      const { ok, roomInfo } = await getRoomInfo({ uuid });
+      if (ok) {
+        roomInfoData.value = roomInfo;
+        mainMarker.onRemove();
+        rednerMainMarker();
+        if (!isWebsocket) {
+          webSocket.updateRoom(uuid);
+        }
+      }
     };
 
     const onUpdateRestaurant = async (id: number, isCallSocket = false) => {
@@ -627,17 +623,32 @@ export default defineComponent({
       });
     };
 
-    const updateByRemoveMarker = (maker: naver.maps.Marker) => {
-      maker.onRemove();
-      updateFilterInfo();
-      makerInfoWindow.close();
-      closeViewRestaurantInfo();
-    };
+    // 레스토랑 필터
+    const isActiveFilterSearch = ref(false);
+    const selectedText = ref("");
 
-    // 필터 처리
-    watch([selectedText, () => filterResult.filterName], () => {
-      updateFilterResult();
+    const selectedFilter = [
+      { type: EnumFilter.RestaurantName },
+      { type: EnumFilter.HashTag },
+      { type: EnumFilter.Specialization },
+      { type: EnumFilter.Location },
+    ];
+
+    const filterResult = reactive({
+      filterName: "",
+      fillterArry: [] as (RestaurantInfoDto | undefined)[],
     });
+
+    const goRestaurantPostionById = (id: number) => {
+      const maker = makers.filter((v) => v.restaurantData.id === +id);
+
+      const makerPosition = maker[0].maker.getPosition();
+
+      map.value!.setZoom(14, true);
+      map.value!.setCenter(makerPosition);
+
+      isActiveFilterSearch.value = false;
+    };
 
     const updateFilterInfo = () => {
       filterResult.fillterArry = makers.map((v) => v.restaurantData);
@@ -647,8 +658,8 @@ export default defineComponent({
       if (!selectedText.value) return;
 
       if (filterResult.filterName === "") {
+        // 입력된 값이 없으면 모든값 얻기
         filterResult.fillterArry = makers.map((v) => v.restaurantData);
-        console.log("모든값");
         return;
       }
 
@@ -677,6 +688,11 @@ export default defineComponent({
         .map((v) => v.restaurantData);
     };
 
+    watch([selectedText, () => filterResult.filterName], () => {
+      updateFilterResult();
+    });
+
+    // 마운트
     onMounted(async () => {
       isLoding.value = true;
 
@@ -797,21 +813,6 @@ export default defineComponent({
       });
 
       updateFilterInfo();
-    };
-
-    const rednerMainMarker = () => {
-      mainMarker = new naver.maps.Marker({
-        position: {
-          x: roomInfoData.value!.lating.x,
-          y: roomInfoData.value!.lating.y,
-        },
-        map: map.value,
-        icon: {
-          url: "https://res.cloudinary.com/dhdq4v4ar/image/upload/v1644527647/back-Portfolio/Company_building_free_icon_4_sd6q06.png",
-          size: new naver.maps.Size(50, 50),
-        },
-        clickable: false,
-      });
     };
 
     return {

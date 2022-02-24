@@ -45,7 +45,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, ref, toRefs, watch } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  reactive,
+  ref,
+  toRaw,
+  toRefs,
+  watch,
+} from "vue";
 import InputFile, {
   FileDataType,
 } from "@/components/common/Input/File-one.vue";
@@ -64,7 +72,7 @@ export default defineComponent({
     const roomName = ref("");
     const addr = ref();
     const findData = reactive({
-      findAddrs: [] as any[],
+      findAddrs: [] as naver.maps.Service.AddressItemV2[],
     });
 
     const isLoading = ref(false);
@@ -110,10 +118,10 @@ export default defineComponent({
 
     const onClose = () => {
       inputFileComponet.value?.resetFile();
-      emit("onClose", false);
+      emit("onClose");
     };
 
-    const serachAddr = () => {
+    const serachAddr = async () => {
       if (!addr.value) return;
       naver.maps.Service.geocode(
         {
@@ -121,11 +129,11 @@ export default defineComponent({
         },
         (status, response) => {
           if (status === naver.maps.Service.Status.OK) {
-            findData.findAddrs = response.v2.addresses;
-            console.log(response.v2.addresses);
-            if (response.v2.addresses.length === 0) {
-              alert("결과가 없습니다.");
-            }
+            const addresses = response.v2.addresses;
+
+            addresses.length > 0
+              ? (findData.findAddrs = addresses)
+              : alert("결과값이 없습니다.");
           }
         }
       );

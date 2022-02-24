@@ -3,7 +3,7 @@
   <Loading :isLoding="isLoading" />
   <!-- 필터 -->
   <div class="flex items-center">
-    <select v-model="serchFilter" class="flex-1 w-1/3">
+    <select v-model="filterType" class="flex-1 w-1/3">
       <template v-for="(value, key) in searchOptions" :key="key">
         <option :value="key">{{ key }}</option>
       </template>
@@ -25,13 +25,10 @@
     <room-create-form
       v-if="isCreateRoom"
       @onCreated="onCreateRoom"
-      @onClose="
-        (isActive) => {
-          isCreateRoom = isActive;
-        }
-      "
+      @onClose="isCreateRoom = false"
     />
   </transition>
+  <!-- 찾은 방리스트 랜더 -->
   <div
     v-for="item in roomLists"
     :key="item.id"
@@ -50,15 +47,19 @@
       </div>
       <p class="room-name">{{ item.roomName }}</p>
       <p class="room-super-user">👑{{ item.superUserinfo.username }}</p>
+
       <button
+        v-if="approvalWaitRooms.find((v) => v.id === item.id)"
+        class="text-pink-500 bg-slate-700 border-2 pointer-events-none"
+      >
+        <p>승인 대기중</p>
+      </button>
+      <button
+        v-else
         class="text-pink-500 bg-slate-700 border-2"
         @click.prevent="joinReqRoom(item.uuid)"
       >
-        {{
-          approvalWaitRooms.find((v) => v.id === item.id)
-            ? "승인 대기중"
-            : "참여 하기"
-        }}
+        <p>참여 하기</p>
       </button>
     </div>
   </div>
@@ -100,11 +101,8 @@ export default defineComponent({
     const isCreateRoom = ref(false);
 
     // 서치 필터
-    const searchType = ref<EnumRoomListInputDtoSearchType>(
-      EnumRoomListInputDtoSearchType.All
-    );
     const searchValue = ref("");
-    const serchFilter = ref<keyof typeof searchOptions>("All");
+    const filterType = ref<keyof typeof searchOptions>("All");
     const searchOptions = {
       All: EnumRoomListInputDtoSearchType.All,
       "방 이름": EnumRoomListInputDtoSearchType.RoomName,
@@ -114,34 +112,41 @@ export default defineComponent({
     const getRoomLists = async () => {
       data.isLoadingBtn = true;
 
+      const { ok: ok_joinRoom, myRooms } = await getJoinRoomList();
+      if (ok_joinRoom) {
+        data.myJoinRoomLists = myRooms;
+      }
+
+      // 서치 타입
+      const searchType = searchOptions[filterType.value];
+
       const { ok, err, roomList } = await getRoomList({
-        searchType: searchType.value!,
+        searchType,
         value: searchValue.value,
       });
-      data.isLoadingBtn = false;
 
       if (ok) {
         data.roomLists = roomList;
       }
-      data.roomLists = data.roomLists.filter((v) => {
-        const isExist = data.myJoinRoomLists.find((pre) => pre.uuid === v.uuid);
-        if (isExist) return false;
-        else return true;
-      });
+
+      data.roomLists = data.roomLists.filter(
+        (v) => !data.myJoinRoomLists.find((f) => f.uuid === v.uuid)
+      );
+
+      data.isLoadingBtn = false;
     };
 
     const joinReqRoom = async (uuid: string) => {
-      console.log(`요청 보냄 ${uuid}`);
       data.isLoading = true;
       const { ok } = await joinRoom({ uuid });
       if (ok) {
-        myApprovalWaitRooms();
+        updateApprovalWaitRooms();
         webSocket.updateReqApprovaWait(uuid);
       }
       data.isLoading = false;
     };
 
-    const myApprovalWaitRooms = async () => {
+    const updateApprovalWaitRooms = async () => {
       const { ok, rooms, err } = await getApprovalWaitRooms();
       if (ok) {
         data.approvalWaitRooms = rooms.map((v) => {
@@ -154,27 +159,6 @@ export default defineComponent({
       }
     };
 
-    const goRoom = async (uuid: string) => {
-      const isExist = data.myJoinRoomLists.find((v) => v.uuid === uuid);
-      if (isExist) {
-        router.push({
-          name: "foodChatRoomJoin",
-          params: { uuid },
-        });
-      } else {
-        console.log("수락 기달리기");
-        data.isLoading = true;
-        const { ok } = await joinRoom({ uuid });
-        data.isLoading = false;
-        if (ok) {
-          router.push({
-            name: "foodChatRoomJoin",
-            params: { uuid },
-          });
-        }
-      }
-    };
-
     const onCreateRoom = async ({
       ok,
       room,
@@ -183,39 +167,16 @@ export default defineComponent({
       room: RoomOutPutDto;
     }) => {
       if (ok && room) {
-        data.myJoinRoomLists.push({
-          id: room.id,
-          uuid: room.uuid,
-          roomName: room.roomName,
-          lating: room.lating,
-          restaurantInfo: [],
-          markeImageUrl: room.markeImageUrl,
-          superUser: room.superUser,
-          joinUsersInfo: [
-            {
-              id: room.superUser.id,
-              username: room.superUser.username,
-            },
-          ],
-          approvalWaitUsers: [],
+        router.push({
+          name: "foodChatRoomJoin",
+          params: { uuid: room.uuid },
         });
-        goRoom(room.uuid);
       }
     };
 
-    watch(serchFilter, () => {
-      const filter: keyof typeof searchOptions = serchFilter.value;
-
-      searchType.value = searchOptions[filter];
-    });
-
     const UpdateRoomLists = async () => {
-      const { ok, myRooms } = await getJoinRoomList();
-      if (ok) {
-        data.myJoinRoomLists = myRooms;
-      }
       getRoomLists();
-      myApprovalWaitRooms();
+      updateApprovalWaitRooms();
     };
     onMounted(async () => {
       await UpdateRoomLists();
@@ -227,7 +188,7 @@ export default defineComponent({
     return {
       isCreateRoom,
       searchOptions,
-      serchFilter,
+      filterType,
       searchValue,
       ...toRefs(data),
       getRoomLists,
