@@ -683,7 +683,11 @@ export default defineComponent({
     ) => {
       filterResult.fillterArry = makers
         .filter((v) =>
-          v.restaurantData[type].includes(`${filterResult.filterName}`)
+          typeof v.restaurantData[type] === "object"
+            ? (v.restaurantData[type] as Array<string>).find((v) =>
+                v.includes(filterResult.filterName)
+              )
+            : v.restaurantData[type].includes(filterResult.filterName)
         )
         .map((v) => v.restaurantData);
     };
@@ -730,11 +734,11 @@ export default defineComponent({
 
       webSocket.catchRemoveMaker((restaurantId) => {
         makers = makers.filter((v) => {
-          const isNotRemove = v.restaurantData.id !== restaurantId;
-          if (!isNotRemove) {
+          const isRemove = v.restaurantData.id === restaurantId;
+          if (isRemove) {
             updateByRemoveMarker(v.maker);
           }
-          return isNotRemove;
+          return isRemove;
         });
       });
 
