@@ -37,7 +37,10 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style lang="scss">
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300&family=Song+Myung&display=swap");
+$dsds: 10px;
+
 .loding {
   z-index: 1002;
 }

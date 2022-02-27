@@ -35,6 +35,7 @@
               :size="30"
               class="mt-4 w-40 h-14"
               @click.prevent="onChangeRoom"
+              role="change"
             />
           </div>
         </fieldset>

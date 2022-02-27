@@ -40,7 +40,7 @@ export const store = createStore<State>({
   mutations,
   // 모듈 사용 ,
   modules: {
-    FoodCaht,
+    // FoodCaht,
   },
   plugins: [createPersistedState()],
 });

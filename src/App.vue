@@ -97,6 +97,7 @@ export default defineComponent({
 
 <style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300&family=Song+Myung&display=swap");
+
 $max-width: 1280px;
 $checkd-width: 50px;
 $checkd-height: 5rem;

@@ -5,6 +5,7 @@ declare module "*.vue" {
   export default component;
 }
 declare module "vue-radial-progress";
+
 declare module "*.png" {
   const value: any;
   export default value;
