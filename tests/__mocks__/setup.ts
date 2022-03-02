@@ -1,18 +1,3 @@
-//@ts-ignore
-
-// module.exports = async () => {
-//   global.naver = {
-//     maps: {
-//       ...naver.maps,
-//     },
-//   };
-// };
-// import LoadingComponent from "@/components/Loding.vue";
-// import { FontAwesomeIcon } from "@/plugin/font-awesome";
-import { config } from "@vue/test-utils";
-
-config.renderStubDefaultSlot = true;
-
 // Cannot read property 'naver' of undefined
 // Cannot read property 'LatLng' of undefined
 // 등 cdn 으로 인한 못찾는 모듈 하나씩 다 목킹해서 정의시킴
