@@ -64,6 +64,6 @@ describe("ApprovaWaitView", () => {
   it("close button emitted 절달 테스트", () => {
     warpper.find("button").trigger("click");
 
-    expect(warpper.emitted()["close"]).toEqual([[]]);
+    expect(warpper.emitted()).toHaveProperty("close");
   });
 });

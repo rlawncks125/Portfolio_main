@@ -80,6 +80,7 @@ export default defineComponent({
       } as EditRoomInPutDto;
 
       const { ok, err } = await editRoom(updateData);
+      
       if (ok) {
         // edit
         emit("edit", uuid);

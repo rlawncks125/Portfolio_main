@@ -10,6 +10,7 @@ module.exports = {
 
   // 커버리지
   // collectCoverage: true,
+
   collectCoverageFrom: [
     "src/components/**/*.{js,vue}",
     "src/views/**/*.vue",
