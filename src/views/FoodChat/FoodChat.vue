@@ -150,11 +150,36 @@
   <!-- 레스토랑 필터  -->
   <div
     v-show="isActiveFilterSearch"
-    class="absolute top-40 w-3/4 h-1/2 left-0 overflow-hidden right-0 mx-auto bg-white border-2 border-gray-500 border-opacity-50"
+    class="fixed inset-0 bg-gray-500"
+    style="z-index: 101"
   >
     <div
-      class="flex justify-between items-center px-2 border-b-2 border-b-gray-500 border-opacity-50"
+      class="overflow-hidden m-4 bg-white border-2 border-gray-500 border-opacity-50 px-2 rounded-2xl"
+      style="height: 90%"
     >
+      <div
+        class="flex justify-between items-center px-2 border-b-2 border-b-gray-500 border-opacity-50"
+      >
+        <div
+          class="cursor-pointer px-2"
+          @click="isActiveFilterSearch = !isActiveFilterSearch"
+        >
+          이전
+        </div>
+        <input
+          type="text"
+          class="flex-1 w-1/3"
+          @input="
+            (e) => {
+              filterName = e.target.value;
+            }
+          "
+          :value="filterName"
+          placeholder="찾으실 조건을 입력하세요"
+        />
+        <LoadingBtn Msg="검색" :isLoading="false" :size="20" class="h-10" />
+      </div>
+
       <select v-model="selectedText">
         <option class="hidden" disabled value="">필터할 종류</option>
         <template v-for="item in selectedFilter" :key="item.id">
@@ -163,32 +188,48 @@
           </option>
         </template>
       </select>
-      <input
-        type="text"
-        class="flex-1 w-1/3"
-        @input="
-          (e) => {
-            filterName = e.target.value;
-          }
-        "
-        :value="filterName"
-      />
-      <LoadingBtn Msg="검색" :isLoading="false" :size="20" class="h-10" />
-    </div>
 
-    <div class="overflow-auto h-full" style="padding-bottom: 3.5rem">
-      <div
-        v-for="restaurant in fillterArry"
-        :key="restaurant.id"
-        class="broder border-2 border-black"
-        @click.prevent="goRestaurantPostionById(restaurant.id)"
-      >
-        <!-- {{ restaurant }} -->
-
-        <p>{{ restaurant.restaurantName }}</p>
-        <p>{{ restaurant.avgStar }}</p>
-        <p>{{ restaurant.hashTags }}</p>
-        <p>{{ restaurant.specialization }}</p>
+      <!-- 필터 결과 랜더 -->
+      <div class="overflow-auto h-full pb-32">
+        <div
+          v-for="restaurant in fillterArry"
+          class="my-4 cursor-pointer flex flex-col gap-2"
+          :key="restaurant.id"
+          @click.prevent="goRestaurantPostionById(restaurant.id)"
+        >
+          <picture>
+            <img
+              v-if="restaurant.restaurantImageUrl"
+              :src="restaurant.restaurantImageUrl"
+              alt=""
+              class="rounded-2xl h-60 w-full bg-cover bg-center"
+            />
+            <img
+              v-else
+              src="https://res.cloudinary.com/dhdq4v4ar/image/upload/v1603952836/sample.jpg"
+              alt=""
+              class="rounded-2xl h-60 w-full bg-cover bg-center"
+            />
+          </picture>
+          <div class="flex gap-2 flex-warp">
+            <template
+              v-for="specialization in restaurant.specialization"
+              :key="specialization.id"
+            >
+              <p class="bg-amber-300 text-white px-2">{{ specialization }}</p>
+            </template>
+            <template v-for="hash in restaurant.hashTags" :key="hash.id">
+              <p class="bg-sky-300 text-white px-2">{{ hash }}</p>
+            </template>
+          </div>
+          <StarFiil
+            class="float-right"
+            :fill="restaurant.avgStar"
+            :starNum="5"
+            :starSize="1"
+          />
+          <h2 class="font-bold text-3xl">{{ restaurant.restaurantName }}</h2>
+        </div>
       </div>
     </div>
   </div>
@@ -288,6 +329,7 @@ import MyPage from "@/views/FoodChat/MyPage.vue";
 import MyRooms from "@/views/FoodChat/MyRoomList.vue";
 import SearchRoom from "@/views/FoodChat/SearchRoomList.vue";
 import LoadingBtn from "@/components/common/Input/LoadingBtn.vue";
+import StarFiil from "@/components/common/StarFill.vue";
 import { useRoute, useRouter } from "vue-router";
 import {
   ApprovalWaitUsersDto,
@@ -328,6 +370,7 @@ export default defineComponent({
     FootChatViewForm,
     ApprovaWaitView,
     EditRoom,
+    StarFiil,
     LoadingBtn,
     MyPage,
     MyRooms,
@@ -644,6 +687,7 @@ export default defineComponent({
 
       const makerPosition = maker[0].maker.getPosition();
 
+      maker[0].maker.trigger("click");
       map.value!.setZoom(14, true);
       map.value!.setCenter(makerPosition);
 
