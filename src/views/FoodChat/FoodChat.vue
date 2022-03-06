@@ -608,8 +608,8 @@ export default defineComponent({
           });
         }
         // 보고있는 view 값 갱신
-        openViewRestaurantInfo(restaurant);
         if (refCompoViewForm.value?.viewData.id === id) {
+          openViewRestaurantInfo(restaurant);
           refCompoViewForm.value?.setOpenViewData(restaurant);
         }
       } else {

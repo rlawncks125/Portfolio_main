@@ -270,50 +270,35 @@ export default defineComponent({
     };
 
     const getDateData = (date: Date) => {
-      let outPutTime: number | string = 0;
+      let outPutTime = "오류";
       if (date) {
         // 데이터 가 어떻게 받아올지 모르겠지만
         // 2021-12-20T17:14:34.508Z 형식일경우
         const paseDate = new Date(date);
         const nt = new Date();
-        // const time = {
-        //   year: paseDate.getFullYear()
-        //   month: paseDate.getMonth(),
-        //   date: paseDate.getDate() as string | number,
-        //   hour: paseDate.getHours(),
-        //   second: paseDate.getSeconds(),
-        // };
 
         // outPutTime = paseDate.toLocaleString();
+        const year = nt.getFullYear() - paseDate.getFullYear();
+        const month = nt.getMonth() - paseDate.getMonth();
+        const day = nt.getDate() - paseDate.getDate();
+        const hours = nt.getHours() - paseDate.getHours();
+        const min = nt.getMinutes() - paseDate.getMinutes();
 
         if (paseDate.getFullYear() !== nt.getFullYear()) {
-          const year = nt.getFullYear() - paseDate.getFullYear();
-          const month = nt.getMonth() - paseDate.getMonth();
-
           outPutTime = `${year * 12 + month}달 전`;
         } else if (paseDate.getMonth() !== nt.getMonth()) {
-          const month = nt.getMonth() - paseDate.getMonth();
-          outPutTime = `${month}달 전`;
+          month > 1
+            ? (outPutTime = `${month}달 전`)
+            : (outPutTime = `${month * 30 + day}일 전`);
         } else if (paseDate.getDate() != nt.getDate()) {
-          const day = nt.getDate() - paseDate.getDate();
-          const hours = nt.getHours() - paseDate.getHours();
-
-          if (day > 1) {
-            outPutTime = `${day}일 전`;
-          } else {
-            outPutTime = `${day * 24 + hours}시간 전`;
-          }
+          day > 1
+            ? (outPutTime = `${day}일 전`)
+            : (outPutTime = `${day * 24 + hours}시간 전`);
         } else if (paseDate.getHours() != nt.getHours()) {
-          const hours = nt.getHours() - paseDate.getHours();
-          const min = nt.getMinutes() - paseDate.getMinutes();
-
-          if (hours > 1) {
-            outPutTime = `${hours}시간 전`;
-          } else {
-            outPutTime = `${hours * 60 + min}분 전`;
-          }
+          hours > 1
+            ? (outPutTime = `${hours}시간 전`)
+            : (outPutTime = `${hours * 60 + min}분 전`);
         } else if (paseDate.getMinutes() != nt.getMinutes()) {
-          const min = nt.getMinutes() - paseDate.getMinutes();
           outPutTime = `${min}분 전`;
         } else {
           outPutTime = "방금 전";
