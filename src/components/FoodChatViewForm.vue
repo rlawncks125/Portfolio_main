@@ -7,136 +7,143 @@
       class="relative overflow-auto max-w-5xl p-2 pt-0 pb-12 h-full bg-yellow-100 inset-0 sm:w-11/12 sm:h-5/6 sm:mx-auto sm:my-12 sm:rounded-xl sm:overflow-y-auto sm:p-4"
     >
       <div
-        class="sticky sm:hidden p-2 py-4 top-0 flex justify-between bg-yellow-100"
+        class="sticky p-2 py-4 top-0 flex justify-between bg-yellow-100 items-center"
       >
         <button class="text-3xl" @click="onClose">&lt;</button>
-        <p>가운데</p>
-        <p>오른쪽</p>
+        <p>{{ viewData.restaurantName }}</p>
+        <button v-if="isSuperUser" @click="onDeleteRestaurnt">삭제 버튼</button>
       </div>
-      <button class="hidden sm:block absolute top-2 right-2" @click="onClose">
+      <!-- <button class="hidden sm:block absolute top-2 right-2" @click="onClose">
         X
-      </button>
+      </button> -->
 
-      <p>접속유저 : {{ store.state.userName }}</p>
+      <!-- <p>접속유저 : {{ store.state.userName }}</p> -->
+      <div class="h-80 sm:h-96 -translate-x-2 w-screen">
+        <img
+          class="bg-cover bg-center w-full h-full"
+          :src="restaurantImageUrl"
+        />
+      </div>
 
-      <button v-if="isSuperUser" @click="onDeleteRestaurnt">삭제 버튼</button>
+      <div class="flex items-center mb-3 gap-2">
+        <span class="text-3xl">평균 별점 </span>
+        <star-fill :starNum="5" :starSize="2" :fill="viewData.avgStar" />
+      </div>
+      <div class="flex flex-wrap items-center gap-2 pb-8 mb-8 border-b-2">
+        <span> 전문 분야 </span>
+        <template v-for="special in viewData.specialization" :key="special.id">
+          <p class="text-gray-500 bg-yellow-400 rounded-full py-1 px-3">
+            {{ special }}
+          </p>
+        </template>
+      </div>
 
-      <!-- 레스토랑 정보 -->
-      <form class="text-center pt-20">
+      <div v-if="viewData.hashTags.length > 0" class="flex gap-1">
+        <template v-for="tag in viewData.hashTags" :key="tag.id">
+          <p class="px-1 text-indigo-100 bg-cyan-500 rounded-full">
+            {{ tag }}
+          </p>
+        </template>
+      </div>
+
+      <!-- 댓글 -->
+      <form>
         <fieldset
-          class="border-2 p-2 mx-4 rounded-2xl grid max-w-full grid-cols-1 justify-items-center"
+          class="border-2 p-2 rounded-2xl grid max-w-full grid-cols-1 justify-items-center"
         >
-          <legend class="text-center px-4">음식점 정보</legend>
-          <h1 class="mr-4 text-4xl">
-            {{ viewData.restaurantName }}
-          </h1>
-          <div
-            v-if="viewData.specialization.length > 0"
-            class="flex gap-1 items-center my-2"
-          >
-            <span> 전문 분야 : </span>
-            <template
-              v-for="special in viewData.specialization"
-              :key="special.id"
-            >
-              <p class="text-gray-500 bg-yellow-400 rounded-full py-1 px-3">
-                {{ special }}
-              </p>
-            </template>
-          </div>
-          <div class="h-64 sm:h-96">
-            <img
-              class="bg-cover bg-center w-full h-full"
-              :src="restaurantImageUrl"
-            />
-          </div>
+          <legend class="text-left ml-4">후기 리뷰</legend>
+          <p v-if="viewData.comments.length === 0">리뷰가 없습니다.</p>
 
-          <p class="mr-4">지역 이름 {{ viewData.location }}</p>
-          <star-fill :starNum="5" :starSize="2" :fill="viewData.avgStar" />
-          <p>평균 별점 {{ viewData.avgStar }}</p>
-          <div v-if="viewData.hashTags.length > 0" class="flex gap-1">
-            <template v-for="tag in viewData.hashTags" :key="tag.id">
-              <p class="px-1 text-indigo-100 bg-cyan-500 rounded-full">
-                {{ tag }}
-              </p>
-            </template>
+          <div class="text-left w-full">
+            <div
+              class="px-4"
+              v-for="comment in viewData.comments"
+              :key="comment.id"
+            >
+              <div class="flex justify-between">
+                <p class="cursor-pointer" @click="setcommentId(comment.id)">
+                  {{ comment.message.userInfo.nickName }} :
+                  {{ comment.message.message }}
+                </p>
+                <div
+                  v-show="
+                    store.state.userName === comment.message.userInfo.nickName
+                  "
+                >
+                  <button @click="setEditCommentId(comment.id)">수정</button>
+                  <button @click="onDeleteComment(comment.id)">삭제</button>
+                </div>
+              </div>
+              <div v-show="editActiveMessage === comment.id">
+                <label for="">댓글 수정:</label>
+                <input type="text" v-model="editMessage" />
+                <button @click="onEditCommentId(comment.id)">댓글 수정</button>
+              </div>
+              <div v-show="activeMessage === comment.id">
+                <label for="">추가 댓글:</label>
+                <input type="text" v-model="childMessage" />
+                <button @click="onAddCommentByCommentId(comment.id)">
+                  대댓글 추가
+                </button>
+              </div>
+              <!-- 대댓글 -->
+              <div
+                class="ml-6 pl-4 flex flex-col border-2 gap-1"
+                v-for="childMessages in comment.childMessages"
+                :key="childMessages.id"
+              >
+                <div class="whitespace-pre-wrap">
+                  <div class="flex -translate-x-2">
+                    <p>
+                      <span class="translate-y-4">└ </span>
+                      <span>
+                        {{ childMessages.userInfo.nickName }}[{{
+                          childMessages.userInfo.role
+                        }}]
+                      </span>
+                    </p>
+                    <button
+                      class="text-red-300"
+                      v-show="
+                        store.state.userName === childMessages.userInfo.nickName
+                      "
+                      @click="
+                        setChildCommentCreateTime(childMessages.CreateTime)
+                      "
+                    >
+                      수정 하기
+                    </button>
+                  </div>
+                  <p class="text-gray-500">
+                    {{ getDateData(childMessages.CreateTime) }}
+                  </p>
+                  <p>
+                    {{ childMessages.message }}
+                  </p>
+                </div>
+                <div
+                  class="flex justify-between border border-yellow-400"
+                  v-show="editActiveChildMessage === childMessages.CreateTime"
+                >
+                  <div>
+                    <label for="">수정할 내용</label>
+                    <input type="text" v-model="editChildMessage" />
+                  </div>
+                  <button
+                    class="border border-red-400"
+                    @click="
+                      onEditChildComment(comment.id, childMessages.CreateTime)
+                    "
+                  >
+                    수정
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </fieldset>
       </form>
-      <!-- 댓글 -->
-      <div>
-        {{ activeMessage }}
-        <div
-          class="px-4"
-          v-for="comment in viewData.comments"
-          :key="comment.id"
-        >
-          <div class="flex justify-between">
-            <p class="cursor-pointer" @click="setcommentId(comment.id)">
-              {{ comment.message.userInfo.nickName }} :
-              {{ comment.message.message }}
-            </p>
-            <button @click="setEditCommentId(comment.id)">수정</button>
-            <button @click="onDeleteComment(comment.id)">삭제</button>
-          </div>
-          <div v-show="editActiveMessage === comment.id">
-            <label for="">댓글 수정:</label>
-            <input type="text" v-model="editMessage" />
-            <button @click="onEditCommentId(comment.id)">댓글 수정</button>
-          </div>
-          <div v-show="activeMessage === comment.id">
-            <label for="">추가 댓글:</label>
-            <input type="text" v-model="childMessage" />
-            <button @click="onAddCommentByCommentId(comment.id)">
-              대댓글 추가
-            </button>
-          </div>
-          <div
-            class="ml-6 pl-4 flex flex-col border-2"
-            v-for="childMessages in comment.childMessages"
-            :key="childMessages.id"
-          >
-            <div class="whitespace-pre-wrap">
-              <div class="flex">
-                <p>
-                  {{ childMessages.userInfo.nickName }}[{{
-                    childMessages.userInfo.role
-                  }}]
-                </p>
-                <button
-                  class="text-red-300"
-                  @click="setChildCommentCreateTime(childMessages.CreateTime)"
-                >
-                  수정 하기
-                </button>
-              </div>
-              <p>
-                {{ getDateData(childMessages.CreateTime) }}
-              </p>
-            </div>
-            <p class="">
-              {{ childMessages.message }}
-            </p>
-            <div
-              class="flex justify-between border border-yellow-400"
-              v-show="editActiveChildMessage === childMessages.CreateTime"
-            >
-              <div>
-                <label for="">수정할 내용</label>
-                <input type="text" v-model="editChildMessage" />
-              </div>
-              <button
-                class="border border-red-400"
-                @click="
-                  onEditChildComment(comment.id, childMessages.CreateTime)
-                "
-              >
-                수정
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+
       <!-- 댓글 달기 -->
       <div class="mt-4 flex flex-col text-left pb-14">
         <star-touch-event
@@ -262,22 +269,22 @@ export default defineComponent({
     };
 
     const getDateData = (date: Date) => {
-      let outPutTime = "작성 시간 : ㄴ";
+      let outPutTime: number | string = 0;
       if (date) {
         // 데이터 가 어떻게 받아올지 모르겠지만
         // 2021-12-20T17:14:34.508Z 형식일경우
         const paseDate = new Date(date);
         // const time = {
-        //   year: paseDate.getFullYear(),
+        //   year: paseDate.getFullYear()
         //   month: paseDate.getMonth(),
         //   date: paseDate.getDate() as string | number,
         //   hour: paseDate.getHours(),
         //   second: paseDate.getSeconds(),
         // };
 
-        // outPutTime = `작성 시간 : ${time.year}-${time.month}-${time.date}:${time.hour}:${time.second}`;
         outPutTime = paseDate.toLocaleString();
       }
+
       return outPutTime;
     };
 

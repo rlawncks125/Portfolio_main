@@ -151,7 +151,7 @@
   <div
     v-show="isActiveFilterSearch"
     class="fixed inset-0 bg-gray-500"
-    style="z-index: 101"
+    style="z-index: 102"
   >
     <div
       class="overflow-hidden m-4 bg-white border-2 border-gray-500 border-opacity-50 px-2 rounded-2xl"
@@ -202,13 +202,13 @@
               v-if="restaurant.restaurantImageUrl"
               :src="restaurant.restaurantImageUrl"
               alt=""
-              class="rounded-2xl h-60 w-full bg-cover bg-center"
+              class="rounded-2xl h-60 w-full bg-contain bg-center"
             />
             <img
               v-else
               src="https://res.cloudinary.com/dhdq4v4ar/image/upload/v1603952836/sample.jpg"
               alt=""
-              class="rounded-2xl h-60 w-full bg-cover bg-center"
+              class="rounded-2xl h-60 w-full bg-contain bg-center"
             />
           </picture>
           <div class="flex gap-2 flex-warp">
@@ -683,11 +683,11 @@ export default defineComponent({
     });
 
     const goRestaurantPostionById = (id: number) => {
-      const maker = makers.filter((v) => v.restaurantData.id === +id);
+      const maker = makers.filter((v) => v.restaurantData.id === +id)[0].maker;
 
-      const makerPosition = maker[0].maker.getPosition();
+      const makerPosition = maker.getPosition();
 
-      maker[0].maker.trigger("click");
+      maker.trigger("click");
       map.value!.setZoom(14, true);
       map.value!.setCenter(makerPosition);
 
