@@ -7,7 +7,8 @@
       class="relative overflow-auto max-w-5xl p-2 pt-0 pb-12 h-full bg-yellow-100 inset-0 sm:w-11/12 sm:h-5/6 sm:mx-auto sm:my-12 sm:rounded-xl sm:overflow-y-auto sm:p-4"
     >
       <div
-        class="sticky p-2 py-4 top-0 flex justify-between bg-yellow-100 items-center"
+        class="-translate-x-2 w-screen sticky px-8 py-4 top-0 flex justify-between bg-yellow-100 items-center"
+        style="z-index: 103"
       >
         <button class="text-3xl" @click="onClose">&lt;</button>
         <p>{{ viewData.restaurantName }}</p>
@@ -93,15 +94,18 @@
                 :key="childMessages.id"
               >
                 <div class="whitespace-pre-wrap">
-                  <div class="flex -translate-x-2">
-                    <p>
+                  <div class="flex justify-between -translate-x-2">
+                    <div>
                       <span class="translate-y-4">└ </span>
                       <span>
                         {{ childMessages.userInfo.nickName }}[{{
                           childMessages.userInfo.role
                         }}]
                       </span>
-                    </p>
+                      <span class="text-gray-500">
+                        {{ getDateData(childMessages.CreateTime) }}
+                      </span>
+                    </div>
                     <button
                       class="text-red-300"
                       v-show="
@@ -114,9 +118,6 @@
                       수정 하기
                     </button>
                   </div>
-                  <p class="text-gray-500">
-                    {{ getDateData(childMessages.CreateTime) }}
-                  </p>
                   <p>
                     {{ childMessages.message }}
                   </p>
@@ -274,6 +275,7 @@ export default defineComponent({
         // 데이터 가 어떻게 받아올지 모르겠지만
         // 2021-12-20T17:14:34.508Z 형식일경우
         const paseDate = new Date(date);
+        const nt = new Date();
         // const time = {
         //   year: paseDate.getFullYear()
         //   month: paseDate.getMonth(),
@@ -282,7 +284,40 @@ export default defineComponent({
         //   second: paseDate.getSeconds(),
         // };
 
-        outPutTime = paseDate.toLocaleString();
+        // outPutTime = paseDate.toLocaleString();
+
+        if (paseDate.getFullYear() !== nt.getFullYear()) {
+          const year = nt.getFullYear() - paseDate.getFullYear();
+          const month = nt.getMonth() - paseDate.getMonth();
+
+          outPutTime = `${year * 12 + month}달 전`;
+        } else if (paseDate.getMonth() !== nt.getMonth()) {
+          const month = nt.getMonth() - paseDate.getMonth();
+          outPutTime = `${month}달 전`;
+        } else if (paseDate.getDate() != nt.getDate()) {
+          const day = nt.getDate() - paseDate.getDate();
+          const hours = nt.getHours() - paseDate.getHours();
+
+          if (day > 1) {
+            outPutTime = `${day}일 전`;
+          } else {
+            outPutTime = `${day * 24 + hours}시간 전`;
+          }
+        } else if (paseDate.getHours() != nt.getHours()) {
+          const hours = nt.getHours() - paseDate.getHours();
+          const min = nt.getMinutes() - paseDate.getMinutes();
+
+          if (hours > 1) {
+            outPutTime = `${hours}시간 전`;
+          } else {
+            outPutTime = `${hours * 60 + min}분 전`;
+          }
+        } else if (paseDate.getMinutes() != nt.getMinutes()) {
+          const min = nt.getMinutes() - paseDate.getMinutes();
+          outPutTime = `${min}분 전`;
+        } else {
+          outPutTime = "방금 전";
+        }
       }
 
       return outPutTime;

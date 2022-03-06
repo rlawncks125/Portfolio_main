@@ -607,8 +607,8 @@ export default defineComponent({
             restaurantId: id,
           });
         }
-
         // 보고있는 view 값 갱신
+        openViewRestaurantInfo(restaurant);
         if (refCompoViewForm.value?.viewData.id === id) {
           refCompoViewForm.value?.setOpenViewData(restaurant);
         }
