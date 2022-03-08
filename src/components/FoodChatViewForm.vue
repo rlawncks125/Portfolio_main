@@ -75,17 +75,36 @@
                   <button @click="onDeleteComment(comment.id)">삭제</button>
                 </div>
               </div>
-              <div v-show="editActiveMessage === comment.id">
-                <label for="">댓글 수정:</label>
-                <input type="text" v-model="editMessage" />
-                <button @click="onEditCommentId(comment.id)">댓글 수정</button>
+              <div
+                v-show="editActiveMessage === comment.id"
+                class="border border-red-500"
+              >
+                <label for="" class="block">댓글 수정:</label>
+                <div class="flex items-center">
+                  <input type="text" v-model="editMessage" class="w-0 flex-1" />
+                  <button @click="onEditCommentId(comment.id)" class="h-full">
+                    댓글 수정
+                  </button>
+                </div>
               </div>
-              <div v-show="activeMessage === comment.id">
-                <label for="">추가 댓글:</label>
-                <input type="text" v-model="childMessage" />
-                <button @click="onAddCommentByCommentId(comment.id)">
-                  대댓글 추가
-                </button>
+              <div
+                v-show="activeMessage === comment.id"
+                class="border border-blue-300"
+              >
+                <label for="" class="block">추가 댓글:</label>
+                <div class="flex items-center">
+                  <input
+                    type="text"
+                    v-model="childMessage"
+                    class="w-0 flex-1"
+                  />
+                  <button
+                    @click="onAddCommentByCommentId(comment.id)"
+                    class="h-full"
+                  >
+                    대댓글 추가
+                  </button>
+                </div>
               </div>
               <!-- 대댓글 -->
               <div
@@ -94,7 +113,7 @@
                 :key="childMessages.id"
               >
                 <div class="whitespace-pre-wrap">
-                  <div class="flex justify-between -translate-x-2">
+                  <div class="flex flex-wrap justify-between -translate-x-2">
                     <div>
                       <span class="translate-y-4">└ </span>
                       <span>
@@ -107,7 +126,7 @@
                       </span>
                     </div>
                     <button
-                      class="text-red-300"
+                      class="text-red-300 flex-none"
                       v-show="
                         store.state.userName === childMessages.userInfo.nickName
                       "
@@ -115,7 +134,7 @@
                         setChildCommentCreateTime(childMessages.CreateTime)
                       "
                     >
-                      수정 하기
+                      수정
                     </button>
                   </div>
                   <p>
@@ -123,21 +142,28 @@
                   </p>
                 </div>
                 <div
-                  class="flex justify-between border border-yellow-400"
+                  class="border border-yellow-400 px-2"
                   v-show="editActiveChildMessage === childMessages.CreateTime"
                 >
-                  <div>
-                    <label for="">수정할 내용</label>
-                    <input type="text" v-model="editChildMessage" />
-                  </div>
-                  <button
-                    class="border border-red-400"
-                    @click="
-                      onEditChildComment(comment.id, childMessages.CreateTime)
-                    "
+                  <label class="block" for="edit-chuld-message"
+                    >수정할 내용</label
                   >
-                    수정
-                  </button>
+                  <div class="flex items-center">
+                    <input
+                      type="text"
+                      id="edit-chuld-message"
+                      v-model="editChildMessage"
+                      class="w-0 flex-1"
+                    />
+                    <button
+                      class="border border-red-400 flex-none h-full"
+                      @click="
+                        onEditChildComment(comment.id, childMessages.CreateTime)
+                      "
+                    >
+                      수정
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

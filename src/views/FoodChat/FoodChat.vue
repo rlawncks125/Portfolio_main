@@ -155,7 +155,7 @@
   >
     <div
       class="overflow-hidden m-4 bg-white border-2 border-gray-500 border-opacity-50 px-2 rounded-2xl"
-      style="height: 90%"
+      style="height: 95%"
     >
       <div
         class="flex justify-between items-center px-2 border-b-2 border-b-gray-500 border-opacity-50"
@@ -190,10 +190,10 @@
       </select>
 
       <!-- 필터 결과 랜더 -->
-      <div class="overflow-auto h-full pb-32">
+      <div class="filter-render-wrap overflow-auto h-full pb-32">
         <div
           v-for="restaurant in fillterArry"
-          class="my-4 cursor-pointer flex flex-col gap-2"
+          class="my-4 cursor-pointer flex flex-col border-2 rounded-lg border-gray-400"
           :key="restaurant.id"
           @click.prevent="goRestaurantPostionById(restaurant.id)"
         >
@@ -202,33 +202,35 @@
               v-if="restaurant.restaurantImageUrl"
               :src="restaurant.restaurantImageUrl"
               alt=""
-              class="rounded-2xl h-60 w-full bg-contain bg-center"
+              class="w-full h-60 bg-contain bg-center gap"
             />
             <img
               v-else
               src="https://res.cloudinary.com/dhdq4v4ar/image/upload/v1603952836/sample.jpg"
               alt=""
-              class="rounded-2xl h-60 w-full bg-contain bg-center"
+              class="w-full h-60 bg-contain bg-center"
             />
           </picture>
-          <div class="flex gap-2 flex-warp">
-            <template
-              v-for="specialization in restaurant.specialization"
-              :key="specialization.id"
-            >
-              <p class="bg-amber-300 text-white px-2">{{ specialization }}</p>
-            </template>
-            <template v-for="hash in restaurant.hashTags" :key="hash.id">
-              <p class="bg-sky-300 text-white px-2">{{ hash }}</p>
-            </template>
+          <div class="flex flex-col gap-2 px-2 pt-4 pb-8">
+            <div class="flex gap-2 flex-warp">
+              <template
+                v-for="specialization in restaurant.specialization"
+                :key="specialization.id"
+              >
+                <p class="bg-amber-300 text-white px-2">{{ specialization }}</p>
+              </template>
+              <template v-for="hash in restaurant.hashTags" :key="hash.id">
+                <p class="bg-sky-300 text-white px-2">{{ hash }}</p>
+              </template>
+            </div>
+            <StarFiil
+              class="float-right"
+              :fill="restaurant.avgStar"
+              :starNum="5"
+              :starSize="1"
+            />
+            <h2 class="font-bold text-3xl">{{ restaurant.restaurantName }}</h2>
           </div>
-          <StarFiil
-            class="float-right"
-            :fill="restaurant.avgStar"
-            :starNum="5"
-            :starSize="1"
-          />
-          <h2 class="font-bold text-3xl">{{ restaurant.restaurantName }}</h2>
         </div>
       </div>
     </div>
@@ -496,21 +498,24 @@ export default defineComponent({
           makerInfoWindow.close();
           closeViewRestaurantInfo();
         } else {
-          let restaurant = makers.filter((v) => v.maker === maker)[0]
-            .restaurantData;
+          activeMakerinfoWindow(maker);
+        }
+      });
+    };
+    const activeMakerinfoWindow = (maker: naver.maps.Marker) => {
+      let restaurant = makers.filter((v) => v.maker === maker)[0]
+        .restaurantData;
 
-          const infoContent = `
+      const infoContent = `
           <p class="font-mono text-xs">레스토랑 id :${restaurant.id}</p>
           <p class="font-mono text-sm">${restaurant.restaurantName}</p>
           <p class="text-xs">${restaurant.resturantSuperUser.nickName} 님이 만들었습니다.</p>
           `;
 
-          makerInfoWindow.setContent(infoContent);
+      makerInfoWindow.setContent(infoContent);
 
-          makerInfoWindow.open(map.value!, maker);
-          openViewRestaurantInfo(restaurant);
-        }
-      });
+      makerInfoWindow.open(map.value!, maker);
+      openViewRestaurantInfo(restaurant);
     };
 
     const createMaker = ({
@@ -687,9 +692,9 @@ export default defineComponent({
 
       const makerPosition = maker.getPosition();
 
-      maker.trigger("click");
-      map.value!.setZoom(14, true);
+      map.value!.setZoom(15, false);
       map.value!.setCenter(makerPosition);
+      activeMakerinfoWindow(maker);
 
       isActiveFilterSearch.value = false;
     };
@@ -914,4 +919,10 @@ export default defineComponent({
 });
 </script>
 
-<style></style>
+<style lang="scss">
+.filter-render-wrap {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+</style>
