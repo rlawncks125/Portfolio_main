@@ -1,11 +1,9 @@
 <template>
-  <div
-    class="fixed bg-gray-600 inset-0 w-screen h-screen text-2xl sm:text-base"
-    style="z-index: 1001"
-  >
+  <div class="foodChat-form">
     <loding :isLoding="isLoading" />
     <div
-      class="relative overflow-auto max-w-5xl p-2 pt-0 h-full bg-yellow-100 inset-0 sm:w-11/12 sm:h-5/6 sm:mx-auto sm:my-12 sm:rounded-xl sm:overflow-y-auto sm:p-4"
+      class="foodChat-form-main"
+      style="height: calc(var(--mobile--full) - 2vh)"
     >
       <button class="absolute top-2 right-4" @click="$emit('close')">X</button>
 

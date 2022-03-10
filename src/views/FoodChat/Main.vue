@@ -1,14 +1,12 @@
 <template>
-  <div class="underline">음식 채팅방 메인방</div>
-  <div>
+  <!-- <div>
     <button @click="getMyRoomlist">토큰 테스트</button>
     유저 닉네임 : {{ userName }}
-  </div>
+  </div> -->
   <div
     v-if="!isLogin"
     class="h-5/6 flex py-4 items-start justify-center w-full text-3xl"
   >
-    <p>{{ token }}</p>
     <!-- 회원가입 -->
     <form
       v-if="isPageSigUp"
@@ -68,9 +66,8 @@
     v-else
   >
     <button class="border-2" @click.prevent="userLogOut">LogOut</button>
-    <br />
 
-    <!-- 페이지 갱신 문제로 key값 추가 -->
+    <!--route-view 페이지 갱신 문제로 key값 추가 -->
     <router-view :key="route.fullPath" />
 
     <!-- 모바일 하단-->
@@ -158,11 +155,11 @@ export default defineComponent({
       if (window.innerWidth < 640) {
         // 모바일 지도
         mapViewStyles.value = {
-          height: "calc(var(--mobile--full) - 15.5rem)",
+          height: "calc(var(--mobile--full) - 15.35rem)",
         };
       } else {
         mapViewStyles.value = {
-          height: "calc(var(--mobile--full) - 12.6rem)",
+          height: "calc(var(--mobile--full) - 10.8rem)",
         };
       }
     };

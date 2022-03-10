@@ -142,24 +142,30 @@ body {
 
   grid-template:
     "nav nav nav nav" 4rem
-    "render-view render-view render-view render-view" minmax(50px, auto)
+    "render-view render-view render-view render-view" minmax(
+      calc(var(--mobile--full) - 5rem),
+      auto
+    )
     / 1fr 1fr 1fr 1fr;
   justify-items: center;
 
   @include mobile() {
     grid-template:
-      "out-checkd nav ." 5rem
+      "out-checkd nav nav" 5rem
       "render-view render-view render-view" minmax(
         calc(var(--mobile--full) - 5rem),
         auto
       )
-      / 1fr 1fr 1fr;
-    align-items: center;
+      / 1fr 1fr 1fr 1fr;
+    justify-items: center;
   }
   @include tablet() {
     grid-template:
       "nav nav nav nav" 4rem
-      "render-view render-view render-view render-view" minmax(50px, auto)
+      "render-view render-view render-view render-view" minmax(
+        calc(var(--mobile--full) - 5rem),
+        auto
+      )
       / 1fr 1fr 1fr 1fr;
     justify-items: center;
   }
@@ -201,6 +207,7 @@ a:-webkit-any-link {
     .nav-home {
       width: 100%;
       max-width: 14rem;
+      margin: 0 auto;
     }
     .nav-wrap {
       display: flex;
@@ -252,6 +259,7 @@ a:-webkit-any-link {
 .checkd-label {
   grid-area: out-checkd;
   display: block;
+  align-self: center;
 
   z-index: 100;
 }
@@ -301,7 +309,7 @@ a:-webkit-any-link {
   // grid 마지막 col에 하나가 더껴있어서 거기까지 index지정으로 늘림
   grid-column-end: 7;
   width: 100%;
-  height: 100%;
+
   // max-width: $max-width;
 }
 </style>

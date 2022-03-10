@@ -1,27 +1,30 @@
 <template>
-  <div
-    class="fixed bg-gray-600 inset-0 w-screen h-screen text-2xl sm:text-base"
-    style="z-index: 1001"
-  >
+  <div class="foodChat-form">
     <div
-      class="relative overflow-auto max-w-5xl p-2 pt-0 pb-12 h-full bg-yellow-100 inset-0 sm:w-11/12 sm:h-5/6 sm:mx-auto sm:my-12 sm:rounded-xl sm:overflow-y-auto sm:p-4"
+      class="foodChat-form-main !overflow-x-hidden"
+      style="height: calc(var(--mobile--full) - 2vh)"
     >
       <div
-        class="-translate-x-2 w-screen sticky px-8 py-4 top-0 flex justify-between bg-yellow-100 items-center"
+        class="w-full -translate-x-2 sticky px-2 py-2 top-0 flex justify-between bg-transparent items-center"
         style="z-index: 103"
       >
         <button class="text-3xl" @click="onClose">&lt;</button>
-        <p>{{ viewData.restaurantName }}</p>
-        <button v-if="isSuperUser" @click="onDeleteRestaurnt">삭제 버튼</button>
+        <p class="w-auto flex-1 text-center">{{ viewData.restaurantName }}</p>
+        <div>
+          <button v-if="isSuperUser" @click="onDeleteRestaurnt">
+            삭제 버튼
+          </button>
+          <div v-else></div>
+        </div>
       </div>
       <!-- <button class="hidden sm:block absolute top-2 right-2" @click="onClose">
         X
       </button> -->
 
       <!-- <p>접속유저 : {{ store.state.userName }}</p> -->
-      <div class="h-80 sm:h-96 -translate-x-2 w-screen">
+      <div class="h-80 sm:h-96 -translate-x-3 w-[105%]">
         <img
-          class="bg-cover bg-center w-full h-full"
+          class="object-cover object-center w-full h-full"
           :src="restaurantImageUrl"
         />
       </div>
@@ -39,7 +42,10 @@
         </template>
       </div>
 
-      <div v-if="viewData.hashTags.length > 0" class="flex gap-1">
+      <div
+        v-if="viewData.hashTags && viewData.hashTags.length > 0"
+        class="flex gap-1"
+      >
         <template v-for="tag in viewData.hashTags" :key="tag.id">
           <p class="px-1 text-indigo-100 bg-cyan-500 rounded-full">
             {{ tag }}
@@ -53,7 +59,9 @@
           class="border-2 p-2 rounded-2xl grid max-w-full grid-cols-1 justify-items-center"
         >
           <legend class="text-left ml-4">후기 리뷰</legend>
-          <p v-if="viewData.comments.length === 0">리뷰가 없습니다.</p>
+          <p v-if="viewData.comments && viewData.comments.length === 0">
+            리뷰가 없습니다.
+          </p>
 
           <div class="text-left w-full">
             <div
@@ -184,7 +192,10 @@
           "
         />
         <label for="">추가 댓글 달기 :</label>
-        <textarea class="" v-model="message" />
+        <textarea
+          class="border border-black resize-none mb-2"
+          v-model="message"
+        />
         <button @click="onAddCommentRestaurantById">댓글 추가</button>
       </div>
     </div>

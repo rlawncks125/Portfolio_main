@@ -958,6 +958,9 @@ export interface RoominfoDto {
   /** 방 이름입니다.. */
   roomName: string;
 
+  /** 방마크 입니다. */
+  markeImageUrl: string;
+
   /** 방 시작 좌표입니다. */
   lating: CombinedLatingTypes;
 

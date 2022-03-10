@@ -5,23 +5,30 @@
     @drop="onDropFile"
     @dragover="isFileStatus = 'dragover'"
     @dragleave="isFileStatus = ''"
-    class="block bg-red-200 p-2 w-full h-full my-2 text-center mx-auto"
+    class="block bg-transparent w-full h-full my-2 text-center mx-auto"
     :style="[isFileStatus === 'dragover' ? classOverFile : {}]"
   >
-    <div class="pointer-events-none h-full mx-auto border-2 border-gray-800">
+    <div class="pointer-events-none h-full mx-auto">
       <!-- 이미지 출력 -->
       <template v-if="files">
         <img
-          class="h-full bg-cover mx-auto"
-          :class="{ 'rounded-full': isStyleRounded }"
+          class="w-full h-full mx-auto bg-center bg-cover bg-no-repeat"
+          :class="{
+            'rounded-full border-2 border-solid border-gray-400 ':
+              isStyleRounded,
+          }"
           v-if="files.type === 'image'"
-          :src="files.data"
+          :style="`background-image : url(${files.data})`"
         />
       </template>
-      <div class="flex flex-col justify-center h-full" v-else>
+      <div
+        class="flex flex-col justify-center h-full outline-offset-[-10px] outline-dashed"
+        v-else
+      >
         <template v-if="!isFileStatus">
-          <p>이 구역을 클릭하시거나.</p>
-          <p>올리 이미지들을 여기에 끌어다 올리세요.</p>
+          <p>이 구역을 클릭하세요.</p>
+          <p class="hidden sm:block">OR</p>
+          <p class="hidden sm:block">올리 이미지들을 여기에 끌어다 올리세요.</p>
         </template>
         <template v-else-if="isFileStatus === 'dragover'">
           <p>이미지를 놓으세요</p>

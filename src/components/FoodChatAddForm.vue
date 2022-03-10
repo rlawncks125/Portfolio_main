@@ -1,11 +1,9 @@
 <template>
-  <div
-    class="fixed bg-gray-600 inset-0 w-screen h-screen text-2xl sm:text-base"
-    style="z-index: 1001"
-  >
+  <div class="foodChat-form">
     <loding :isLoding="isLoading" />
     <div
-      class="relative overflow-auto max-w-5xl p-2 pt-0 h-full bg-yellow-100 inset-0 sm:w-11/12 sm:h-5/6 sm:mx-auto sm:my-12 sm:rounded-xl sm:overflow-y-auto sm:p-4"
+      class="foodChat-form-main"
+      style="height: calc(var(--mobile--full) - 2vh)"
     >
       <button class="absolute top-2 right-4" @click="closeForm">X</button>
 
@@ -13,30 +11,29 @@
         <fieldset
           class="border-2 p-2 mx-4 rounded-2xl grid max-w-full grid-cols-1 justify-items-center"
         >
-          <legend class="text-center px-4">음식점 추가</legend>
-          <div class="grid grid-cols-2 gap-5 w-full items-center">
-            <div>
-              <label for="">레스토랑 이름: </label>
-              <input class="w-5/6" type="text" v-model="restaurantName" />
-            </div>
-            <div>
-              <label for="">지역: </label>
-              <input class="w-5/6" type="text" v-model="location" />
-            </div>
+          <legend class="text-center px-8">음식점 추가</legend>
+          <div class="w-full flex justify-around items-center">
+            <label for="" class="w-40">레스토랑 이름 </label>
+            <input class="w-0 flex-1" type="text" v-model="restaurantName" />
+          </div>
+          <div class="w-full flex justify-around items-center">
+            <label for="" class="w-40">지역 </label>
+            <input class="w-0 flex-1" type="text" v-model="location" />
           </div>
           <!-- 음식점 이미지  -->
+          <p class="mt-4">레스토랑 이미지</p>
           <input-file
             ref="inputFileComponet"
-            class="w-6/12 h-60"
+            class="w-80 h-60"
             @cahngeFile="(data) => (imageFile = data)"
           />
           <!-- 전문 분야들 -->
-          <div class="flex flex-wrap justify-between items-center">
-            <label for="specialization" class="text-left mr-4 text-indigo-300"
+          <div class="w-full flex flex-wrap justify-between items-center">
+            <label for="specialization" class="w-28 text-left text-indigo-300"
               >전문 분야
             </label>
             <input
-              class="addform-input-add"
+              class="w-20 flex-1"
               type="text"
               name="specialization"
               v-model="specialization"
@@ -56,12 +53,12 @@
             </template>
           </div>
           <!-- 태그들  -->
-          <div class="flex flex-wrap justify-between items-center">
-            <label for="tag" class="text-left mr-4 text-indigo-300"
+          <div class="w-full flex flex-wrap justify-between items-center">
+            <label for="tag" class="w-28 text-left text-indigo-300"
               >#해시태그</label
             >
             <input
-              class="addform-input-add"
+              class="w-20 flex-1"
               type="text"
               name="tag"
               v-model="tag"

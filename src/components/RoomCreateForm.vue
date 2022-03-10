@@ -1,44 +1,46 @@
 <template>
-  <div
-    class="fixed bg-gray-600 inset-0 w-screen h-screen text-2xl sm:text-base"
-    style="z-index: 1001"
-  >
+  <div class="foodChat-form">
     <loding :isLoding="isLoading" />
+
     <div
-      class="relative overflow-auto max-w-5xl p-2 h-full bg-yellow-100 inset-0 sm:w-11/12 sm:h-5/6 sm:mx-auto sm:my-12 sm:rounded-xl sm:overflow-y-auto sm:p-4"
+      class="foodChat-form-main"
+      style="height: calc(var(--mobile--full) - 2vh)"
     >
       <button class="float-right mb-2" @click.prevent="onClose">X</button>
+
       <div ref="mapRef" class="w-full h-96 mx-auto"></div>
 
-      <div class="pt-4">
+      <div class="pt-4 flex flex-col items-center">
         <div class="flex justify-between items-center">
           <label>방 이름 :</label>
           <input class="flex-1 w-1/2" type="text" v-model="roomName" />
-          <button class="p-1" @click.prevent="onCreateRoom">방 만들기</button>
         </div>
-
+        <div class="mt-4 text-center">
+          <p class="w-60 mx-auto">마크 이미지</p>
+          <input-file
+            ref="inputFileComponet"
+            :isStyleRounded="true"
+            class="w-60 h-60 bg-transparent"
+            @cahngeFile="(data) => (imageFile = data)"
+          />
+        </div>
+        <button @click.prevent="onCreateRoom">방 만들기</button>
         <div>방 생성시 기본값이 되는 좌표를 마커로 표시해주세요</div>
 
-        <div class="flex justify-between items-center">
+        <div class="flex justify-between w-full items-center">
           <label>도로명 주소 :</label>
-          <input class="flex-1 w-1/2" type="text" v-model="addr" />
+          <input class="flex-1 w-0" type="text" v-model="addr" />
           <button class="p-1" @click.prevent="serachAddr">찾기</button>
         </div>
-
-        <div v-for="addr in findAddrs" :key="addr.id">
-          <div class="cursor-pointer border mt-1">
-            <p @click="onMoveMarkerAddress(addr.x, addr.y)">
-              {{ addr.roadAddress }}
-            </p>
-          </div>
+        <div class="w-full text-left">
+          <template v-for="addr in findAddrs" :key="addr.id">
+            <div class="cursor-pointer border mt-1">
+              <p @click="onMoveMarkerAddress(addr.x, addr.y)">
+                {{ addr.roadAddress }}
+              </p>
+            </div>
+          </template>
         </div>
-
-        <input-file
-          ref="inputFileComponet"
-          :isStyleRounded="true"
-          class="w-64 h-64 bg-transparent"
-          @cahngeFile="(data) => (imageFile = data)"
-        />
       </div>
     </div>
   </div>
@@ -148,6 +150,7 @@ export default defineComponent({
         x,
         y,
       });
+      map.setZoom(15, true);
 
       marker = new naver.maps.Marker({
         position: {

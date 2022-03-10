@@ -1,16 +1,28 @@
 <template>
   <loding :isLoding="isLoding" />
-  <div class="flex gap-2">
-    <span class="text-red-800" v-if="isSpuerUser">방 주인입니다.</span>
-    <button @click="isActiveApprovalWait = true" v-if="isSpuerUser">
-      신청 대기 유저
-    </button>
-    <button v-if="isSpuerUser" @click="onDeleteRoom">방 삭제하기</button>
+
+  <!-- 현재 접속 중인방 정보  -->
+  <div class="bg-orange-400 text-center pt-2">
+    <span class="text-red-800" v-if="isSpuerUser">👑 </span>
+    <span v-if="roomInfoData">{{ roomInfoData.roomName }} 방</span>
   </div>
-  <div class="flex justify-between">
-    <button @click="onLeaveRoom">방 나가기</button>
-    <button @click.prevent="router.push('/foodChat')">방으로 돌아가기</button>
-  </div>
+  <!-- 기타 등등 우선 토글에 넣어놓음 -->
+  <details class="block relative w-full h-10 bg-orange-400">
+    <summary class="cursor-pointer px-4">기타 등등</summary>
+    <div class="absolute top-10 z-[101] bg-white w-full h-auto">
+      <div class="flex flex-col gap-2 py-4 px-4 bg-orange-400">
+        <button @click="onLeaveRoom">방 나가기</button>
+        <button @click.prevent="router.push('/foodChat')">
+          방으로 돌아가기
+        </button>
+        <template v-if="isSpuerUser">
+          <button @click="isActiveApprovalWait = true">신청 대기 유저</button>
+          <button @click="onDeleteRoom">방 삭제하기</button>
+        </template>
+        <button class="hidden sm:block" @click="openEditRoom">방 설정</button>
+      </div>
+    </div>
+  </details>
 
   <!-- 맵 -->
   <div id="map" class="w-full h-full mx-auto relative">
@@ -83,6 +95,16 @@
         v-model="isOptionsCheckd"
       />
     </div>
+
+    <!-- 트리거 표시 메세지 -->
+    <div class="z-[102] absolute top-10 w-full text-center pointer-events-none">
+      <p
+        class="w-1/2 mx-auto text-red-400 bg-cyan-200 border rounded-md border-black"
+        v-show="isActiveAdd"
+      >
+        생성 할곳을 클릭하세요
+      </p>
+    </div>
   </div>
 
   <transition name="ani-fade">
@@ -111,15 +133,6 @@
       @close="isActiveApprovalWait = false"
     />
   </transition>
-  <!-- 현재 접속 중인방  -->
-  <div
-    class="absolute top-20 w-full flex justify-center text-center pointer-events-none"
-  >
-    <div>
-      <p v-if="roomInfoData">{{ roomInfoData.roomName }} 방</p>
-      <p class="text-red-400" v-show="isActiveAdd">생성 할곳을 클릭하세요</p>
-    </div>
-  </div>
 
   <!-- 레스토랑 정보 창 -->
   <div
@@ -148,49 +161,47 @@
   />
 
   <!-- 레스토랑 필터  -->
-  <div
-    v-show="isActiveFilterSearch"
-    class="fixed inset-0 bg-gray-500"
-    style="z-index: 102"
-  >
+  <div v-show="isActiveFilterSearch" class="foodChat-form">
     <div
-      class="overflow-hidden m-4 bg-white border-2 border-gray-500 border-opacity-50 px-2 rounded-2xl"
-      style="height: 95%"
+      class="foodChat-form-main scrollbar-clean px-8 !py-0"
+      style="height: calc(var(--mobile--full) - 2vh)"
     >
-      <div
-        class="flex justify-between items-center px-2 border-b-2 border-b-gray-500 border-opacity-50"
-      >
+      <div class="sticky top-0 bg-white z-[101] py-2">
         <div
-          class="cursor-pointer px-2"
-          @click="isActiveFilterSearch = !isActiveFilterSearch"
+          class="flex justify-between items-center px-2 border-b-2 border-b-gray-500 border-opacity-50"
         >
-          이전
+          <div
+            class="cursor-pointer px-2"
+            @click="isActiveFilterSearch = !isActiveFilterSearch"
+          >
+            이전
+          </div>
+          <input
+            type="text"
+            class="flex-1 w-1/3"
+            @input="
+              (e) => {
+                filterName = e.target.value;
+              }
+            "
+            :value="filterName"
+            placeholder="찾으실 조건을 입력하세요"
+          />
+          <LoadingBtn Msg="검색" :isLoading="false" :size="20" class="h-10" />
         </div>
-        <input
-          type="text"
-          class="flex-1 w-1/3"
-          @input="
-            (e) => {
-              filterName = e.target.value;
-            }
-          "
-          :value="filterName"
-          placeholder="찾으실 조건을 입력하세요"
-        />
-        <LoadingBtn Msg="검색" :isLoading="false" :size="20" class="h-10" />
+
+        <select v-model="selectedText">
+          <option class="hidden" disabled value="">필터할 종류</option>
+          <template v-for="item in selectedFilter" :key="item.id">
+            <option>
+              {{ item.type }}
+            </option>
+          </template>
+        </select>
       </div>
 
-      <select v-model="selectedText">
-        <option class="hidden" disabled value="">필터할 종류</option>
-        <template v-for="item in selectedFilter" :key="item.id">
-          <option>
-            {{ item.type }}
-          </option>
-        </template>
-      </select>
-
       <!-- 필터 결과 랜더 -->
-      <div class="filter-render-wrap overflow-auto h-full pb-32">
+      <div class="scrollbar-clean overflow-auto">
         <div
           v-for="restaurant in fillterArry"
           class="my-4 cursor-pointer flex flex-col border-2 rounded-lg border-gray-400"
@@ -202,13 +213,13 @@
               v-if="restaurant.restaurantImageUrl"
               :src="restaurant.restaurantImageUrl"
               alt=""
-              class="w-full h-60 bg-contain bg-center gap"
+              class="w-full h-60 object-cover object-center"
             />
             <img
               v-else
               src="https://res.cloudinary.com/dhdq4v4ar/image/upload/v1603952836/sample.jpg"
               alt=""
-              class="w-full h-60 bg-contain bg-center"
+              class="w-full h-60 object-cover object-center"
             />
           </picture>
           <div class="flex flex-col gap-2 px-2 pt-4 pb-8">
@@ -346,6 +357,7 @@ import {
   getRoomInfo,
   leaveRoom,
 } from "@/api/Room";
+import { deleteFile } from "@/api/file";
 import { deleteRestaurant, getRestaurantById } from "@/api/Restaurant";
 import { useStore } from "@/store/index";
 import axios from "axios";
@@ -640,16 +652,11 @@ export default defineComponent({
             v.restaurantData.restaurantImageUrl !== null &&
             v.restaurantData.restaurantImageUrl.length > 1
           ) {
-            const deleteImageUrl = v.restaurantData.restaurantImageUrl
-              .split("/")
-              .pop()
-              ?.split(".")[0];
+            const deleteImageUrl = v.restaurantData.restaurantImageUrl;
 
-            const deleteResult = await axios
-              .delete(`/api/file/${deleteImageUrl}`)
-              .then((res: any) => res.data.deleted);
+            const isDeleted = await deleteFile(deleteImageUrl!);
 
-            if (Object.values(deleteResult).length > 0) {
+            if (isDeleted) {
               console.log("이미지 삭제 성공");
             }
           }
@@ -692,8 +699,8 @@ export default defineComponent({
 
       const makerPosition = maker.getPosition();
 
-      map.value!.setZoom(15, false);
       map.value!.setCenter(makerPosition);
+      map.value!.setZoom(15, false);
       activeMakerinfoWindow(maker);
 
       isActiveFilterSearch.value = false;
@@ -919,10 +926,4 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-.filter-render-wrap {
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}
-</style>
+<style lang="scss"></style>

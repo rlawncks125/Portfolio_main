@@ -1,10 +1,8 @@
 <template>
-  <div
-    class="fixed bg-gray-600 inset-0 w-screen h-screen text-2xl sm:text-base"
-    style="z-index: 1001"
-  >
+  <div class="foodChat-form">
     <div
-      class="relative overflow-auto max-w-5xl p-2 h-full bg-yellow-100 inset-0 sm:w-11/12 sm:h-5/6 sm:mx-auto sm:my-12 sm:rounded-xl sm:overflow-y-auto sm:p-4"
+      class="foodChat-form-main"
+      style="height: calc(var(--mobile--full) - 2vh)"
     >
       <button class="float-right mr-8 mt-4" @click.prevent="$emit('close')">
         X
@@ -21,8 +19,13 @@
               <input class="flex-1 w-1/2" type="text" v-model="roomName" />
             </div>
             <div class="flex flex-col items-center">
-              <p>마크</p>
-              <div class="w-20 h-20 bg-purple-500"></div>
+              <button @click="isChangeMake = !isChangeMake">마크 변경</button>
+              <input-file
+                v-show="isChangeMake"
+                ref="inputFileComponet"
+                class="w-80 h-60"
+                @cahngeFile="(data) => (imageFile = data)"
+              />
             </div>
 
             <div class="flex justify-between items-center flex-col">
@@ -47,13 +50,18 @@
 <script lang="ts">
 import { defineComponent, onMounted, reactive, ref, toRefs } from "vue";
 import LodingBtn from "@/components/common/Input/LoadingBtn.vue";
+import InputFile, {
+  FileDataType,
+} from "@/components/common/Input/File-one.vue";
 import { EditRoomInPutDto, Lating, RoominfoDto } from "@/assets/swagger";
 import { useRoute } from "vue-router";
 import { editRoom } from "@/api/Room";
+import { deleteFile, ImageGetURLByFormData } from "@/api/file";
+import axios from "axios";
 
 export default defineComponent({
   emits: ["close", "edit"],
-  components: { LodingBtn },
+  components: { LodingBtn, InputFile },
   setup(_, { emit }) {
     const uuid = useRoute().params.uuid as string;
 
@@ -64,23 +72,52 @@ export default defineComponent({
 
     const dataInfo = reactive({
       roomName: "",
+      markeImageUrl: "",
     });
 
     const isLoadingChange = ref(false);
 
+    // input file
+    const isChangeMake = ref(false);
+    const inputFileComponet = ref<InstanceType<typeof InputFile>>();
+    const imageFile = ref<FileDataType>();
+
     const onChangeRoom = async () => {
+      isLoadingChange.value = true;
       let lating = undefined;
+      let imageUrl = undefined;
       if (marker) {
         lating = marker.getPosition();
       }
+
+      if (isChangeMake.value && imageFile.value) {
+        // 기존 이미지 삭제후
+        // 새 이미지 URL
+
+        const postForm = new FormData();
+        postForm.append("file", imageFile.value.file, imageFile.value.fileName);
+
+        // 이미지 url 작업
+        imageUrl = await ImageGetURLByFormData(postForm);
+
+        if (imageUrl && dataInfo.markeImageUrl) {
+          const isDeleted = await deleteFile(dataInfo.markeImageUrl);
+          if (isDeleted) {
+            console.log("기존 이미지 삭제");
+          }
+        }
+      }
+
       const updateData = {
         uuid,
         roomName: dataInfo.roomName,
+        ...(imageUrl && { markeImageUrl: imageUrl }),
         ...(lating && { lating }),
       } as EditRoomInPutDto;
 
       const { ok, err } = await editRoom(updateData);
-      
+
+      isLoadingChange.value = false;
       if (ok) {
         // edit
         emit("edit", uuid);
@@ -90,8 +127,10 @@ export default defineComponent({
     };
 
     const setRoomInfo = (data: RoominfoDto) => {
+      inputFileComponet.value?.resetFile();
       if (data) {
         dataInfo.roomName = data.roomName!;
+        dataInfo.markeImageUrl = data.markeImageUrl;
       }
       if (data.lating) {
         if (marker) {
@@ -134,7 +173,10 @@ export default defineComponent({
 
     return {
       mapRef,
+      inputFileComponet,
       isLoadingChange,
+      imageFile,
+      isChangeMake,
       onChangeRoom,
       ...toRefs(dataInfo),
       setRoomInfo,
