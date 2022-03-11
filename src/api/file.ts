@@ -1,6 +1,7 @@
 import axios from "axios";
 
 export const deleteFile = async (fileName: string) => {
+  // 삭제할 파일 이름 만 추출하는 작업
   const imageURL = fileName.split("/").pop()?.split(".")[0];
 
   let isDeleted = false;

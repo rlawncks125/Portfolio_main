@@ -12,7 +12,7 @@
 
     <LoadingBtn
       class="h-10 w-20 flex-initial"
-      @click="getRoomLists"
+      @click.prevent="getRoomLists"
       :isLoading="isLoadingBtn"
       Msg="찾기"
       :size="30"
@@ -20,12 +20,12 @@
   </div>
 
   <!-- 방만들기 버튼 -->
-  <button @click="isCreateRoom = true">방 만들기</button>
+  <button @click.prevent="isCreateRoom = true">방 만들기</button>
   <transition name="ani-fade">
     <room-create-form
       v-if="isCreateRoom"
-      @onCreated="onCreateRoom"
-      @onClose="isCreateRoom = false"
+      @onCreated.prevent="onCreateRoom"
+      @onClose.prevent="isCreateRoom = false"
     />
   </transition>
   <!-- 찾은 방리스트 랜더 -->

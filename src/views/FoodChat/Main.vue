@@ -76,19 +76,25 @@
       style="z-index: 101"
     >
       <div class="flex w-full justify-around h-full">
-        <div class="cursor-pointer" @click="router.push('/foodChat')">
+        <div class="cursor-pointer" @click.prevent="router.push('/foodChat')">
           <div class="h-full">
             <fa-icon :icon="['fa', 'house']" />
             <p class="hidden sm:inline pl-4">방</p>
           </div>
         </div>
-        <div class="cursor-pointer" @click="router.push('/foodChat/search')">
+        <div
+          class="cursor-pointer"
+          @click.prevent="router.push('/foodChat/search')"
+        >
           <div class="h-full">
             <fa-icon :icon="['fa', 'magnifying-glass']" />
             <p class="hidden sm:inline pl-4">서치</p>
           </div>
         </div>
-        <div class="cursor-pointer" @click="router.push('/foodChat/MyPage')">
+        <div
+          class="cursor-pointer"
+          @click.prevent="router.push('/foodChat/MyPage')"
+        >
           <div class="h-full">
             <fa-icon :icon="['fa', 'users']" />
 
@@ -215,10 +221,12 @@ export default defineComponent({
       () => userData.token,
       () => {
         if (userData.token.length > 2) {
+          console.log("로그인");
           webSocket.init();
           isLogin.value = true;
         } else {
           webSocket.close();
+          console.log("로그아웃");
           isLogin.value = false;
         }
       }
@@ -234,11 +242,13 @@ export default defineComponent({
     onMounted(() => {
       setViewStyles();
       window.addEventListener("resize", setViewStyles);
+      console.log("마운트 로그인");
       isLogin.value && webSocket.init();
     });
     onUnmounted(() => {
-      isLogin.value && webSocket.close();
       window.removeEventListener("resize", setViewStyles);
+      isLogin.value && webSocket.close();
+      console.log("마운트 로그아웃");
     });
 
     return {

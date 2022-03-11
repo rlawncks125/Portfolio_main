@@ -11,15 +11,13 @@ let socket: Socket;
 
 export const init = () => {
   socket = io(`${wsUrl}/${nameSpace}`, {
-    autoConnect: false,
+    autoConnect: true,
     transports: ["websocket"],
     auth: {
       token: token.value,
     },
   });
 
-  socket.connect();
-  socket.emit("registration");
   socketBaseRead();
 };
 
@@ -28,7 +26,6 @@ export const connect = () => {
 };
 
 export const close = () => {
-  socket.emit("leaveRoom");
   socket.close();
 };
 
@@ -131,6 +128,7 @@ export const catchReqApprovaWait = (catchWs: () => void) => {
 const socketBaseRead = () => {
   socket.on("connect", () => {
     console.log("연결 되었습니다.");
+    socket.emit("registration");
   });
 
   socket.on("disconnect", () => {

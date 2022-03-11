@@ -11,15 +11,19 @@
     <summary class="cursor-pointer px-4">기타 등등</summary>
     <div class="absolute top-10 z-[101] bg-white w-full h-auto">
       <div class="flex flex-col gap-2 py-4 px-4 bg-orange-400">
-        <button @click="onLeaveRoom">방 나가기</button>
+        <button @click.prevent="onLeaveRoom">방 나가기</button>
         <button @click.prevent="router.push('/foodChat')">
           방으로 돌아가기
         </button>
         <template v-if="isSpuerUser">
-          <button @click="isActiveApprovalWait = true">신청 대기 유저</button>
-          <button @click="onDeleteRoom">방 삭제하기</button>
+          <button @click.prevent="isActiveApprovalWait = true">
+            신청 대기 유저
+          </button>
+          <button @click.prevent="onDeleteRoom">방 삭제하기</button>
         </template>
-        <button class="hidden sm:block" @click="openEditRoom">방 설정</button>
+        <button class="hidden sm:block" @click.prevent="openEditRoom">
+          방 설정
+        </button>
       </div>
     </div>
   </details>
@@ -37,7 +41,7 @@
           <div
             v-show="isSpuerUser"
             class="w-16 h-16 rounded-full flex flex-col justify-center text-center cursor-pointer bg-gray-500 bg-opacity-50 sm:hidden"
-            @click="openEditRoom"
+            @click.prevent="openEditRoom"
           >
             <fa-icon :icon="['fa', 'gear']" class="text-white" />
           </div>
@@ -45,14 +49,14 @@
           <div
             class="w-16 h-16 rounded-full flex flex-col justify-center text-center cursor-pointer bg-opacity-50"
             :class="isActiveFilterSearch ? 'bg-red-400' : 'bg-gray-500'"
-            @click="isActiveFilterSearch = !isActiveFilterSearch"
+            @click.prevent="isActiveFilterSearch = !isActiveFilterSearch"
           >
             <fa-icon :icon="['fa', 'magnifying-glass']" class="text-white" />
           </div>
           <!-- 레스토랑 추가 & 취소 버튼 -->
           <div
             class="w-16 h-16 rounded-full flex flex-col justify-center text-center cursor-pointer bg-gray-500 bg-opacity-50"
-            @click="isActiveAdd = !isActiveAdd"
+            @click.prevent="isActiveAdd = !isActiveAdd"
           >
             <fa-icon
               v-if="!isActiveAdd"
@@ -141,7 +145,7 @@
   >
     <div
       class="bg-slate-100 w-4/6 max-w-3xl h-32 text-center rounded-xl flex flex-col justify-center cursor-pointer shadow-lg shadow-black/40 hover:scale-110"
-      @click="onClickViewRestrauntInfo"
+      @click.prevent="onClickViewRestrauntInfo"
       v-if="RestaurantInfoData"
     >
       {{ RestaurantInfoData.restaurantName }}
@@ -172,7 +176,7 @@
         >
           <div
             class="cursor-pointer px-2"
-            @click="isActiveFilterSearch = !isActiveFilterSearch"
+            @click.prevent="isActiveFilterSearch = !isActiveFilterSearch"
           >
             이전
           </div>
@@ -260,7 +264,7 @@
       <div v-for="item in sideBarInfo" :key="item.id">
         <div
           class="cursor-pointer h-16 mx-auto w-full"
-          @click="
+          @click.prevent="
             () => {
               isSideBarActive = true;
               sideBarClickedText = item.eventTrigger;
@@ -282,7 +286,7 @@
         </div>
       </div>
       <!-- 정보창 랜더 없는 아이콘 & 클릭 트리거 -->
-      <div @click="isActiveApprovalWait = true" class="cursor-pointer">
+      <div @click.prevent="isActiveApprovalWait = true" class="cursor-pointer">
         <fa-icon :icon="['fa', 'users']" size="2x" />
         <p class="text-base">승인 요청</p>
       </div>
@@ -298,7 +302,7 @@
     <div
       class="absolute w-10 h-10 bottom-2/4 bg-teal-600 cursor-pointer transition-all"
       :class="isSideBarActive ? 'left-96' : 'left-0'"
-      @click="
+      @click.prevent="
         () => {
           isSideBarActive = !isSideBarActive;
           sideBarClickedText = '';

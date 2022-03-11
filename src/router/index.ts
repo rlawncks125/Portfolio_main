@@ -20,14 +20,14 @@ export const routes: Array<RouteRecordRaw> = [
     path: "/foodChat",
     name: "foodChat",
     component: () =>
-      import(/* webpackChunkName: "router" */ "../views/FoodChat/Main.vue"),
+      import(/* webpackChunkName: "foodChat" */ "../views/FoodChat/Main.vue"),
     children: [
       {
         path: "",
         name: "myRoomList",
         component: () =>
           import(
-            /* webpackChunkName: "router" */ "../views/FoodChat/MyRoomList.vue"
+            /* webpackChunkName: "foodChat" */ "../views/FoodChat/MyRoomList.vue"
           ),
       },
       {
@@ -35,7 +35,7 @@ export const routes: Array<RouteRecordRaw> = [
         name: "RoomList",
         component: () =>
           import(
-            /* webpackChunkName: "router" */ "../views/FoodChat/SearchRoomList.vue"
+            /* webpackChunkName: "foodChat" */ "../views/FoodChat/SearchRoomList.vue"
           ),
       },
       {
@@ -43,7 +43,7 @@ export const routes: Array<RouteRecordRaw> = [
         name: "MyPage",
         component: () =>
           import(
-            /* webpackChunkName: "router" */ "../views/FoodChat/MyPage.vue"
+            /* webpackChunkName: "foodChat" */ "../views/FoodChat/MyPage.vue"
           ),
       },
       {
@@ -51,7 +51,7 @@ export const routes: Array<RouteRecordRaw> = [
         name: "foodChatRoomJoin",
         component: () =>
           import(
-            /* webpackChunkName: "router" */ "../views/FoodChat/FoodChat.vue"
+            /* webpackChunkName: "foodChat" */ "../views/FoodChat/FoodChat.vue"
           ),
       },
     ],
@@ -60,7 +60,7 @@ export const routes: Array<RouteRecordRaw> = [
   //   path: "/foodChat/:uuid",
   //   name: "foodChatRoomJoin",
   //   component: () =>
-  //     import(/* webpackChunkName: "router" */ "../views/FoodChat/FoodChat.vue"),
+  //     import(/* webpackChunkName: "foodChat" */ "../views/FoodChat/FoodChat.vue"),
   // },
 ];
 

@@ -8,16 +8,16 @@
         class="w-full -translate-x-2 sticky px-2 py-2 top-0 flex justify-between bg-transparent items-center"
         style="z-index: 103"
       >
-        <button class="text-3xl" @click="onClose">&lt;</button>
+        <button class="text-3xl" @click.prevent="onClose">&lt;</button>
         <p class="w-auto flex-1 text-center">{{ viewData.restaurantName }}</p>
         <div>
-          <button v-if="isSuperUser" @click="onDeleteRestaurnt">
+          <button v-if="isSuperUser" @click.prevent="onDeleteRestaurnt">
             삭제 버튼
           </button>
           <div v-else></div>
         </div>
       </div>
-      <!-- <button class="hidden sm:block absolute top-2 right-2" @click="onClose">
+      <!-- <button class="hidden sm:block absolute top-2 right-2" @click.prevent="onClose">
         X
       </button> -->
 
@@ -70,7 +70,10 @@
               :key="comment.id"
             >
               <div class="flex justify-between">
-                <p class="cursor-pointer" @click="setcommentId(comment.id)">
+                <p
+                  class="cursor-pointer"
+                  @click.prevent="setcommentId(comment.id)"
+                >
                   {{ comment.message.userInfo.nickName }} :
                   {{ comment.message.message }}
                 </p>
@@ -79,8 +82,12 @@
                     store.state.userName === comment.message.userInfo.nickName
                   "
                 >
-                  <button @click="setEditCommentId(comment.id)">수정</button>
-                  <button @click="onDeleteComment(comment.id)">삭제</button>
+                  <button @click.prevent="setEditCommentId(comment.id)">
+                    수정
+                  </button>
+                  <button @click.prevent="onDeleteComment(comment.id)">
+                    삭제
+                  </button>
                 </div>
               </div>
               <div
@@ -90,7 +97,10 @@
                 <label for="" class="block">댓글 수정:</label>
                 <div class="flex items-center">
                   <input type="text" v-model="editMessage" class="w-0 flex-1" />
-                  <button @click="onEditCommentId(comment.id)" class="h-full">
+                  <button
+                    @click.prevent="onEditCommentId(comment.id)"
+                    class="h-full"
+                  >
                     댓글 수정
                   </button>
                 </div>
@@ -107,7 +117,7 @@
                     class="w-0 flex-1"
                   />
                   <button
-                    @click="onAddCommentByCommentId(comment.id)"
+                    @click.prevent="onAddCommentByCommentId(comment.id)"
                     class="h-full"
                   >
                     대댓글 추가
@@ -138,7 +148,7 @@
                       v-show="
                         store.state.userName === childMessages.userInfo.nickName
                       "
-                      @click="
+                      @click.prevent="
                         setChildCommentCreateTime(childMessages.CreateTime)
                       "
                     >
@@ -165,7 +175,7 @@
                     />
                     <button
                       class="border border-red-400 flex-none h-full"
-                      @click="
+                      @click.prevent="
                         onEditChildComment(comment.id, childMessages.CreateTime)
                       "
                     >
@@ -196,7 +206,7 @@
           class="border border-black resize-none mb-2"
           v-model="message"
         />
-        <button @click="onAddCommentRestaurantById">댓글 추가</button>
+        <button @click.prevent="onAddCommentRestaurantById">댓글 추가</button>
       </div>
     </div>
   </div>

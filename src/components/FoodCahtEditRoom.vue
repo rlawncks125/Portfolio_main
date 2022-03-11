@@ -19,7 +19,9 @@
               <input class="flex-1 w-1/2" type="text" v-model="roomName" />
             </div>
             <div class="flex flex-col items-center">
-              <button @click="isChangeMake = !isChangeMake">마크 변경</button>
+              <button @click.prevent="isChangeMake = !isChangeMake">
+                마크 변경
+              </button>
               <input-file
                 v-show="isChangeMake"
                 ref="inputFileComponet"

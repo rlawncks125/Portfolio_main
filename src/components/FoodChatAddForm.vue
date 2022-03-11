@@ -5,7 +5,9 @@
       class="foodChat-form-main"
       style="height: calc(var(--mobile--full) - 2vh)"
     >
-      <button class="absolute top-2 right-4" @click="closeForm">X</button>
+      <button class="absolute top-2 right-4" @click.prevent="closeForm">
+        X
+      </button>
 
       <form class="text-center py-20">
         <fieldset

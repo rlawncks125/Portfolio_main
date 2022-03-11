@@ -5,7 +5,9 @@
       class="foodChat-form-main"
       style="height: calc(var(--mobile--full) - 2vh)"
     >
-      <button class="absolute top-2 right-4" @click="$emit('close')">X</button>
+      <button class="absolute top-2 right-4" @click.prevent="$emit('close')">
+        X
+      </button>
 
       <form class="text-center py-20">
         <fieldset
@@ -17,7 +19,9 @@
               <p>
                 {{ item.username }}
               </p>
-              <button class="ml-8" @click="onAccept(item.id)">승인</button>
+              <button class="ml-8" @click.prevent="onAccept(item.id)">
+                승인
+              </button>
             </div>
           </template>
 
