@@ -1,11 +1,11 @@
 <template>
   <div class="foodChat-form">
     <div
-      class="foodChat-form-main !overflow-x-hidden"
+      class="foodChat-form-main !pt-0 !overflow-x-hidden"
       style="height: calc(var(--mobile--full) - 2vh)"
     >
       <div
-        class="w-full -translate-x-2 sticky px-2 py-2 top-0 flex justify-between bg-transparent items-center"
+        class="w-[104%] -translate-x-2 sticky p-2 left-0 top-0 mx-auto flex justify-between bg-white items-center"
         style="z-index: 103"
       >
         <button class="text-3xl" @click.prevent="onClose">&lt;</button>

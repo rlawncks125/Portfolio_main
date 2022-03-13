@@ -11,13 +11,14 @@ let socket: Socket;
 
 export const init = () => {
   socket = io(`${wsUrl}/${nameSpace}`, {
-    autoConnect: true,
+    autoConnect: false,
     transports: ["websocket"],
     auth: {
       token: token.value,
     },
   });
 
+  connect();
   socketBaseRead();
 };
 

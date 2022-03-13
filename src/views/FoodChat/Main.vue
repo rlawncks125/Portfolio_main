@@ -65,8 +65,6 @@
     :style="[route.params.uuid ? mapViewStyles : {}]"
     v-else
   >
-    <button class="border-2" @click.prevent="userLogOut">LogOut</button>
-
     <!--route-view 페이지 갱신 문제로 key값 추가 -->
     <router-view :key="route.fullPath" />
 
@@ -118,7 +116,7 @@ import {
   toRefs,
   watch,
 } from "vue";
-import { createUser, logIn, logOut } from "@/api/auth";
+import { createUser, logIn } from "@/api/auth";
 import { useRoute, useRouter } from "vue-router";
 import { getJoinRoomList } from "@/api/Room";
 import LoadingBtn from "@/components/common/Input/LoadingBtn.vue";
@@ -161,11 +159,11 @@ export default defineComponent({
       if (window.innerWidth < 640) {
         // 모바일 지도
         mapViewStyles.value = {
-          height: "calc(var(--mobile--full) - 15.35rem)",
+          height: "calc(var(--mobile--full) - 13.35rem)",
         };
       } else {
         mapViewStyles.value = {
-          height: "calc(var(--mobile--full) - 10.8rem)",
+          height: "calc(var(--mobile--full) - 9rem)",
         };
       }
     };
@@ -202,10 +200,6 @@ export default defineComponent({
       isLoadingLogin.value = false;
       resetFormData();
       // console.log(data.token);
-    };
-    const userLogOut = () => {
-      router.push("/foodChat");
-      logOut();
     };
 
     const getMyRoomlist = async () => {
@@ -255,7 +249,7 @@ export default defineComponent({
       ...toRefs(userData),
       ...toRefs(formData),
       userLogin,
-      userLogOut,
+
       isLogin,
       userCreate,
       isPageSigUp,

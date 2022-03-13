@@ -24,8 +24,8 @@
   <transition name="ani-fade">
     <room-create-form
       v-if="isCreateRoom"
-      @onCreated.prevent="onCreateRoom"
-      @onClose.prevent="isCreateRoom = false"
+      @onCreated="onCreateRoom"
+      @onClose="isCreateRoom = false"
     />
   </transition>
   <!-- 찾은 방리스트 랜더 -->

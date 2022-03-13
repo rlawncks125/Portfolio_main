@@ -1,19 +1,24 @@
 <template>
-  <div class="">
-    나의 페이지 zzz머 만들지 계속 이상하게 하나씩 추가되서 잡되는거같아
-  </div>
+  <button class="border-2" @click.prevent="userLogOut">LogOut</button>
 </template>
 
 <script lang="ts">
+import { logOut } from "@/api/auth";
 import { defineComponent } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 export default defineComponent({
   setup() {
     const route = useRoute();
+    const router = useRouter();
     console.log(route.params);
 
-    return {};
+    const userLogOut = () => {
+      router.push("/foodChat");
+      logOut();
+    };
+
+    return { userLogOut };
   },
 });
 </script>
