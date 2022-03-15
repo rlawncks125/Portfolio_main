@@ -1,8 +1,14 @@
 <template>
   <loding :isLoding="isLoading" />
-  <div>My Room</div>
+  <p>My Room</p>
 
-  <p>내가 접속중인 방</p>
+  <div class="flex justify-between">
+    <p>내가 접속중인 방</p>
+    <button class="cursor-pointer" @click.prevent="myRoomListUpdate">
+      새로고침
+    </button>
+  </div>
+
   <div
     v-for="item in myJoinRoomLists"
     :key="item.id"
@@ -32,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { getJoinRoomList, joinRoom } from "@/api/Room";
+import { getJoinRoomList } from "@/api/Room";
 import { MyRoomsinfoDto } from "@/assets/swagger";
 import { defineComponent, onMounted, reactive, toRefs } from "vue";
 import { useRouter } from "vue-router";
@@ -48,6 +54,7 @@ export default defineComponent({
     });
 
     const goRoom = async (uuid: string) => {
+      await myRoomListUpdate();
       const isExist = data.myJoinRoomLists.find((v) => v.uuid === uuid);
       if (isExist) {
         router.push({
@@ -58,17 +65,16 @@ export default defineComponent({
     };
 
     const myRoomListUpdate = async () => {
+      data.isLoading = true;
       const { ok, myRooms } = await getJoinRoomList();
-      console.log(myRooms);
       if (ok) {
         data.myJoinRoomLists = myRooms;
       }
+      data.isLoading = false;
     };
 
     onMounted(async () => {
-      data.isLoading = true;
       await myRoomListUpdate();
-      data.isLoading = false;
       webSocket.catchApprovaWait(async () => {
         await myRoomListUpdate();
       });
@@ -76,6 +82,7 @@ export default defineComponent({
 
     return {
       ...toRefs(data),
+      myRoomListUpdate,
       goRoom,
     };
   },

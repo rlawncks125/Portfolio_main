@@ -5,7 +5,7 @@
       style="height: calc(var(--mobile--full) - 2vh)"
     >
       <div
-        class="w-[104%] -translate-x-2 sticky p-2 left-0 top-0 mx-auto flex justify-between bg-white items-center"
+        class="form-full sticky py-3 px-5 left-0 top-0 mx-auto flex justify-between bg-white items-center"
         style="z-index: 103"
       >
         <button class="text-3xl" @click.prevent="onClose">&lt;</button>
@@ -22,7 +22,7 @@
       </button> -->
 
       <!-- <p>접속유저 : {{ store.state.userName }}</p> -->
-      <div class="h-80 sm:h-96 -translate-x-3 w-[105%]">
+      <div class="form-full h-80 sm:h-96">
         <img
           class="object-cover object-center w-full h-full"
           :src="restaurantImageUrl"

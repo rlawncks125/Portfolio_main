@@ -13,6 +13,10 @@ import {
   faBan,
   faAngleUp,
   faAngleDown,
+  faArrowRight,
+  faArrowLeft,
+  faUserPlus,
+  faList,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -26,7 +30,11 @@ library.add(
   faGear,
   faBan,
   faAngleUp,
-  faAngleDown
+  faAngleDown,
+  faArrowRight,
+  faArrowLeft,
+  faUserPlus,
+  faList
 );
 
 export { FontAwesomeIcon };

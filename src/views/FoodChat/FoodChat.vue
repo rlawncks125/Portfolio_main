@@ -12,7 +12,7 @@
     <div class="absolute top-10 z-[101] bg-white w-full h-auto">
       <div class="flex flex-col gap-2 py-4 px-4 bg-orange-400">
         <button @click.prevent="onLeaveRoom">방 나가기</button>
-        <button @click.prevent="router.push('/foodChat')">
+        <button @click.prevent="router.push('/foodChat/myRoomList')">
           방으로 돌아가기
         </button>
         <template v-if="isSpuerUser">
@@ -45,6 +45,15 @@
           >
             <fa-icon :icon="['fa', 'gear']" class="text-white" />
           </div>
+          <!-- 승인 요청 목록 버튼 -->
+          <div
+            v-show="isSpuerUser"
+            class="w-16 h-16 rounded-full flex flex-col justify-center text-center cursor-pointer bg-gray-500 bg-opacity-50 sm:hidden"
+            @click.prevent="isActiveApprovalWait = true"
+          >
+            <fa-icon :icon="['fa', 'user-plus']" class="text-white" />
+          </div>
+
           <!-- 서치 버튼 -->
           <div
             class="w-16 h-16 rounded-full flex flex-col justify-center text-center cursor-pointer bg-opacity-50"
@@ -250,86 +259,10 @@
       </div>
     </div>
   </div>
-
-  <!-- 사이드바 -->
-  <!-- sm 이상 사이드바 -->
-  <div
-    class="hidden sm:flex w-20 h-full fixed left-0 px-2 flex-col text-center inset-y-0 transition-all whitespace-nowrap bg-gray-400 shadow-lg shadow-slate-500"
-    style="z-index: 101"
-  >
-    <!-- 아이콘 & 클릭 트리거 -->
-    <div
-      class="flex h-full flex-col justify-start gap-12 pt-40 overflow-hidden"
-    >
-      <div v-for="item in sideBarInfo" :key="item.id">
-        <div
-          class="cursor-pointer h-16 mx-auto w-full"
-          @click.prevent="
-            () => {
-              isSideBarActive = true;
-              sideBarClickedText = item.eventTrigger;
-            }
-          "
-        >
-          <div class="flex flex-col">
-            <fa-icon
-              :icon="['fa', item.faIcon]"
-              :size="item.faSize"
-              :class="
-                sideBarClickedText === item.eventTrigger
-                  ? 'text-yellow-500'
-                  : ''
-              "
-            />
-            <p class="inline text-base">{{ item.text }}</p>
-          </div>
-        </div>
-      </div>
-      <!-- 정보창 랜더 없는 아이콘 & 클릭 트리거 -->
-      <div @click.prevent="isActiveApprovalWait = true" class="cursor-pointer">
-        <fa-icon :icon="['fa', 'users']" size="2x" />
-        <p class="text-base">승인 요청</p>
-      </div>
-    </div>
-  </div>
-  <!-- 사이드바 정보창 -->
-  <div
-    class="hidden sm:flex h-full fixed left-20 flex-col inset-y-0 transition-all bg-white shadow-lg shadow-slate-500"
-    :class="isSideBarActive ? 'w-96' : 'w-0'"
-    style="z-index: 101"
-  >
-    <!-- 화살표 -->
-    <div
-      class="absolute w-10 h-10 bottom-2/4 bg-teal-600 cursor-pointer transition-all"
-      :class="isSideBarActive ? 'left-96' : 'left-0'"
-      @click.prevent="
-        () => {
-          isSideBarActive = !isSideBarActive;
-          sideBarClickedText = '';
-        }
-      "
-    >
-      <p v-if="!isSideBarActive">화</p>
-      <p v-else>수</p>
-    </div>
-    <!-- 콘텐츠 랜더 -->
-    <div class="overflow-auto h-full">
-      <div v-for="item in sideBarInfo" :key="item.id">
-        <div
-          class="w-full px-2"
-          v-show="sideBarClickedText === item.eventTrigger"
-        >
-          <component :is="item.renderCompo" />
-          <!-- <MyRooms class="w-full" /> -->
-        </div>
-      </div>
-    </div>
-  </div>
 </template>
 
 <script lang="ts">
 import {
-  Component,
   defineComponent,
   onMounted,
   onUnmounted,
@@ -342,9 +275,6 @@ import FootChatAddForm from "@/components/FoodChatAddForm.vue";
 import FootChatViewForm from "@/components/FoodChatViewForm.vue";
 import ApprovaWaitView from "@/components/ApprovaWaitView.vue";
 import EditRoom from "@/components/FoodCahtEditRoom.vue";
-import MyPage from "@/views/FoodChat/MyPage.vue";
-import MyRooms from "@/views/FoodChat/MyRoomList.vue";
-import SearchRoom from "@/views/FoodChat/SearchRoomList.vue";
 import LoadingBtn from "@/components/common/Input/LoadingBtn.vue";
 import StarFiil from "@/components/common/StarFill.vue";
 import { useRoute, useRouter } from "vue-router";
@@ -374,14 +304,6 @@ enum EnumFilter {
   Location = "지역",
 }
 
-interface ISaideBar {
-  eventTrigger: string;
-  faIcon: string;
-  faSize: string;
-  text: string;
-  renderCompo: Component;
-}
-
 export default defineComponent({
   components: {
     FootChatAddForm,
@@ -390,9 +312,6 @@ export default defineComponent({
     EditRoom,
     StarFiil,
     LoadingBtn,
-    MyPage,
-    MyRooms,
-    SearchRoom,
   },
   setup() {
     const consoleTest = (s: any) => {
@@ -446,34 +365,6 @@ export default defineComponent({
       refCompoEditRoom.value?.setRoomInfo(roomInfoData.value!);
       isEditRoomAcitve.value = true;
     };
-
-    // 사이드바
-    const isSideBarActive = ref(false);
-    const sideBarClickedText = ref("");
-
-    const sideBarInfo = [
-      {
-        eventTrigger: "room",
-        faIcon: "house",
-        faSize: "2x",
-        text: "내 방들",
-        renderCompo: MyRooms,
-      },
-      {
-        eventTrigger: "search",
-        faIcon: "magnifying-glass",
-        faSize: "2x",
-        text: "방 찾기",
-        renderCompo: SearchRoom,
-      },
-      {
-        eventTrigger: "myPage",
-        faIcon: "users",
-        faSize: "2x",
-        text: "내 정보창",
-        renderCompo: MyPage,
-      },
-    ] as ISaideBar[];
 
     // 레스토랑 정보창
     const isOpenRestaurantInfo = ref(false);
@@ -572,7 +463,7 @@ export default defineComponent({
 
       const { ok } = await leaveRoom({ uuid });
       if (ok) {
-        router.push("/foodChat");
+        router.push("/foodChat/myRoomList");
       }
     };
 
@@ -919,9 +810,6 @@ export default defineComponent({
       goRestaurantPostionById,
 
       isOptionsCheckd,
-      isSideBarActive,
-      sideBarClickedText,
-      sideBarInfo,
 
       consoleTest,
       webSocket,

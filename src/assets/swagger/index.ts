@@ -681,6 +681,35 @@ export class RestaurantService {
   }
 }
 
+export class SubwayService {
+  /**
+   *
+   */
+  static subwayControllerGetSubway(
+    params: {
+      /** requestBody */
+      body?: GetSubWayScheduleInPutDto;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<any> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + "/subway";
+
+      const configs: IRequestConfig = getConfigs(
+        "post",
+        "application/json",
+        url,
+        options
+      );
+
+      let data = params.body;
+
+      configs.data = data;
+      axios(configs, resolve, reject);
+    });
+  }
+}
+
 export interface UserOutPut {
   /** 유저 이름입니다. */
   username?: string;
@@ -1323,6 +1352,23 @@ export interface RemoveMessageByIdOutPutDto {
   /** 에러 메세지입니다. */
   err?: string;
 }
+
+export interface GetSubWayScheduleInPutDto {
+  /** 행선 */
+  type: EnumGetSubWayScheduleInPutDtoType;
+
+  /** 지하철역 */
+  station: string;
+
+  /** 인천 1호선 */
+  station1?: EnumGetSubWayScheduleInPutDtoStation1;
+
+  /** 인천 2호선 */
+  station2?: EnumGetSubWayScheduleInPutDtoStation2;
+
+  /** 서울 1호선 */
+  station3?: EnumGetSubWayScheduleInPutDtoStation3;
+}
 export type CombinedResturantSuperUserTypes = SuperUserDto;
 export type CombinedLatingTypes = Lating;
 export type CombinedSuperUserTypes = User;
@@ -1351,4 +1397,173 @@ export enum EnumAddRestaurantCommentByIdIdInputDtoRole {
 export enum EnumAddMessageByCommentIdInPutDtoRole {
   "User" = "User",
   "Anonymous" = "Anonymous",
+}
+export enum EnumGetSubWayScheduleInPutDtoType {
+  "incheon1up" = "incheon1up",
+  "incheon1down" = "incheon1down",
+  "incheon2up" = "incheon2up",
+  "incheon2down" = "incheon2down",
+  "seoul1up" = "seoul1up",
+  "seoul1down" = "seoul1down",
+}
+export enum EnumGetSubWayScheduleInPutDtoStation1 {
+  "국제업무지구" = "국제업무지구",
+  "센트럴파크" = "센트럴파크",
+  "인천대입구" = "인천대입구",
+  "지식정보단지" = "지식정보단지",
+  "테크노파크" = "테크노파크",
+  "캠퍼스타운" = "캠퍼스타운",
+  "동막" = "동막",
+  "동춘" = "동춘",
+  "원인재" = "원인재",
+  "신연수" = "신연수",
+  "선학" = "선학",
+  "문학경기장" = "문학경기장",
+  "인천터미널" = "인천터미널",
+  "예술회관" = "예술회관",
+  "인천시청" = "인천시청",
+  "간석오거리" = "간석오거리",
+  "부평삼거리" = "부평삼거리",
+  "동수" = "동수",
+  "부평" = "부평",
+  "부평시장" = "부평시장",
+  "부평구청" = "부평구청",
+  "갈산" = "갈산",
+  "작전" = "작전",
+  "경인교대" = "경인교대",
+  "계산" = "계산",
+  "임학" = "임학",
+  "박촌" = "박촌",
+  "귤현" = "귤현",
+  "계양" = "계양",
+}
+export enum EnumGetSubWayScheduleInPutDtoStation2 {
+  "운연" = "운연",
+  "인천대공원" = "인천대공원",
+  "남동구청" = "남동구청",
+  "만수" = "만수",
+  "모래내시장" = "모래내시장",
+  "석천사거리" = "석천사거리",
+  "인천시청" = "인천시청",
+  "석바위시장" = "석바위시장",
+  "시민공원" = "시민공원",
+  "주안" = "주안",
+  "주안국가산단" = "주안국가산단",
+  "가재울" = "가재울",
+  "인천가좌" = "인천가좌",
+  "서부여성회관" = "서부여성회관",
+  "석남" = "석남",
+  "가정중앙시장" = "가정중앙시장",
+  "가정" = "가정",
+  "서구청" = "서구청",
+  "아시아드경기장" = "아시아드경기장",
+  "검바위" = "검바위",
+  "검암" = "검암",
+  "독정" = "독정",
+  "완정" = "완정",
+  "마전" = "마전",
+  "검단사거리" = "검단사거리",
+  "왕길" = "왕길",
+  "검단오류" = "검단오류",
+}
+export enum EnumGetSubWayScheduleInPutDtoStation3 {
+  "동인천" = "동인천",
+  "도원" = "도원",
+  "제물포" = "제물포",
+  "도화" = "도화",
+  "주안" = "주안",
+  "간석" = "간석",
+  "동암" = "동암",
+  "백운" = "백운",
+  "부평" = "부평",
+  "부개" = "부개",
+  "송내" = "송내",
+  "중동" = "중동",
+  "부천" = "부천",
+  "소사" = "소사",
+  "역곡" = "역곡",
+  "온수" = "온수",
+  "오류동" = "오류동",
+  "개봉" = "개봉",
+  "구일" = "구일",
+  "구로" = "구로",
+  "신도림" = "신도림",
+  "영등포" = "영등포",
+  "신길" = "신길",
+  "대방" = "대방",
+  "노량진" = "노량진",
+  "용산" = "용산",
+  "인천" = "인천",
+  "남영" = "남영",
+  "서울역" = "서울역",
+  "시청" = "시청",
+  "종각" = "종각",
+  "종로3가" = "종로3가",
+  "종로5가" = "종로5가",
+  "동대문" = "동대문",
+  "동묘앞" = "동묘앞",
+  "신설동" = "신설동",
+  "제기동" = "제기동",
+  "청량리" = "청량리",
+  "회기" = "회기",
+  "외대앞" = "외대앞",
+  "신이문" = "신이문",
+  "석계" = "석계",
+  "광운대" = "광운대",
+  "월계" = "월계",
+  "녹천" = "녹천",
+  "창동" = "창동",
+  "방학" = "방학",
+  "도봉" = "도봉",
+  "도봉산" = "도봉산",
+  "망월사" = "망월사",
+  "회룡" = "회룡",
+  "의정부" = "의정부",
+  "가능" = "가능",
+  "녹양" = "녹양",
+  "양주" = "양주",
+  "마전" = "마전",
+  "덕계" = "덕계",
+  "덕정" = "덕정",
+  "지행" = "지행",
+  "동두천중앙" = "동두천중앙",
+  "보산" = "보산",
+  "동두천" = "동두천",
+  "소요산" = "소요산",
+  "신창" = "신창",
+  "온양온천" = "온양온천",
+  "배방" = "배방",
+  "아산" = "아산",
+  "쌍용" = "쌍용",
+  "봉명" = "봉명",
+  "천안" = "천안",
+  "두정" = "두정",
+  "직산" = "직산",
+  "성환" = "성환",
+  "평택" = "평택",
+  "평택지제" = "평택지제",
+  "서정리" = "서정리",
+  "송탄" = "송탄",
+  "진위" = "진위",
+  "오산" = "오산",
+  "오산대" = "오산대",
+  "세마" = "세마",
+  "병점" = "병점",
+  "세류" = "세류",
+  "수원" = "수원",
+  "화서" = "화서",
+  "성균관대" = "성균관대",
+  "의왕" = "의왕",
+  "당정" = "당정",
+  "군포" = "군포",
+  "금정" = "금정",
+  "명학" = "명학",
+  "안양" = "안양",
+  "관악" = "관악",
+  "석수" = "석수",
+  "금천구청" = "금천구청",
+  "독산" = "독산",
+  "가산디지털단지" = "가산디지털단지",
+  "서동탄" = "서동탄",
+  "광명" = "광명",
 }

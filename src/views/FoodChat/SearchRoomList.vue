@@ -175,8 +175,8 @@ export default defineComponent({
     };
 
     const UpdateRoomLists = async () => {
-      getRoomLists();
-      updateApprovalWaitRooms();
+      await getRoomLists();
+      await updateApprovalWaitRooms();
     };
     onMounted(async () => {
       await UpdateRoomLists();

@@ -16,7 +16,7 @@
     type="checkbox"
     v-model="isCehckd"
   />
-  <div id="nav" :class="{ 'sm:pl-20': route.path.includes('foodChat/') }">
+  <div id="nav" :class="{ 'sm:pl-20': route.path.includes('foodChat') }">
     <div class="nav-home" @click="changePage">
       <router-link to="/">
         <img src="@/assets/images/HOME.png" alt="" />
@@ -28,7 +28,7 @@
         :class="{ '!text-green-400': route.path.includes('foodChat') }"
         >음식 채팅방</router-link
       >
-      <router-link to="/">준비중</router-link>
+      <router-link to="/SubWay">지하철 도착 시간</router-link>
       <router-link to="/">준비중</router-link>
       <router-link to="/">준비중</router-link>
     </div>
@@ -38,7 +38,7 @@
 
   <div
     class="render-view mb-12"
-    :class="{ 'sm:pl-20': route.path.includes('foodChat/') }"
+    :class="{ 'sm:pl-20': route.path.includes('foodChat') }"
   >
     <router-view />
   </div>
@@ -47,6 +47,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
+
 import { useStore } from "./store";
 // import checkedImage from "@/assets/images/outline_close_black_24dp.png";
 // import noneCheckedImage from "@/assets/images/outline_reorder_black_24dp.png";
