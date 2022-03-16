@@ -11,3 +11,24 @@
     display: none;
   }
 }
+select {
+  /* 네이티브 외형 감추기 */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  margin-right: 1rem;
+  padding: 0.2rem 0.5rem;
+  padding-right: 2.2rem;
+
+  background: url("~@/assets/images/down-arrow.svg") no-repeat;
+  background-position: right 0.5rem center;
+  background-color: rgba(black, 0.4);
+  background-size: 1.2rem;
+
+  color: white;
+  /* IE 10, 11의 네이티브 화살표 숨기기 */
+  &::-ms-expand {
+    display: none;
+  }
+}

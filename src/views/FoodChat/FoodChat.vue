@@ -253,7 +253,9 @@
               :starNum="5"
               :starSize="1"
             />
-            <h2 class="font-bold text-3xl">{{ restaurant.restaurantName }}</h2>
+            <h2 class="font-bold text-xl sm:text-2xl">
+              {{ restaurant.restaurantName }}
+            </h2>
           </div>
         </div>
       </div>

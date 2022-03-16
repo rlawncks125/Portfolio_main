@@ -278,7 +278,7 @@ export default defineComponent({
       if (window.innerWidth < 640) {
         // 모바일 지도
         mapViewStyles.value = {
-          height: "calc(var(--mobile--full) - 13.35rem)",
+          height: "calc(var(--mobile--full) - 13rem)",
         };
       } else {
         mapViewStyles.value = {
