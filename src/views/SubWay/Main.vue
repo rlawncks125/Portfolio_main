@@ -100,7 +100,6 @@ export default defineComponent({
       const isDirectionUp = +data.endStation - +data.station > 0 ? true : false;
       let station;
       let type;
-      let isDepartureFilter = false;
 
       switch (data.subWayType) {
         case "인천 1호선":
@@ -117,8 +116,7 @@ export default defineComponent({
           break;
         case "수도권 1호선":
           station = seoul1[+data.station];
-          isDepartureFilter =
-            +data.station === 0 || +data.station === seoul1.length - 1;
+
           isDirectionUp
             ? (type = EnumGetSubWayScheduleInPutDtoType.seoul1up)
             : (type = EnumGetSubWayScheduleInPutDtoType.seoul1down);
@@ -128,14 +126,7 @@ export default defineComponent({
           break;
       }
 
-      console.log(
-        data.subWayType,
-        station,
-        isDirectionUp,
-        type,
-        data.getTime,
-        isDepartureFilter
-      );
+      console.log(data.subWayType, station, isDirectionUp, type, data.getTime);
 
       const postData = {
         type,
@@ -146,10 +137,7 @@ export default defineComponent({
         return res.data;
       });
 
-      const result = isDepartureFilter
-        ? filterDepartureTimes(res, data.getTime)
-        : filterArrivalTimes(res, data.getTime);
-
+      const result = filterGetTimes(res, data.getTime);
       console.log(result);
     };
 
@@ -171,37 +159,30 @@ const enumToObject = (enumme: any) => {
   return Object.keys(enumme).map((key) => enumme[key]);
 };
 
-// 도착시간 으로 값구함
-const filterArrivalTimes = (data: [], time: number) => {
+const filterGetTimes = (data: [], time: number) => {
   return data
     .filter((v: any) => {
-      // 빈 문자열("") 있을시 null값 할당
-      const hour = v["열차도착시간"].split(":")[0] || null;
+      const arrival = v["열차도착시간"].split(":")[0] || null;
+      const departure = v["열차출발시간"].split(":")[0] || null;
 
-      // hour값이 0이면 ||체인으로 null 값이 할당되므로
-      // return 하기 전에 숫자로 변환해서 비교
-      return hour ? +hour === time : false;
+      if (arrival) return +arrival === time;
+      else if (departure) return +departure === time;
+      return false;
     })
-    .sort(
-      (a: any, b: any) =>
-        +a["열차도착시간"].split(":")[1] - +b["열차도착시간"].split(":")[1]
-    );
-};
-// 출발 시간 으로 값구함
-const filterDepartureTimes = (data: [], time: number) => {
-  return data
-    .filter((v: any) => {
-      // 빈 문자열("") 있을시 null값 할당
-      const hour = v["열차출발시간"].split(":")[0] || null;
+    .sort((a: any, b: any) => {
+      const arrival = b["열차도착시간"] || null;
+      const departure = b["열차출발시간"] || null;
 
-      // hour값이 0이면 ||체인으로 null 값이 할당되므로
-      // return 하기 전에 숫자로 변환해서 비교
-      return hour ? +hour === time : false;
-    })
-    .sort(
-      (a: any, b: any) =>
-        +a["열차출발시간"].split(":")[1] - +b["열차출발시간"].split(":")[1]
-    );
+      if (arrival)
+        return (
+          +a["열차도착시간"].split(":")[1] - +b["열차도착시간"].split(":")[1]
+        );
+      else if (departure)
+        return (
+          +a["열차출발시간"].split(":")[1] - +b["열차출발시간"].split(":")[1]
+        );
+      return 0;
+    });
 };
 </script>
 
