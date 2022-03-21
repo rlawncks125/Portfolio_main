@@ -69,12 +69,12 @@
               v-for="comment in viewData.comments"
               :key="comment.id"
             >
-              <div class="flex justify-between">
+              <div class="flex justify-between whitespace-pre">
+                <span> {{ comment.message.userInfo.nickName }} : </span>
                 <p
-                  class="cursor-pointer"
+                  class="cursor-pointer text-left flex-initial w-full"
                   @click.prevent="setcommentId(comment.id)"
                 >
-                  {{ comment.message.userInfo.nickName }} :
                   {{ comment.message.message }}
                 </p>
                 <div
@@ -82,10 +82,16 @@
                     store.state.userName === comment.message.userInfo.nickName
                   "
                 >
-                  <button @click.prevent="setEditCommentId(comment.id)">
+                  <button
+                    class="blue-btn"
+                    @click.prevent="setEditCommentId(comment.id)"
+                  >
                     수정
                   </button>
-                  <button @click.prevent="onDeleteComment(comment.id)">
+                  <button
+                    class="red-btn"
+                    @click.prevent="onDeleteComment(comment.id)"
+                  >
                     삭제
                   </button>
                 </div>
@@ -94,9 +100,15 @@
                 v-show="editActiveMessage === comment.id"
                 class="border border-red-500"
               >
-                <label for="" class="block">댓글 수정:</label>
+                <label for="message-chnage" class="block">댓글 수정:</label>
                 <div class="flex items-center">
-                  <input type="text" v-model="editMessage" class="w-0 flex-1" />
+                  <input
+                    v-enter-next-focus
+                    id="message-chnag"
+                    type="text"
+                    v-model="editMessage"
+                    class="w-0 flex-1"
+                  />
                   <button
                     @click.prevent="onEditCommentId(comment.id)"
                     class="h-full"
@@ -109,9 +121,11 @@
                 v-show="activeMessage === comment.id"
                 class="border border-blue-300"
               >
-                <label for="" class="block">추가 댓글:</label>
+                <label for="message-add" class="block">추가 댓글:</label>
                 <div class="flex items-center">
                   <input
+                    v-enter-next-focus
+                    id="message-add"
                     type="text"
                     v-model="childMessage"
                     class="w-0 flex-1"
@@ -144,7 +158,7 @@
                       </span>
                     </div>
                     <button
-                      class="text-red-300 flex-none"
+                      class="flex-none blue-btn"
                       v-show="
                         store.state.userName === childMessages.userInfo.nickName
                       "
@@ -163,18 +177,19 @@
                   class="border border-yellow-400 px-2"
                   v-show="editActiveChildMessage === childMessages.CreateTime"
                 >
-                  <label class="block" for="edit-chuld-message"
+                  <label class="block" for="edit-child-message"
                     >수정할 내용</label
                   >
                   <div class="flex items-center">
                     <input
+                      v-enter-next-focus
                       type="text"
-                      id="edit-chuld-message"
+                      id="edit-child-message"
                       v-model="editChildMessage"
                       class="w-0 flex-1"
                     />
                     <button
-                      class="border border-red-400 flex-none h-full"
+                      class="flex-none h-full"
                       @click.prevent="
                         onEditChildComment(comment.id, childMessages.CreateTime)
                       "
@@ -203,7 +218,7 @@
         />
         <label for="">추가 댓글 달기 :</label>
         <textarea
-          class="border border-black resize-none mb-2"
+          class="border border-black min-h-[7rem] resize-none mb-2"
           v-model="message"
         />
         <button @click.prevent="onAddCommentRestaurantById">댓글 추가</button>

@@ -200,7 +200,9 @@
             :value="filterName"
             placeholder="찾으실 조건을 입력하세요"
           />
-          <LoadingBtn Msg="검색" :isLoading="false" :size="20" class="h-10" />
+          <LoadingBtn :isLoading="false" :size="20" class="h-10">
+            <span>검색</span>
+          </LoadingBtn>
         </div>
 
         <select v-model="selectedText">

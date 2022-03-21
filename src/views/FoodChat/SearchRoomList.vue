@@ -11,12 +11,13 @@
     <input type="text" class="flex-1 w-1/3" v-model="searchValue" />
 
     <LoadingBtn
-      class="h-10 w-20 flex-initial"
+      class="h-10 w-30 flex-initial"
       @click.prevent="getRoomLists"
       :isLoading="isLoadingBtn"
-      Msg="찾기"
       :size="30"
-    />
+    >
+      <p>찾기</p>
+    </LoadingBtn>
   </div>
 
   <!-- 방만들기 버튼 -->

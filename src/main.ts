@@ -17,6 +17,22 @@ createApp(App)
   })
   .use(store, key)
   .use(router)
+  .directive("enter-next-focus", {
+    beforeMount(el: HTMLElement) {
+      el.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+
+          const btn = (e.target as HTMLElement).parentNode
+            ?.lastChild as HTMLElement;
+
+          if (btn.tagName === "BUTTON") {
+            btn.focus();
+          }
+        }
+      });
+    },
+  })
   .component("loding", LoadingComponent)
   .component("fa-icon", FontAwesomeIcon)
   .mount("#app");

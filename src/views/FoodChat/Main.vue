@@ -22,11 +22,12 @@
       <div class="flex justify-between">
         <loading-btn
           class="border-2 w-40 h-12"
-          Msg="계정 만들기"
           :size="35"
           :isLoading="isLoadingSigUp"
           @click.prevent="userCreate"
-        />
+        >
+          <p>계정 만들기</p>
+        </loading-btn>
 
         <button class="border-2" @click.prevent="isPageSigUp = false">
           돌아가기
@@ -47,11 +48,12 @@
       <div class="flex justify-between">
         <loading-btn
           class="border-2 w-32 h-12"
-          Msg="Login"
           :size="35"
           :isLoading="isLoadingLogin"
           @click.prevent="userLogin"
-        />
+        >
+          <p>Login</p>
+        </loading-btn>
         <button class="border-2" @click.prevent="isPageSigUp = true">
           Sign Up(회원가입)
         </button>

@@ -7,9 +7,10 @@
     <loading-btn
       class="mt-4 h-20 w-64"
       :isLoading="isLoading"
-      :Msg="'버튼을 누르세요'"
       @click="consoleLog('클릭')"
-    />
+    >
+      <p>버튼을 누르세요</p></loading-btn
+    >
 
     <section class="자기소개">
       <div>주저리 주저리 주저리</div>
