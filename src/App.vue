@@ -24,7 +24,7 @@
     </div>
     <div class="nav-wrap text-three-dot" @click="changePage">
       <router-link
-        to="/foodChat"
+        to="/foodChatHome"
         :class="{ '!text-green-400': route.path.includes('foodChat') }"
         >음식 채팅방</router-link
       >

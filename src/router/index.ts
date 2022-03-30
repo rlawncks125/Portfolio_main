@@ -23,14 +23,6 @@ export const routes: Array<RouteRecordRaw> = [
       import(/* webpackChunkName: "foodChat" */ "../views/FoodChat/Main.vue"),
     children: [
       {
-        path: "",
-        name: "FoodChatHome",
-        component: () =>
-          import(
-            /* webpackChunkName: "foodChat" */ "../views/FoodChat/Home.vue"
-          ),
-      },
-      {
         path: "myRoomList",
         name: "myRoomList",
         component: () =>
@@ -70,6 +62,16 @@ export const routes: Array<RouteRecordRaw> = [
       title: "주변 음식점 리뷰 채팅방",
     },
   },
+  {
+    path: "/foodChatHome",
+    name: "foodChatHome",
+    component: () =>
+      import(/* webpackChunkName: "foodChat" */ "../views/FoodChat/Home.vue"),
+    meta: {
+      title: "설명",
+    },
+  },
+
   {
     path: "/SubWay",
     name: "SubWay",

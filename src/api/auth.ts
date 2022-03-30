@@ -39,6 +39,7 @@ export const logIn = async ({
   // 해결 base 64로 인코딩하여 보내고
   // 백엔드에서 디코딩 하여 값얻기
   const base64 = Buffer.from(username).toString("base64");
+
   return axios
     .get("api/user", {
       auth: {
@@ -71,7 +72,6 @@ export const createUser = async ({
   // 해결 base 64로 인코딩하여 보내고
   // 백엔드에서 디코딩 하여 값얻기
   const base64 = Buffer.from(username).toString("base64");
-  console.log(base64);
 
   return axios
     .post(

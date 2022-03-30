@@ -21,7 +21,7 @@
 
       <div class="flex justify-between">
         <loading-btn
-          class="border-2 w-40 h-12"
+          class="border-2 w-44 h-12"
           :size="35"
           :isLoading="isLoadingSigUp"
           @click.prevent="userCreate"
