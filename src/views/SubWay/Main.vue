@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="px-1">
     <p>갱신 : 2021-12-29</p>
     <select name="" id="" v-model="data.subWayType" @change="resetData">
       <template v-for="item in 호선" :key="item.id">

@@ -153,12 +153,12 @@
     <!-- 사이드바 정보창 -->
     <div
       class="hidden z-[101] sm:flex h-full fixed left-20 flex-col inset-y-0 transition-all bg-white shadow-lg shadow-slate-500"
-      :class="isSideBarActive ? 'w-[40vw]' : 'w-0'"
+      :class="isSideBarActive ? 'w-[max(30rem,40vw)] ' : 'w-0'"
     >
       <!-- 화살표 -->
       <div
-        class="absolute w-10 h-10 bottom-2/4 text-center flex flex-col justify-center transition-all bg-teal-600 cursor-pointer"
-        :class="isSideBarActive ? 'left-[40vw] ' : 'left-[-3rem] z-[100]'"
+        class="absolute w-10 h-10 transition-all bottom-2/4 text-center flex flex-col justify-center bg-teal-600 cursor-pointer"
+        :style="isSideBarActive ? 'left:max(30rem,40vw)' : 'left:-3rem  '"
         @click.prevent="
           () => {
             if (!isSideBarActive) return;

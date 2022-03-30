@@ -19,7 +19,7 @@
   <div id="nav" :class="{ 'sm:pl-20': route.path.includes('foodChat') }">
     <div class="nav-home" @click="changePage">
       <router-link to="/">
-        <img src="@/assets/images/HOME.png" alt="" />
+        <img class="object-cover" src="@/assets/images/HOME.png" alt="" />
       </router-link>
     </div>
     <div class="nav-wrap text-three-dot" @click="changePage">
@@ -32,12 +32,10 @@
       <router-link to="/">준비중</router-link>
       <router-link to="/">준비중</router-link>
     </div>
-
-    <!-- <input class="in-checkd" type="checkbox" v-model="isCehckd" /> -->
   </div>
 
   <div
-    class="render-view mb-12"
+    class="render-view mb-12 border-t-2 border-black border-opacity-50"
     :class="{ 'sm:pl-20': route.path.includes('foodChat') }"
   >
     <router-view />
@@ -45,28 +43,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import { useStore } from "./store";
-// import checkedImage from "@/assets/images/outline_close_black_24dp.png";
-// import noneCheckedImage from "@/assets/images/outline_reorder_black_24dp.png";
 
 export default defineComponent({
   components: {},
   setup() {
     const store = useStore();
     const isCehckd = ref();
-
-    // const styleChecked = {
-    //   background: `url(${checkedImage}) center/contain no-repeat`,
-    //   color: "red",
-    // };
-
-    // const styleNonChecked = {
-    //   background: `url(${noneCheckedImage}) center/contain no-repeat`,
-    //   color: "yellow",
-    // };
 
     const route = useRoute();
 
@@ -76,6 +62,7 @@ export default defineComponent({
 
     const mobileHeightSize = () => {
       const dh = window.innerHeight;
+      isCehckd.value = false;
 
       document.documentElement.style.setProperty("--mobile--full", `${dh}px`);
     };
@@ -85,12 +72,24 @@ export default defineComponent({
       window.addEventListener("resize", mobileHeightSize);
     });
 
+    watch(
+      () => route.path,
+      () => {
+        if (route.path.includes("foodChat")) {
+          document.documentElement.style.setProperty(
+            "--body-color",
+            "rgb(251,146,60)"
+          );
+        } else {
+          document.documentElement.style.setProperty("--body-color", "white");
+        }
+      }
+    );
+
     return {
       isCehckd,
       changePage,
       route,
-      // styleChecked,
-      // styleNonChecked,
     };
   },
 });
@@ -126,7 +125,7 @@ html {
 }
 
 body {
-  background-color: $color-blue-0;
+  background-color: var(--body-color);
 }
 
 #app {
@@ -181,6 +180,8 @@ a:-webkit-any-link {
   width: 100%;
   max-width: $max-width;
   text-align: center;
+  position: relative;
+
   // background-color: $color-blue-2;
 
   .nav-home {
@@ -198,6 +199,7 @@ a:-webkit-any-link {
       height: 100%;
       font-weight: bold;
       color: #2c3e50;
+      padding: 0.3rem;
     }
     a.router-link-exact-active {
       color: #42b983;
@@ -290,20 +292,6 @@ a:-webkit-any-link {
     }
   }
 }
-
-// .in-checkd {
-//   display: none;
-//   position: fixed;
-//   top: 0;
-//   left: 0;
-//   z-index: 1001;
-//   width: $checkd-width;
-//   height: $checkd-height;
-
-//   @include mobile() {
-//     display: block;
-//   }
-// }
 
 .render-view {
   grid-area: render-view;
