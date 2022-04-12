@@ -3,7 +3,7 @@
 
   <!-- 현재 접속 중인방 정보  -->
   <div class="bg-orange-400 text-center pt-2">
-    <span class="text-red-800" v-if="isSpuerUser">👑 </span>
+    <span v-if="isSpuerUser" class="text-red-800">👑 </span>
     <span v-if="roomInfoData">{{ roomInfoData.roomName }} 방</span>
   </div>
   <!-- 기타 등등 우선 토글에 넣어놓음 -->
@@ -21,7 +21,11 @@
           </button>
           <button @click.prevent="onDeleteRoom">방 삭제하기</button>
         </template>
-        <button class="hidden sm:block" @click.prevent="openEditRoom">
+        <button
+          v-if="isSpuerUser"
+          class="hidden sm:block"
+          @click.prevent="openEditRoom"
+        >
           방 설정
         </button>
       </div>
@@ -183,12 +187,13 @@
         <div
           class="flex justify-between items-center px-2 border-b-2 border-b-gray-500 border-opacity-50"
         >
-          <div
-            class="cursor-pointer px-2"
+          <button
+            class="cursor-pointer px-[1rem] font-bold"
             @click.prevent="isActiveFilterSearch = !isActiveFilterSearch"
           >
-            이전
-          </div>
+            <!-- <fa-icon :icon="['fa', 'arrow-left']" /> -->
+            &lt;
+          </button>
           <input
             type="text"
             class="flex-1 w-1/3"

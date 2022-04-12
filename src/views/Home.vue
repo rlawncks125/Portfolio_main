@@ -22,6 +22,17 @@
         </p>
       </div>
     </footer>
+    <span
+      class="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-violet-700 to-indigo-600 text-3xl"
+      >gradient Font Test
+    </span>
+    <br />
+    <span
+      class="bg-clip-text text-transparent bg-gradient-to-r from-red-600 to-blue-500 text-3xl"
+    >
+      ( bg-clip-text , text-transparent ) + bg-gradient
+    </span>
+    <div class="wq">vue.conifg</div>
     <br />
     <br />
     <br />
@@ -84,8 +95,12 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 section {
   margin: 10rem 0;
+}
+
+.wq {
+  color: $color-blue-3;
 }
 </style>

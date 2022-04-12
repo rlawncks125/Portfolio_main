@@ -36,12 +36,12 @@
             </div>
             <LodingBtn
               :isLoading="isLoadingChange"
-              Msg="변경"
               :size="30"
               class="mt-4 w-40 h-14"
               @click.prevent="onChangeRoom"
               role="change"
-            />
+              ><p>변경</p></LodingBtn
+            >
           </div>
         </fieldset>
       </form>

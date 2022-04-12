@@ -13,10 +13,13 @@ import { computed, watch } from "vue";
 // console.log("auth 로드");
 
 const token = computed(() => store.state.token);
+export const backUrl = process.env.VUE_APP_API_URL;
 
 export const AuthHeaders: AxiosRequestConfig = {
   headers: {
     "acces-token": token.value,
+    "Content-Type": "application/json;charset=utf-8",
+    "Access-Control-Allow-Origin": "*",
   },
 };
 
@@ -39,9 +42,9 @@ export const logIn = async ({
   // 해결 base 64로 인코딩하여 보내고
   // 백엔드에서 디코딩 하여 값얻기
   const base64 = Buffer.from(username).toString("base64");
-
+  console.log(base64);
   return axios
-    .get("api/user", {
+    .get(`${backUrl}/user`, {
       auth: {
         username: base64,
         password,
@@ -50,6 +53,7 @@ export const logIn = async ({
     .then((res: any) => {
       const result: LoginOutPutDto = res.data;
       const { ok, token, err, user } = result;
+      console.log(result);
 
       // 토큰 vuex에 저장 처리
       if (ok) {
@@ -75,7 +79,7 @@ export const createUser = async ({
 
   return axios
     .post(
-      "api/user",
+      `${backUrl}/user`,
       {},
       {
         auth: {
@@ -91,7 +95,7 @@ export const createUser = async ({
 
 export const editUser = async (dsc: string): Promise<any> => {
   return await axios
-    .patch("api/user", { dsc }, AuthHeaders)
+    .patch(`${backUrl}/user`, { dsc }, AuthHeaders)
     .then((res: any) => {
       return res.data;
     });

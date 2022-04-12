@@ -23,6 +23,14 @@ export const routes: Array<RouteRecordRaw> = [
       import(/* webpackChunkName: "foodChat" */ "../views/FoodChat/Main.vue"),
     children: [
       {
+        path: "",
+        name: "",
+        component: () =>
+          import(
+            /* webpackChunkName: "foodChat" */ "../views/FoodChat/MyRoomList.vue"
+          ),
+      },
+      {
         path: "myRoomList",
         name: "myRoomList",
         component: () =>
@@ -87,6 +95,11 @@ export const routes: Array<RouteRecordRaw> = [
   //   component: () =>
   //     import(/* webpackChunkName: "foodChat" */ "../views/FoodChat/FoodChat.vue"),
   // },
+  {
+    // 다른 경로로 접근하면 / 주소로 리다이렉트
+    path: "/:pathMatch(.*)*",
+    redirect: "/",
+  },
 ];
 
 const router = createRouter({
@@ -94,7 +107,7 @@ const router = createRouter({
   routes,
 });
 
-router.afterEach((to, form) => {
+router.afterEach((to) => {
   const fixedTitle = "김주찬의 포트 폴리오";
   const title = to.meta.title || undefined;
   if (typeof title === "string") {

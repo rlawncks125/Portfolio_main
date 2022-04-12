@@ -59,9 +59,10 @@ import {
 import InputFile, {
   FileDataType,
 } from "@/components/common/Input/File-one.vue";
-import axios from "axios";
+
 import Loding from "@/components/Loding.vue";
 import { createRoom } from "@/api/Room";
+import { ImageGetURLByFormData } from "@/api/file";
 
 export default defineComponent({
   emits: ["onCreated", "onClose"],
@@ -92,13 +93,14 @@ export default defineComponent({
         const postForm = new FormData();
         postForm.append("file", imageFile.value.file, imageFile.value.fileName);
 
-        markeImageUrl = await axios
-          .post("/api/file", postForm, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          })
-          .then((res) => res.data.url);
+        // markeImageUrl = await axios
+        //   .post("/api/file", postForm, {
+        //     headers: {
+        //       "Content-Type": "multipart/form-data",
+        //     },
+        //   })
+        //   .then((res) => res.data.url);
+        markeImageUrl = await ImageGetURLByFormData(postForm);
       }
 
       const { ok, room } = await createRoom({

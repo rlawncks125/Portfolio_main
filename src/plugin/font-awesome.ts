@@ -20,6 +20,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
+  //@ts-ignore
   faCoffee,
   faHouse,
   faMagnifyingGlass,

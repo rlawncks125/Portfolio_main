@@ -1,39 +1,41 @@
 <template>
   <loding :isLoding="isLoading" />
-  <p class="px-1">My Room</p>
+  <div class="max-w-7xl mx-auto">
+    <p class="px-1">My Room</p>
 
-  <div class="flex justify-between px-1">
-    <p>내가 접속중인 방</p>
-    <button class="cursor-pointer" @click.prevent="myRoomListUpdate">
-      새로고침
-    </button>
-  </div>
-  <!-- 방목록 랜더 -->
-  <div class="flex flex-col gap-4 mb-10">
-    <div
-      v-for="item in myJoinRoomLists"
-      :key="item.id"
-      class="border-2 p-1 mx-1"
-    >
-      <div class="room-info">
-        <div class="room-marke">
-          <div>
-            <img
-              v-if="item.markeImageUrl"
-              :src="item.markeImageUrl"
-              class="w-full h-full bg-cover bg-center"
-            />
-            <fa-icon v-else class="w-full h-full" :icon="['fa', 'users']" />
+    <div class="flex justify-between px-1">
+      <p>내가 접속중인 방</p>
+      <button class="cursor-pointer" @click.prevent="myRoomListUpdate">
+        새로고침
+      </button>
+    </div>
+    <!-- 방목록 랜더 -->
+    <div class="flex flex-col gap-4 mb-10">
+      <div
+        v-for="item in myJoinRoomLists"
+        :key="item.id"
+        class="border-2 p-1 mx-1"
+      >
+        <div class="room-info">
+          <div class="room-marke">
+            <div>
+              <img
+                v-if="item.markeImageUrl"
+                :src="item.markeImageUrl"
+                class="w-full h-full bg-cover bg-center"
+              />
+              <fa-icon v-else class="w-full h-full" :icon="['fa', 'users']" />
+            </div>
           </div>
+          <p class="room-name">{{ item.roomName }}</p>
+          <p class="room-super-user">👑{{ item.superUser.username }}</p>
+          <button
+            class="text-pink-500 bg-slate-700 border-2"
+            @click.prevent="goRoom(item.uuid)"
+          >
+            입장
+          </button>
         </div>
-        <p class="room-name">{{ item.roomName }}</p>
-        <p class="room-super-user">👑{{ item.superUser.username }}</p>
-        <button
-          class="text-pink-500 bg-slate-700 border-2"
-          @click.prevent="goRoom(item.uuid)"
-        >
-          입장
-        </button>
       </div>
     </div>
   </div>

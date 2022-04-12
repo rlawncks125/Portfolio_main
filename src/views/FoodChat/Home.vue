@@ -1,5 +1,7 @@
 <template>
-  <div class="px-2 mb-[5rem] overflow-y-auto">
+  <div
+    class="px-2 h-full mb-[5rem] sm:mb-0 overflow-y-auto max-w-7xl mx-auto sm:translate-x-[-4rem]"
+  >
     <div>FoodChat Home</div>
     <button @click.prevent="router.push('/foodChat/myRoomList')">
       포트폴리오 가기
@@ -62,7 +64,7 @@
           >
             <div class="h-full">
               <fa-icon :icon="['fa', 'list']" />
-              <p class="hidden sm:inline pl-4">방</p>
+              <!-- <p class="hidden sm:inline pl-4">방</p> -->
             </div>
           </div>
           <div
@@ -71,7 +73,7 @@
           >
             <div class="h-full">
               <fa-icon :icon="['fa', 'magnifying-glass']" />
-              <p class="hidden sm:inline pl-4">서치</p>
+              <!-- <p class="hidden sm:inline pl-4">서치</p> -->
             </div>
           </div>
           <div
@@ -81,7 +83,7 @@
             <div class="h-full">
               <fa-icon :icon="['fa', 'users']" />
 
-              <p class="hidden sm:inline pl-4">마이 페이지</p>
+              <!-- <p class="hidden sm:inline pl-4">마이 페이지</p> -->
             </div>
           </div>
         </div>
