@@ -2,15 +2,15 @@
   <loding :isLoding="isLoding" />
 
   <!-- 현재 접속 중인방 정보  -->
-  <div class="bg-orange-400 text-center pt-2">
+  <div class="bg-blue-400 text-center pt-2">
     <span v-if="isSpuerUser" class="text-red-800">👑 </span>
     <span v-if="roomInfoData">{{ roomInfoData.roomName }} 방</span>
   </div>
   <!-- 기타 등등 우선 토글에 넣어놓음 -->
-  <details class="block relative w-full h-10 bg-orange-400">
+  <details class="block relative w-full h-10 bg-blue-400">
     <summary class="cursor-pointer px-4">기타 등등</summary>
     <div class="absolute top-10 z-[101] bg-white w-full h-auto">
-      <div class="flex flex-col gap-2 py-4 px-4 bg-orange-400">
+      <div class="flex flex-col gap-2 py-4 px-4 bg-blue-400">
         <button @click.prevent="onLeaveRoom">방 나가기</button>
         <button @click.prevent="router.push('/foodChat/myRoomList')">
           방으로 돌아가기

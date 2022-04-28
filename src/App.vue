@@ -16,7 +16,7 @@
     type="checkbox"
     v-model="isCehckd"
   />
-  <div id="nav" :class="{ 'sm:pl-20': route.path.includes('foodChat') }">
+  <div id="nav" :class="{ 'sm:pl-20 ': route.path.includes('foodChat') }">
     <div class="nav-home" @click="changePage">
       <router-link to="/">
         <img class="object-cover" src="@/assets/images/HOME.png" alt="" />
@@ -78,7 +78,7 @@ export default defineComponent({
         if (route.path.includes("foodChat")) {
           document.documentElement.style.setProperty(
             "--body-color",
-            "rgb(251,146,60)"
+            "rgb(96, 165, 250)"
           );
         } else {
           document.documentElement.style.setProperty("--body-color", "white");

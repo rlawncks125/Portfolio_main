@@ -72,7 +72,7 @@
 
     <!-- 모바일 하단-->
     <div
-      class="fixed bottom-0 left-0 py-4 w-full h-14 bg-gray-400 sm:hidden"
+      class="fixed bottom-0 left-0 py-4 w-full h-14 bg-gray-300 sm:hidden"
       style="z-index: 101"
     >
       <div class="flex w-full justify-around h-full">

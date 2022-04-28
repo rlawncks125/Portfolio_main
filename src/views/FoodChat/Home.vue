@@ -36,7 +36,7 @@
     <section class="sm:hidden">
       <!-- 아이콘 설명 -->
       <div
-        class="fixed bottom-[3.5rem] left-0 w-full flex justify-around text-center bg-orange-400 text-fuchsia-800"
+        class="fixed bottom-[3.5rem] left-0 w-full flex justify-around text-center bg-blue-400 text-fuchsia-800"
       >
         <div>
           <p>내 방 목록</p>
@@ -54,7 +54,7 @@
 
       <!-- 모바일 하단-->
       <div
-        class="fixed bottom-0 left-0 py-4 w-full h-14 bg-gray-400 sm:hidden"
+        class="fixed bottom-0 left-0 py-4 w-full h-14 bg-gray-300 sm:hidden"
         style="z-index: 101"
       >
         <div class="flex w-full justify-around h-full">
