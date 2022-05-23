@@ -67,6 +67,13 @@ export const logIn = async ({
     .catch((e) => e);
 };
 
+export const testUser = async (): Promise<boolean> => {
+  return axios
+    .get(`${backUrl}/user/test`, AuthHeaders)
+    .then((res) => true)
+    .catch((e) => false);
+};
+
 export const createUser = async ({
   username,
   password,

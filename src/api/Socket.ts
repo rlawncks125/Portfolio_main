@@ -14,7 +14,7 @@ export const init = () => {
     autoConnect: false,
     transports: ["websocket"],
     auth: {
-      token: token.value,
+      "acces-token": token.value,
     },
   });
 

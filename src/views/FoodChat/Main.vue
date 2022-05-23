@@ -198,7 +198,7 @@ import {
   toRefs,
   watch,
 } from "vue";
-import { createUser, logIn } from "@/api/auth";
+import { createUser, logIn, logOut, testUser } from "@/api/auth";
 import { useRoute, useRouter } from "vue-router";
 import { getJoinRoomList } from "@/api/Room";
 import LoadingBtn from "@/components/common/Input/LoadingBtn.vue";
@@ -354,11 +354,19 @@ export default defineComponent({
       }
     );
 
-    onMounted(() => {
+    onMounted(async () => {
       setViewStyles();
       window.addEventListener("resize", setViewStyles);
       console.log("마운트 로그인");
       isLogin.value && webSocket.init();
+
+      // 로그인됐을시 토큰이 맞는지 확인
+      if (isLogin.value) {
+        const isT = await testUser();
+        if (!isT) {
+          logOut();
+        }
+      }
     });
     onUnmounted(() => {
       window.removeEventListener("resize", setViewStyles);
