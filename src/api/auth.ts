@@ -44,7 +44,7 @@ export const logIn = async ({
   const base64 = Buffer.from(username).toString("base64");
   console.log(base64);
   return axios
-    .get(`${backUrl}/user`, {
+    .get(`/api/user`, {
       auth: {
         username: base64,
         password,
@@ -69,7 +69,7 @@ export const logIn = async ({
 
 export const testUser = async (): Promise<boolean> => {
   return axios
-    .get(`${backUrl}/user/test`, AuthHeaders)
+    .get(`/api/user/test`, AuthHeaders)
     .then((res) => true)
     .catch((e) => false);
 };
@@ -86,7 +86,7 @@ export const createUser = async ({
 
   return axios
     .post(
-      `${backUrl}/user`,
+      `/api/user`,
       {},
       {
         auth: {
@@ -102,7 +102,7 @@ export const createUser = async ({
 
 export const editUser = async (dsc: string): Promise<any> => {
   return await axios
-    .patch(`${backUrl}/user`, { dsc }, AuthHeaders)
+    .patch(`/api/user`, { dsc }, AuthHeaders)
     .then((res: any) => {
       return res.data;
     });

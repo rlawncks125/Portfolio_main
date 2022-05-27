@@ -8,7 +8,7 @@ export const deleteFile = async (fileName: string) => {
   let isDeleted = false;
 
   const deleteResult = await axios
-    .delete(`${backUrl}/file/${imageURL}`)
+    .delete(`/api/file/${imageURL}`)
     .then((res: any) => res.data.deleted);
 
   if (Object.values(deleteResult).length > 0) {
@@ -19,7 +19,7 @@ export const deleteFile = async (fileName: string) => {
 
 export const ImageGetURLByFormData = async (form: FormData) => {
   return await axios
-    .post(`${backUrl}/file`, form, {
+    .post(`/api/file`, form, {
       headers: {
         "Content-Type": "multipart/form-data",
       },

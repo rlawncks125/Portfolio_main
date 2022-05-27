@@ -209,9 +209,9 @@
             <span>검색</span>
           </LoadingBtn>
         </div>
-
-        <select v-model="selectedText">
-          <option class="hidden" disabled value="">필터할 종류</option>
+        <label for="restaurntFilter">필터할 종류 : </label>
+        <select v-model="selectedText" id="restaurntFilter">
+          <option class="hidden" disabled value>종류</option>
           <template v-for="item in selectedFilter" :key="item.id">
             <option>
               {{ item.type }}

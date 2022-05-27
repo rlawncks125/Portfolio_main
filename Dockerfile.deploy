@@ -1,14 +1,16 @@
-FROM node:14-slim as build-stage
+FROM node:14-alpine as build-stage
 WORKDIR /app
 COPY package*.json ./
 
 # 이전 cache 삭제
-RUN npm cache verify 
+# RUN npm cache verify 
 
-RUN npm cache clean --force
+# RUN npm cache clean --force
 
 RUN npm install
+
 COPY ./ .
+
 RUN npm run build
 
 FROM nginx as production-stage

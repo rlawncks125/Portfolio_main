@@ -20,6 +20,7 @@
     <div class="nav-home" @click="changePage">
       <router-link to="/">
         <img class="object-cover" src="@/assets/images/HOME.png" alt="" />
+        <span class="web-acc-hidden">Home</span>
       </router-link>
     </div>
     <div class="nav-wrap text-three-dot" @click="changePage">
@@ -43,6 +44,7 @@
 </template>
 
 <script lang="ts">
+import axios from "axios";
 import { defineComponent, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
@@ -67,9 +69,11 @@ export default defineComponent({
       document.documentElement.style.setProperty("--mobile--full", `${dh}px`);
     };
 
-    onMounted(() => {
+    onMounted(async () => {
       window.addEventListener("load", mobileHeightSize);
       window.addEventListener("resize", mobileHeightSize);
+
+      await axios.get("/api").then((res) => console.log(res.data));
     });
 
     watch(
@@ -300,5 +304,12 @@ a:-webkit-any-link {
   width: 100%;
 
   // max-width: $max-width;
+}
+
+.web-acc-hidden {
+  display: inline-block;
+  width: 0px;
+  height: 0px;
+  overflow: hidden;
 }
 </style>

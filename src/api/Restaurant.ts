@@ -18,7 +18,7 @@ export const createRestaurant = async (
   data: CreateRestaurantInputDto
 ): Promise<CreateRestaurantOutPutDto> => {
   return axios
-    .post(`${backUrl}/restaurant`, data, AuthHeaders)
+    .post(`/api/restaurant`, data, AuthHeaders)
     .then((res: any) => res.data as CreateRestaurantOutPutDto);
 };
 
@@ -26,7 +26,7 @@ export const getRestaurantById = async (
   id: number
 ): Promise<GetRestaurantByIdOutPutDto> => {
   return axios
-    .get(`${backUrl}/restaurant/${id}`, AuthHeaders)
+    .get(`/api/restaurant/${id}`, AuthHeaders)
     .then((res: any) => res.data as GetRestaurantByIdOutPutDto);
 };
 
@@ -34,7 +34,7 @@ export const deleteRestaurant = async (
   id: number
 ): Promise<{ ok: boolean; err?: string }> => {
   return axios
-    .delete(`${backUrl}/restaurant/${id}`, AuthHeaders)
+    .delete(`/api/restaurant/${id}`, AuthHeaders)
     .then((res: any) => res.data as Promise<{ ok: boolean; err?: string }>);
 };
 
@@ -42,13 +42,13 @@ export const addRestaurantCommentById = async (
   data: AddRestaurantCommentByIdIdInputDto
 ): Promise<AddRestaurantCommentByIdIdOutPutDto> => {
   return axios
-    .post(`${backUrl}/restaurant/comment`, data, AuthHeaders)
+    .post(`/api/restaurant/comment`, data, AuthHeaders)
     .then((res: any) => res.data as AddRestaurantCommentByIdIdOutPutDto);
 };
 
 export const editCommentMessage = async (data: EditCommentMessageInPutDto) => {
   return axios
-    .patch(`${backUrl}/restaurant/comment`, data, AuthHeaders)
+    .patch(`/api/restaurant/comment`, data, AuthHeaders)
     .then((res: any) => res.data as EditCommentMessageOutPutDto);
 };
 
@@ -56,7 +56,7 @@ export const addMessageByCommentId = async (
   data: AddMessageByCommentIdInPutDto
 ): Promise<AddMessageByCommentIdOutPutDto> => {
   return axios
-    .post(`${backUrl}/restaurant/comment/addMessage`, data, AuthHeaders)
+    .post(`/api/restaurant/comment/addMessage`, data, AuthHeaders)
     .then((res: any) => res.data as AddMessageByCommentIdOutPutDto);
 };
 
@@ -64,13 +64,13 @@ export const editCommentChildMessage = async (
   data: EditCommentChildMessageInPutDto
 ) => {
   return axios
-    .patch(`${backUrl}/restaurant/comment/addMessage`, data, AuthHeaders)
+    .patch(`/api/restaurant/comment/addMessage`, data, AuthHeaders)
     .then((res: any) => res.data as EditCommentChildMessageOutPutDto);
 };
 
 export const deleteComment = async (id: number) => {
   return axios
-    .delete(`${backUrl}/restaurant/comment/${id}`, AuthHeaders)
+    .delete(`/api/restaurant/comment/${id}`, AuthHeaders)
     .then((res: any) => res.data as { ok: boolean; err?: string });
 };
 
