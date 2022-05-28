@@ -2,7 +2,10 @@ import { computed } from "vue";
 import { store } from "@/store/index";
 import { io, Socket } from "socket.io-client";
 
-const wsUrl = "wss://myapi.kimjuchan97.site";
+const wsUrl =
+  process.env.NODE_ENV === "production"
+    ? "wss://pofol-backend.herokuapp.com"
+    : "wss://myapi.kimjuchan97.site";
 const nameSpace = "foodMapChat";
 
 const token = computed(() => store.state.token);

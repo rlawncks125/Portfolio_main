@@ -84,4 +84,38 @@ create시 정보 emit로 전달하기,
 UI/UX ( 방설정 , 기타 설정)
 대기 유저 거절 버튼 추가
 
-s
+# netlify 배포 추가 설정
+
+### 환경변수 추가
+
+NODE_VERSION=14.17.5
+
+## netlify.toml 파일에 프록시 설정 추가
+
+```
+// netlify.toml
+
+[[redirects]]
+  from = "/api/*"
+  to = "https://pofol-backend.herokuapp.com/:splat"
+  status = 200
+
+
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+```
+
+## build시 netlify.toml파일 dist폴더에 복사
+
+```js
+//package.js
+{
+  ...
+  "build": "vue-cli-service build && cp ./netlify.toml ./dist",
+  ...
+}
+```
