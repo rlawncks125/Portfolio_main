@@ -13,7 +13,6 @@ import { computed, watch } from "vue";
 // console.log("auth 로드");
 
 const token = computed(() => store.state.token);
-export const backUrl = process.env.VUE_APP_API_URL;
 
 export const AuthHeaders: AxiosRequestConfig = {
   headers: {

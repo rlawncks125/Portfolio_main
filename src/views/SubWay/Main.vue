@@ -91,7 +91,7 @@ import {
   GetSubWayScheduleInPutDto,
 } from "@/assets/swagger";
 import axios from "axios";
-import { backUrl } from "@/api/auth";
+
 
 import { defineComponent, reactive, ref } from "vue";
 
@@ -200,7 +200,7 @@ export default defineComponent({
       } as GetSubWayScheduleInPutDto;
 
       const res = await axios
-        .post(`${backUrl}/subway`, postData)
+        .post(`/api/subway`, postData)
         .then((res: any) => {
           return res.data;
         });

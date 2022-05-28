@@ -12,7 +12,7 @@ import {
   GetRestaurantByIdOutPutDto,
 } from "@/assets/swagger";
 import axios from "axios";
-import { AuthHeaders, backUrl } from "./auth";
+import { AuthHeaders } from "./auth";
 
 export const createRestaurant = async (
   data: CreateRestaurantInputDto

@@ -2,7 +2,7 @@ const backUrl = process.env.VUE_APP_API_URL;
 
 module.exports = {
   devServer: {
-    port: process.env.PORTS || 8080,
+    port: process.env.PORT || 8080,
     disableHostCheck: true,
     // nginx 사용시
     // nginx에서 프록시 설정

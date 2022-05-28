@@ -21,7 +21,7 @@ import {
   EdtiRoomOutPutDto,
 } from "@/assets/swagger";
 import axios from "axios";
-import { AuthHeaders, backUrl } from "./auth";
+import { AuthHeaders } from "./auth";
 
 export const createRoom = async (
   data: CreateRoomInputDto
