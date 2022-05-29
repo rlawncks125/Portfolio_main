@@ -109,7 +109,7 @@
     <!-- 사이드바 -->
     <!-- sm 이상 사이드바 -->
     <div
-      class="hidden sm:flex w-20 h-full fixed left-0 px-2 flex-col text-center inset-y-0 transition-all whitespace-nowrap bg-gray-400 shadow-lg shadow-slate-500"
+      class="hidden sm:flex w-20 h-full fixed left-0 px-2 flex-col text-center inset-y-0 transition-all whitespace-nowrap bg-blue-500 shadow-lg shadow-slate-500"
       style="z-index: 102"
     >
       <!-- 아이콘 & 클릭 트리거 -->

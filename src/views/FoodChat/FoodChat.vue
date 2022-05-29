@@ -10,7 +10,7 @@
   <details class="block relative w-full h-10 bg-blue-400">
     <summary class="cursor-pointer px-4">기타 등등</summary>
     <div class="absolute top-10 z-[101] bg-white w-full h-auto">
-      <div class="grid md:grid-cols-2 gap-2 py-4 px-4 bg-blue-400">
+      <div class="grid sm:grid-cols-2 gap-2 py-4 px-4 bg-blue-400">
         <button @click.prevent="onLeaveRoom">방 나가기</button>
         <button @click.prevent="router.push('/foodChat/myRoomList')">
           방으로 돌아가기
