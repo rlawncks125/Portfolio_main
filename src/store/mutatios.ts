@@ -1,5 +1,5 @@
-export type MutationType<T, U, V> = {
-  [K in keyof (U | V)]: (state: T, payload: U[K]) => V[K];
+export type MutationType<S, P, R> = {
+  [K in keyof (P | R)]: (state: S, payload: P[K]) => R[K];
 };
 
 // 메인 index

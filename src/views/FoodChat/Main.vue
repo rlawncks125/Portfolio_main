@@ -72,7 +72,7 @@
 
     <!-- 모바일 하단-->
     <div
-      class="fixed bottom-0 left-0 py-4 w-full h-14 bg-gray-300 sm:hidden"
+      class="fixed bottom-0 left-0 py-4 w-full h-14 bg-blue-400 border-t sm:hidden"
       style="z-index: 101"
     >
       <div class="flex w-full justify-around h-full">
@@ -109,19 +109,27 @@
     <!-- 사이드바 -->
     <!-- sm 이상 사이드바 -->
     <div
-      class="hidden sm:flex w-20 h-full fixed left-0 px-2 flex-col text-center inset-y-0 transition-all whitespace-nowrap bg-blue-500 shadow-lg shadow-slate-500"
+      class="hidden sm:flex w-20 h-full fixed left-0 px-2 flex-col text-center inset-y-0 transition-all whitespace-nowrap bg-blue-400 shadow-lg shadow-slate-500"
       style="z-index: 102"
     >
       <!-- 아이콘 & 클릭 트리거 -->
       <div
         class="flex h-full flex-col justify-start gap-12 pt-40 overflow-hidden"
       >
+        <div class="" @click.prevent="router.push({ name: 'myRoomList' })">
+          HOME
+        </div>
         <div v-for="item in sideBarInfo" :key="item.id">
           <div
             class="cursor-pointer h-16 mx-auto w-full"
             @click.prevent="
               () => {
                 isSideBarActive = true;
+                if (sideBarClickedText === item.eventTrigger) {
+                  isSideBarActive = false;
+                  sideBarClickedText = '';
+                  return;
+                }
                 sideBarClickedText = item.eventTrigger;
               }
             "
@@ -152,13 +160,12 @@
     </div>
     <!-- 사이드바 정보창 -->
     <div
-      class="hidden z-[101] sm:flex h-full fixed left-20 flex-col inset-y-0 transition-all bg-white shadow-lg shadow-slate-500"
-      :class="isSideBarActive ? 'w-[max(30rem,40vw)] ' : 'w-0'"
+      class="w-[max(30rem,40vw)] hidden z-[101] sm:flex h-full fixed left-20 flex-col inset-y-0 bg-white shadow-lg shadow-slate-500 transition-all duration-300"
+      :class="isSideBarActive ? 'translate-x-0 ' : 'translate-x-[-50rem]'"
     >
       <!-- 화살표 -->
       <div
-        class="absolute w-10 h-10 transition-all bottom-2/4 text-center flex flex-col justify-center bg-teal-600 cursor-pointer"
-        :style="isSideBarActive ? 'left:max(30rem,40vw)' : 'left:-3rem  '"
+        class="left-[max(30rem,40vw)] absolute w-10 h-10 bottom-2/4 text-center flex flex-col justify-center bg-yellow-400 rounded-r-2xl cursor-pointer"
         @click.prevent="
           () => {
             if (!isSideBarActive) return;
@@ -173,7 +180,7 @@
       <div class="overflow-auto h-full">
         <div v-for="item in sideBarInfo" :key="item.id">
           <div
-            class="w-full px-2"
+            class="w-full p-2"
             v-show="sideBarClickedText === item.eventTrigger"
           >
             <component :is="item.renderCompo" />
@@ -250,9 +257,9 @@ export default defineComponent({
     const sideBarInfo = [
       {
         eventTrigger: "room",
-        faIcon: "house",
+        faIcon: "list",
         faSize: "2x",
-        text: "내 방들",
+        text: "참여 방들",
         renderCompo: MyRooms,
       },
       {

@@ -180,6 +180,26 @@ export class UserService {
       axios(configs, resolve, reject);
     });
   }
+  /**
+   * 로그인 토큰 확인
+   */
+  static userControllerTetUser(options: IRequestOptions = {}): Promise<any> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + "/user/test";
+
+      const configs: IRequestConfig = getConfigs(
+        "get",
+        "application/json",
+        url,
+        options
+      );
+
+      let data = null;
+
+      configs.data = data;
+      axios(configs, resolve, reject);
+    });
+  }
 }
 
 export class RoomService {
@@ -1477,6 +1497,43 @@ export enum EnumGetSubWayScheduleInPutDtoStation2 {
   "검단오류" = "검단오류",
 }
 export enum EnumGetSubWayScheduleInPutDtoStation3 {
+  "신창" = "신창",
+  "온양온천" = "온양온천",
+  "배방" = "배방",
+  "아산" = "아산",
+  "쌍용" = "쌍용",
+  "봉명" = "봉명",
+  "천안" = "천안",
+  "두정" = "두정",
+  "직산" = "직산",
+  "성환" = "성환",
+  "평택" = "평택",
+  "평택지제" = "평택지제",
+  "서정리" = "서정리",
+  "송탄" = "송탄",
+  "진위" = "진위",
+  "오산" = "오산",
+  "오산대" = "오산대",
+  "세마" = "세마",
+  "서동탄" = "서동탄",
+  "병점" = "병점",
+  "세류" = "세류",
+  "수원" = "수원",
+  "화서" = "화서",
+  "성균관대" = "성균관대",
+  "의왕" = "의왕",
+  "당정" = "당정",
+  "군포" = "군포",
+  "금정" = "금정",
+  "명학" = "명학",
+  "안양" = "안양",
+  "관악" = "관악",
+  "석수" = "석수",
+  "광명" = "광명",
+  "금천구청" = "금천구청",
+  "독산" = "독산",
+  "가산디지털단지" = "가산디지털단지",
+  "인천" = "인천",
   "동인천" = "동인천",
   "도원" = "도원",
   "제물포" = "제물포",
@@ -1503,7 +1560,6 @@ export enum EnumGetSubWayScheduleInPutDtoStation3 {
   "대방" = "대방",
   "노량진" = "노량진",
   "용산" = "용산",
-  "인천" = "인천",
   "남영" = "남영",
   "서울역" = "서울역",
   "시청" = "시청",
@@ -1540,42 +1596,6 @@ export enum EnumGetSubWayScheduleInPutDtoStation3 {
   "보산" = "보산",
   "동두천" = "동두천",
   "소요산" = "소요산",
-  "신창" = "신창",
-  "온양온천" = "온양온천",
-  "배방" = "배방",
-  "아산" = "아산",
-  "쌍용" = "쌍용",
-  "봉명" = "봉명",
-  "천안" = "천안",
-  "두정" = "두정",
-  "직산" = "직산",
-  "성환" = "성환",
-  "평택" = "평택",
-  "평택지제" = "평택지제",
-  "서정리" = "서정리",
-  "송탄" = "송탄",
-  "진위" = "진위",
-  "오산" = "오산",
-  "오산대" = "오산대",
-  "세마" = "세마",
-  "병점" = "병점",
-  "세류" = "세류",
-  "수원" = "수원",
-  "화서" = "화서",
-  "성균관대" = "성균관대",
-  "의왕" = "의왕",
-  "당정" = "당정",
-  "군포" = "군포",
-  "금정" = "금정",
-  "명학" = "명학",
-  "안양" = "안양",
-  "관악" = "관악",
-  "석수" = "석수",
-  "금천구청" = "금천구청",
-  "독산" = "독산",
-  "가산디지털단지" = "가산디지털단지",
-  "서동탄" = "서동탄",
-  "광명" = "광명",
 }
 export enum EnumGetSubWayScheduleInPutDtoStation4 {
   "석남" = "석남",

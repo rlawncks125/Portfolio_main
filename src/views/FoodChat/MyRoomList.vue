@@ -1,6 +1,6 @@
 <template>
   <loding :isLoding="isLoading" />
-  <div class="max-w-7xl mx-auto">
+  <div class="max-w-6xl mx-auto px-2">
     <p class="px-1">My Room</p>
 
     <div class="flex justify-between px-1">
@@ -10,7 +10,7 @@
       </button>
     </div>
     <!-- 방목록 랜더 -->
-    <div class="flex flex-col gap-4 mb-10">
+    <div class="grid gap-4 mb-10 mt-[1rem]">
       <div
         v-for="item in myJoinRoomLists"
         :key="item.id"

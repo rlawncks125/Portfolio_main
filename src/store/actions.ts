@@ -1,5 +1,5 @@
-export type ActionType<T, U, V> = {
-  [K in keyof (U | V)]: (actionContext: T, payload: U[K]) => V[K];
+export type ActionType<C, P, R> = {
+  [K in keyof (P | R)]: (actionContext: C, payload: P[K]) => R[K];
 };
 
 // 음식 채팅
