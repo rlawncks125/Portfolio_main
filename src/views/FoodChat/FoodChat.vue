@@ -10,24 +10,25 @@
   <details class="block relative w-full h-10 bg-blue-400">
     <summary class="cursor-pointer px-4">기타 등등</summary>
     <div class="absolute top-10 z-[101] bg-white w-full h-auto">
-      <div class="flex flex-col gap-2 py-4 px-4 bg-blue-400">
+      <div class="grid md:grid-cols-2 gap-2 py-4 px-4 bg-blue-400">
         <button @click.prevent="onLeaveRoom">방 나가기</button>
         <button @click.prevent="router.push('/foodChat/myRoomList')">
           방으로 돌아가기
         </button>
+
         <template v-if="isSpuerUser">
           <button @click.prevent="isActiveApprovalWait = true">
             신청 대기 유저
           </button>
+          <button
+            v-if="isSpuerUser"
+            class="hidden sm:block"
+            @click.prevent="openEditRoom"
+          >
+            방 설정
+          </button>
           <button @click.prevent="onDeleteRoom">방 삭제하기</button>
         </template>
-        <button
-          v-if="isSpuerUser"
-          class="hidden sm:block"
-          @click.prevent="openEditRoom"
-        >
-          방 설정
-        </button>
       </div>
     </div>
   </details>
