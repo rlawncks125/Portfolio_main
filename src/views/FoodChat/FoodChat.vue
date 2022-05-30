@@ -403,7 +403,10 @@ export default defineComponent({
         map: map.value,
         icon: {
           url: "https://res.cloudinary.com/dhdq4v4ar/image/upload/v1644527647/back-Portfolio/Company_building_free_icon_4_sd6q06.png",
-          size: new naver.maps.Size(50, 50),
+          size: new naver.maps.Size(30, 40),
+          scaledSize: new naver.maps.Size(30, 40),
+          origin: new naver.maps.Point(0, 0),
+          anchor: new naver.maps.Point(12, 40),
         },
         clickable: false,
       });

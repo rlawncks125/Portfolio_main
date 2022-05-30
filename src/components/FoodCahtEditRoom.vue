@@ -165,7 +165,7 @@ export default defineComponent({
         if (marker) {
           marker.onRemove();
         }
-
+        console.log(e.coord);
         marker = new naver.maps.Marker({
           position: e.coord,
           map,

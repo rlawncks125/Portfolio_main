@@ -1,67 +1,69 @@
 <template>
-  <p>방 찾기</p>
-  <Loading :isLoding="isLoading" />
-  <!-- 필터 -->
-  <div class="flex items-center">
-    <select v-model="filterType" class="flex-1 w-1/3">
-      <template v-for="(value, key) in searchOptions" :key="key">
-        <option :value="key">{{ key }}</option>
-      </template>
-    </select>
-    <input type="text" class="flex-1 w-1/3" v-model="searchValue" />
+  <div class="px-2">
+    <p>방 찾기</p>
+    <Loading :isLoding="isLoading" />
+    <!-- 필터 -->
+    <div class="flex items-center">
+      <select v-model="filterType" class="flex-1 w-1/3">
+        <template v-for="(value, key) in searchOptions" :key="key">
+          <option :value="key">{{ key }}</option>
+        </template>
+      </select>
+      <input type="text" class="flex-1 w-1/3" v-model="searchValue" />
 
-    <LoadingBtn
-      class="h-10 w-30 flex-initial"
-      @click.prevent="getRoomLists"
-      :isLoading="isLoadingBtn"
-      :size="30"
+      <LoadingBtn
+        class="h-10 w-30 flex-initial"
+        @click.prevent="getRoomLists"
+        :isLoading="isLoadingBtn"
+        :size="30"
+      >
+        <p>찾기</p>
+      </LoadingBtn>
+    </div>
+
+    <!-- 방만들기 버튼 -->
+    <button @click.prevent="isCreateRoom = true">방 만들기</button>
+    <transition name="ani-fade">
+      <room-create-form
+        v-if="isCreateRoom"
+        @onCreated="onCreateRoom"
+        @onClose="isCreateRoom = false"
+      />
+    </transition>
+    <!-- 찾은 방리스트 랜더 -->
+    <div
+      v-for="item in roomLists"
+      :key="item.id"
+      class="flex flex-col border-2 mt-4"
     >
-      <p>찾기</p>
-    </LoadingBtn>
-  </div>
-
-  <!-- 방만들기 버튼 -->
-  <button @click.prevent="isCreateRoom = true">방 만들기</button>
-  <transition name="ani-fade">
-    <room-create-form
-      v-if="isCreateRoom"
-      @onCreated="onCreateRoom"
-      @onClose="isCreateRoom = false"
-    />
-  </transition>
-  <!-- 찾은 방리스트 랜더 -->
-  <div
-    v-for="item in roomLists"
-    :key="item.id"
-    class="flex flex-col border-2 mt-4"
-  >
-    <div class="room-info">
-      <div class="room-marke">
-        <div>
-          <img
-            v-if="item.markeImageUrl"
-            :src="item.markeImageUrl"
-            class="w-full h-full bg-cover bg-center"
-          />
-          <fa-icon v-else class="h-full" :icon="['fa', 'users']" />
+      <div class="room-info">
+        <div class="room-marke">
+          <div>
+            <img
+              v-if="item.markeImageUrl"
+              :src="item.markeImageUrl"
+              class="w-full h-full bg-cover bg-center"
+            />
+            <fa-icon v-else class="h-full" :icon="['fa', 'users']" />
+          </div>
         </div>
-      </div>
-      <p class="room-name">{{ item.roomName }}</p>
-      <p class="room-super-user">👑{{ item.superUserinfo.username }}</p>
+        <p class="room-name">{{ item.roomName }}</p>
+        <p class="room-super-user">👑{{ item.superUserinfo.username }}</p>
 
-      <button
-        v-if="approvalWaitRooms.find((v) => v.id === item.id)"
-        class="text-pink-500 bg-slate-700 border-2 pointer-events-none"
-      >
-        <p>승인 대기중</p>
-      </button>
-      <button
-        v-else
-        class="text-pink-500 bg-slate-700 border-2"
-        @click.prevent="joinReqRoom(item.uuid)"
-      >
-        <p>참여 하기</p>
-      </button>
+        <button
+          v-if="approvalWaitRooms.find((v) => v.id === item.id)"
+          class="text-pink-500 bg-slate-700 border-2 pointer-events-none"
+        >
+          <p>승인 대기중</p>
+        </button>
+        <button
+          v-else
+          class="text-pink-500 bg-slate-700 border-2"
+          @click.prevent="joinReqRoom(item.uuid)"
+        >
+          <p>참여 하기</p>
+        </button>
+      </div>
     </div>
   </div>
 </template>

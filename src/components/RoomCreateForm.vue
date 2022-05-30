@@ -63,6 +63,7 @@ import InputFile, {
 import Loding from "@/components/Loding.vue";
 import { createRoom } from "@/api/Room";
 import { ImageGetURLByFormData } from "@/api/file";
+import { naverMapsFindAddress } from "@/plugin/naverMaps";
 
 export default defineComponent({
   emits: ["onCreated", "onClose"],
@@ -75,7 +76,7 @@ export default defineComponent({
     const roomName = ref("");
     const addr = ref();
     const findData = reactive({
-      findAddrs: [] as naver.maps.Service.AddressItemV2[],
+      findAddrs: [] as naver.maps.Service.AddressItemV2[] | null,
     });
 
     const isLoading = ref(false);
@@ -127,20 +128,8 @@ export default defineComponent({
 
     const serachAddr = async () => {
       if (!addr.value) return;
-      naver.maps.Service.geocode(
-        {
-          query: addr.value,
-        },
-        (status, response) => {
-          if (status === naver.maps.Service.Status.OK) {
-            const addresses = response.v2.addresses;
 
-            addresses.length > 0
-              ? (findData.findAddrs = addresses)
-              : alert("결과값이 없습니다.");
-          }
-        }
-      );
+      findData.findAddrs = await naverMapsFindAddress(addr.value);
     };
 
     const onMoveMarkerAddress = (x: number, y: number) => {

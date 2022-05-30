@@ -72,17 +72,17 @@
 
     <!-- 모바일 하단-->
     <div
-      class="fixed bottom-0 left-0 py-4 w-full h-14 bg-blue-400 border-t sm:hidden"
+      class="shadow-top fixed bottom-0 left-0 py-2 w-full h-[4.5rem] bg-blue-400 sm:hidden"
       style="z-index: 101"
     >
-      <div class="flex w-full justify-around h-full">
+      <div class="flex w-full justify-around h-full text-center">
         <div
           class="cursor-pointer"
           @click.prevent="router.push('/foodChat/myRoomList')"
         >
-          <div class="h-full">
-            <fa-icon :icon="['fa', 'list']" />
-            <p class="hidden sm:inline pl-4">방</p>
+          <div class="h-full w-[4rem]">
+            <fa-icon :icon="['fa', 'list']" :size="'lg'" />
+            <p class="sm:inline sm:pl-4">내 방들</p>
           </div>
         </div>
         <div
@@ -90,8 +90,8 @@
           @click.prevent="router.push('/foodChat/search')"
         >
           <div class="h-full">
-            <fa-icon :icon="['fa', 'magnifying-glass']" />
-            <p class="hidden sm:inline pl-4">서치</p>
+            <fa-icon :icon="['fa', 'magnifying-glass']" :size="'lg'" />
+            <p class="sm:inline sm:pl-4">서치</p>
           </div>
         </div>
         <div
@@ -99,9 +99,9 @@
           @click.prevent="router.push('/foodChat/MyPage')"
         >
           <div class="h-full">
-            <fa-icon :icon="['fa', 'users']" />
+            <fa-icon :icon="['fa', 'users']" :size="'lg'" />
 
-            <p class="hidden sm:inline pl-4">마이 페이지</p>
+            <p class="sm:inline sm:pl-4">마이 페이지</p>
           </div>
         </div>
       </div>
@@ -405,4 +405,9 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.shadow-top {
+  filter: drop-shadow(0px -1px rgb(0 0 0 / 0.1))
+    drop-shadow(0px -2px rgb(0 0 0 / 0.06));
+}
+</style>

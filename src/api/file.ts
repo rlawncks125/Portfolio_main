@@ -23,5 +23,5 @@ export const ImageGetURLByFormData = async (form: FormData) => {
         "Content-Type": "multipart/form-data",
       },
     })
-    .then((res) => res.data.url as string);
+    .then((res) => res.data.secure_url as string);
 };
