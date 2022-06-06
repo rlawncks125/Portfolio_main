@@ -3,7 +3,7 @@ import App from "./App.vue";
 import "./registerServiceWorker";
 import router from "./router";
 import { store, key } from "./store";
-import "@/assets/css/TailwindOutput.css";
+import "@/assets/css/TailwindOutput.scss";
 import LoadingComponent from "@/components/Loding.vue";
 import { FontAwesomeIcon } from "@/plugin/font-awesome";
 

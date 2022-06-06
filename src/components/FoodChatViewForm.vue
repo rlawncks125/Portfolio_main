@@ -5,12 +5,14 @@
       style="height: calc(var(--mobile--full) - 2vh)"
     >
       <div
-        class="form-full sticky py-3 px-5 left-0 top-0 mx-auto flex justify-between bg-white items-center"
+        class="form-full sticky py-3 px-5 left-0 top-0 mx-auto flex justify-between bg-white items-center shadow-lg"
         style="z-index: 103"
       >
-        <button class="text-3xl" @click.prevent="onClose">&lt;</button>
+        <button class="none-btn text-5xl font-bold" @click.prevent="onClose">
+          &lt;
+        </button>
         <p class="w-auto flex-1 text-center">{{ viewData.restaurantName }}</p>
-        <div>
+        <div class="w-[9rem]">
           <button v-if="isSuperUser" @click.prevent="onDeleteRestaurnt">
             삭제 버튼
           </button>
@@ -29,11 +31,11 @@
         />
       </div>
 
-      <div class="flex items-center mb-3 gap-2">
+      <div class="flex items-center mt-4 mb-8 gap-2">
         <span class="text-3xl">평균 별점 </span>
         <star-fill :starNum="5" :starSize="2" :fill="viewData.avgStar" />
       </div>
-      <div class="flex flex-wrap items-center gap-2 pb-8 mb-8 border-b-2">
+      <div class="flex flex-wrap items-center gap-2 pb-4 mb-4">
         <span> 전문 분야 </span>
         <template v-for="special in viewData.specialization" :key="special.id">
           <p class="text-gray-500 bg-yellow-400 rounded-full py-1 px-3">
@@ -44,8 +46,9 @@
 
       <div
         v-if="viewData.hashTags && viewData.hashTags.length > 0"
-        class="flex gap-1"
+        class="flex flex-wrap items-center gap-2 pb-4 mb-4"
       >
+        <span> 태그 </span>
         <template v-for="tag in viewData.hashTags" :key="tag.id">
           <p class="px-1 text-indigo-100 bg-cyan-500 rounded-full">
             {{ tag }}
@@ -65,11 +68,11 @@
 
           <div class="text-left w-full">
             <div
-              class="px-4"
+              class="px-4 mb-4"
               v-for="comment in viewData.comments"
               :key="comment.id"
             >
-              <div class="flex justify-between whitespace-pre">
+              <div class="flex justify-between whitespace-pre mb-2">
                 <span> {{ comment.message.userInfo.nickName }} : </span>
                 <p
                   class="cursor-pointer text-left flex-initial w-full"
@@ -98,9 +101,11 @@
               </div>
               <div
                 v-show="editActiveMessage === comment.id"
-                class="border border-red-500"
+                class="border my-[1rem] p-1"
               >
-                <label for="message-chnage" class="block">댓글 수정:</label>
+                <label for="message-chnage" class="block text-blue-500"
+                  >댓글 수정:</label
+                >
                 <div class="flex items-center">
                   <input
                     v-enter-next-focus
@@ -119,9 +124,11 @@
               </div>
               <div
                 v-show="activeMessage === comment.id"
-                class="border border-blue-300"
+                class="border my-2 p-1"
               >
-                <label for="message-add" class="block">추가 댓글:</label>
+                <label for="message-add" class="block text-green-600"
+                  >추가 댓글 달기 :</label
+                >
                 <div class="flex items-center">
                   <input
                     v-enter-next-focus
@@ -140,9 +147,10 @@
               </div>
               <!-- 대댓글 -->
               <div
-                class="ml-6 pl-4 flex flex-col border-2 gap-1"
-                v-for="childMessages in comment.childMessages"
+                class="ml-6 pl-4 flex flex-col border-2 border-t-0 gap-1"
+                v-for="(childMessages, index) in comment.childMessages"
                 :key="childMessages.id"
+                :class="index === 0 ? '!border-t-2' : ''"
               >
                 <div class="whitespace-pre-wrap">
                   <div class="flex flex-wrap justify-between -translate-x-2">
@@ -174,10 +182,10 @@
                   </p>
                 </div>
                 <div
-                  class="border border-yellow-400 px-2"
+                  class="border my-2 p-1"
                   v-show="editActiveChildMessage === childMessages.CreateTime"
                 >
-                  <label class="block" for="edit-child-message"
+                  <label class="block text-blue-500" for="edit-child-message"
                     >수정할 내용</label
                   >
                   <div class="flex items-center">
@@ -218,7 +226,7 @@
         />
         <label for="">추가 댓글 달기 :</label>
         <textarea
-          class="border border-black min-h-[7rem] resize-none mb-2"
+          class="border border-black min-h-[7rem] resize-none mb-2 mx-2"
           v-model="message"
         />
         <button @click.prevent="onAddCommentRestaurantById">댓글 추가</button>

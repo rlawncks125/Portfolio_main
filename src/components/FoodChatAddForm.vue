@@ -14,6 +14,14 @@
           class="border-2 p-2 mx-4 rounded-2xl grid max-w-full grid-cols-1 justify-items-center"
         >
           <legend class="text-center px-8">음식점 추가</legend>
+          <!-- 음식점 이미지  -->
+          <p class="mt-4">레스토랑 이미지</p>
+          <input-file
+            ref="inputFileComponet"
+            class="w-80 h-60"
+            @cahngeFile="(data) => (imageFile = data)"
+          />
+
           <div class="w-full flex justify-around items-center">
             <label for="" class="w-40">레스토랑 이름 </label>
             <input class="w-0 flex-1" type="text" v-model="restaurantName" />
@@ -22,13 +30,7 @@
             <label for="" class="w-40">지역 </label>
             <input class="w-0 flex-1" type="text" v-model="location" />
           </div>
-          <!-- 음식점 이미지  -->
-          <p class="mt-4">레스토랑 이미지</p>
-          <input-file
-            ref="inputFileComponet"
-            class="w-80 h-60"
-            @cahngeFile="(data) => (imageFile = data)"
-          />
+
           <!-- 전문 분야들 -->
           <div class="w-full flex flex-wrap justify-between items-center">
             <label for="specialization" class="w-28 text-left text-indigo-300"
@@ -44,12 +46,12 @@
             <button @click.prevent="addSpecialization">추가</button>
           </div>
 
-          <div class="flex my-2">
+          <div class="flex gap-2 my-2 flex-wrap">
             <template
               v-for="specialization in specializations"
               :key="specialization.id"
             >
-              <p class="mx-1 text-indigo-100 bg-cyan-500 rounded-full px-2">
+              <p class="py-1 px-3 text-gray-500 bg-yellow-400 rounded-full">
                 {{ specialization }}
               </p>
             </template>
@@ -69,9 +71,9 @@
             <button @click.prevent="addTag">추가</button>
           </div>
 
-          <div class="flex my-2">
+          <div class="flex gap-2 my-2 flex-wrap">
             <template v-for="tag in tags" :key="tag.id">
-              <p class="mx-1 text-indigo-100 bg-cyan-500 rounded-full px-2">
+              <p class="py-1 px-3 text-indigo-100 bg-cyan-500 rounded-full">
                 {{ tag }}
               </p>
             </template>

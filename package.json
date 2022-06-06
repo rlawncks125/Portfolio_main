@@ -8,7 +8,7 @@
     "test:unit": "vue-cli-service test:unit --watch",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
-    "tailwind": "npx tailwindcss -i ./tailInput.css -o ./src/assets/css/TailwindOutput.css --watch",
+    "tailwind": "npx tailwindcss -i ./tailInput.scss -o ./src/assets/css/TailwindOutput.scss --watch",
     "swagger": "node ./swagger/codegen.js"
   },
   "dependencies": {

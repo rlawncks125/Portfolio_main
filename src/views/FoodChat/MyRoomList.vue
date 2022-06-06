@@ -29,12 +29,7 @@
           </div>
           <p class="room-name">{{ item.roomName }}</p>
           <p class="room-super-user">👑{{ item.superUser.username }}</p>
-          <button
-            class="text-pink-500 bg-slate-700 border-2"
-            @click.prevent="goRoom(item.uuid)"
-          >
-            입장
-          </button>
+          <button @click.prevent="goRoom(item.uuid)">입장</button>
         </div>
       </div>
     </div>

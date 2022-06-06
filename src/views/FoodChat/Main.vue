@@ -10,14 +10,29 @@
     <!-- 회원가입 -->
     <form
       v-if="isPageSigUp"
-      class="max-w-xl w-full px-4 bg-gray-400 py-4 mt-4 rounded-xl border-4 shadow-xl gird sm:grid-cols-1"
+      class="max-w-xl w-full flex flex-col gap-[5px] px-4 py-8 mt-4 bg-blue-600 rounded-xl border-2 shadow-xl gird text-white"
     >
       <p>회원 가입 페이지</p>
-      <label for="username">아이디</label
-      ><input type="text" id="username" v-model="username" />
-      <br />
-      <label for="password">패스워드</label
-      ><input type="password" id="password" v-model="password" /><br />
+      <div>
+        <label for="username">아이디</label>
+        <input
+          class="w-[80%]"
+          type="text"
+          id="username"
+          v-model="username"
+          placeholder="한글 또는 영문 숫자를 입력하세요."
+        />
+      </div>
+
+      <div>
+        <label for="password">패스워드</label>
+        <input
+          class="w-[76%]"
+          type="password"
+          id="password"
+          v-model="password"
+        />
+      </div>
 
       <div class="flex justify-between">
         <loading-btn
@@ -37,14 +52,22 @@
     <!-- 로그인 -->
     <form
       v-else
-      class="max-w-xl w-full px-4 bg-gray-400 py-4 mt-4 rounded-xl border-4 shadow-xl gird"
+      class="max-w-xl w-full flex flex-col gap-[5px] px-4 py-8 mt-4 bg-blue-600 rounded-xl border-2 shadow-xl gird text-white"
     >
-      <p>로그인 페이지</p>
-      <label for="username">아이디</label
-      ><input type="text" id="username" v-model="username" />
-      <br />
-      <label for="password">패스워드</label
-      ><input type="password" id="password" v-model="password" />
+      <p>로그인</p>
+      <div>
+        <label for="username">아이디</label>
+        <input class="w-[80%]" type="text" id="username" v-model="username" />
+      </div>
+      <div>
+        <label for="password">패스워드</label>
+        <input
+          class="w-[76%]"
+          type="password"
+          id="password"
+          v-model="password"
+        />
+      </div>
       <div class="flex justify-between">
         <loading-btn
           class="border-2 w-32 h-12"
@@ -116,7 +139,10 @@
       <div
         class="flex h-full flex-col justify-start gap-12 pt-40 overflow-hidden"
       >
-        <div class="" @click.prevent="router.push({ name: 'myRoomList' })">
+        <div
+          class="cursor-pointer"
+          @click.prevent="router.push({ name: 'myRoomList' })"
+        >
           HOME
         </div>
         <div v-for="item in sideBarInfo" :key="item.id">
@@ -161,11 +187,13 @@
     <!-- 사이드바 정보창 -->
     <div
       class="w-[max(30rem,40vw)] hidden z-[101] sm:flex h-full fixed left-20 flex-col inset-y-0 bg-white shadow-lg shadow-slate-500 transition-all duration-300"
-      :class="isSideBarActive ? 'translate-x-0 ' : 'translate-x-[-50rem]'"
+      :class="
+        isSideBarActive ? 'translate-x-0 ' : 'translate-x-[min(-34rem,-45vw)]'
+      "
     >
       <!-- 화살표 -->
       <div
-        class="left-[max(30rem,40vw)] absolute w-10 h-10 bottom-2/4 text-center flex flex-col justify-center bg-yellow-400 rounded-r-2xl cursor-pointer"
+        class="left-[max(30rem,40vw)] absolute w-10 h-10 bottom-2/4 text-center flex flex-col justify-center bg-yellow-400 rounded-r-2xl cursor-pointer transition-all duration-300"
         @click.prevent="
           () => {
             if (!isSideBarActive) return;

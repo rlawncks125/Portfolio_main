@@ -8,19 +8,15 @@
         X
       </button>
 
-      <form class="text-center py-20">
+      <form class="text-center pt-20">
         <fieldset
-          class="border-2 p-2 mx-4 rounded-2xl grid max-w-full grid-cols-1 justify-items-center"
+          class="border-2 p-2 pb-8 mx-4 rounded-2xl grid max-w-full grid-cols-1 justify-items-center"
         >
           <legend>방 설정 변경</legend>
-          <div class="pt-4">
-            <div class="flex justify-between items-center">
-              <label>방 이름 :</label>
-              <input class="flex-1 w-1/2" type="text" v-model="roomName" />
-            </div>
+          <div class="pt-4 flex flex-col gap-4 items-center">
             <div class="flex flex-col items-center">
               <button @click.prevent="isChangeMake = !isChangeMake">
-                마크 변경
+                마크 이미지 번경 변경
               </button>
               <input-file
                 v-show="isChangeMake"
@@ -29,9 +25,13 @@
                 @cahngeFile="(data) => (imageFile = data)"
               />
             </div>
+            <div class="flex justify-between items-center">
+              <label>방 이름 :</label>
+              <input class="flex-1 w-1/2" type="text" v-model="roomName" />
+            </div>
 
-            <div class="flex justify-between items-center flex-col">
-              <label>시작 지역</label>
+            <div class="w-full">
+              <label>시작 지역 좌표 변경</label>
               <div ref="mapRef" class="w-full h-96 mx-auto"></div>
             </div>
             <LodingBtn
@@ -40,8 +40,9 @@
               class="mt-4 w-40 h-14"
               @click.prevent="onChangeRoom"
               role="change"
-              ><p>변경</p></LodingBtn
             >
+              <p>적용</p>
+            </LodingBtn>
           </div>
         </fieldset>
       </form>

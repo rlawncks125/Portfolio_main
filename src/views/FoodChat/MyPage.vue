@@ -1,6 +1,9 @@
 <template>
-  <p>{{ myName }}</p>
-  <button class="border-2" @click.prevent="userLogOut">LogOut</button>
+  <div class="p-4">
+    <p>유저 닉네임 : {{ myName }}</p>
+    <br />
+    <button class="border-2" @click.prevent="userLogOut">LogOut</button>
+  </div>
 </template>
 
 <script lang="ts">

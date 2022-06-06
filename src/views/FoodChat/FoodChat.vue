@@ -117,7 +117,7 @@
     <!-- 트리거 표시 메세지 -->
     <div class="z-[102] absolute top-10 w-full text-center pointer-events-none">
       <p
-        class="w-1/2 mx-auto text-red-400 bg-cyan-200 border rounded-md border-black"
+        class="w-1/2 mx-auto py-[2rem] text-yellow-500 bg-blue-700 border rounded-md shadow-lg"
         v-show="isActiveAdd"
       >
         생성 할곳을 클릭하세요
@@ -189,7 +189,7 @@
           class="flex justify-between items-center px-2 border-b-2 border-b-gray-500 border-opacity-50"
         >
           <button
-            class="cursor-pointer px-[1rem] font-bold"
+            class="none-btn text-3xl cursor-pointer px-[1rem] font-bold"
             @click.prevent="isActiveFilterSearch = !isActiveFilterSearch"
           >
             <!-- <fa-icon :icon="['fa', 'arrow-left']" /> -->
@@ -244,17 +244,6 @@
             />
           </picture>
           <div class="flex flex-col gap-2 px-2 pt-4 pb-8">
-            <div class="flex gap-2 flex-warp">
-              <template
-                v-for="specialization in restaurant.specialization"
-                :key="specialization.id"
-              >
-                <p class="bg-amber-300 text-white px-2">{{ specialization }}</p>
-              </template>
-              <template v-for="hash in restaurant.hashTags" :key="hash.id">
-                <p class="bg-sky-300 text-white px-2">{{ hash }}</p>
-              </template>
-            </div>
             <StarFiil
               class="float-right"
               :fill="restaurant.avgStar"
@@ -264,6 +253,24 @@
             <h2 class="font-bold text-xl sm:text-2xl">
               {{ restaurant.restaurantName }}
             </h2>
+            <p>위치 : {{ restaurant.location }}</p>
+            <div class="flex flex-col gap-2 flex-warp">
+              <div class="flex flex-wrap gap-2">
+                <template
+                  v-for="specialization in restaurant.specialization"
+                  :key="specialization.id"
+                >
+                  <p class="bg-amber-300 text-white px-2">
+                    {{ specialization }}
+                  </p>
+                </template>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <template v-for="hash in restaurant.hashTags" :key="hash.id">
+                  <p class="bg-sky-300 text-white px-2">{{ hash }}</p>
+                </template>
+              </div>
+            </div>
           </div>
         </div>
       </div>
