@@ -518,12 +518,13 @@ export default defineComponent({
       }
     };
 
-    const onUpdateRestaurant = async (id: number, isCallSocket = false) => {
-      const { ok, restaurant, err } = await getRestaurantById(id);
-
-      if (ok) {
+    const updateRestaurant = (
+      updateUUID: string,
+      restaurant: RestaurantInfoDto
+    ) => {
+      if (updateUUID === uuid) {
         makers = makers.map((v) => {
-          if (v.restaurantData.id === id) {
+          if (v.restaurantData.id === restaurant.id) {
             return {
               maker: v.maker,
               restaurantData: restaurant,
@@ -533,17 +534,24 @@ export default defineComponent({
           }
         });
 
-        if (!isCallSocket) {
-          webSocket.updateRestaurant({
-            uuid,
-            restaurantId: id,
-          });
-        }
         // 보고있는 view 값 갱신
-        if (refCompoViewForm.value?.viewData.id === id) {
+        if (refCompoViewForm.value?.viewData.id === restaurant.id) {
           openViewRestaurantInfo(restaurant);
           refCompoViewForm.value?.setOpenViewData(restaurant);
         }
+      }
+    };
+
+    const onUpdateRestaurant = async (id: number) => {
+      const { ok, restaurant, err } = await getRestaurantById(id);
+
+      if (ok) {
+        updateRestaurant(uuid, restaurant);
+
+        webSocket.updateRestaurant({
+          uuid,
+          restaurantId: id,
+        });
       } else {
         console.log(err);
       }
@@ -677,11 +685,10 @@ export default defineComponent({
         onEditRoom(uuid, true);
       });
 
-      webSocket.catchUpdateRestaurant(({ uuid: getUUID, restaurantId }) => {
-        if (getUUID === uuid) {
-          onUpdateRestaurant(restaurantId, true);
-        }
+      webSocket.catchUpdateRestaurant(({ uuid: updateUUID, restaurant }) => {        
+        updateRestaurant(updateUUID, restaurant);
       });
+
       webSocket.catchReqApprovaWait(async () => {
         const { ApprovalWaitUsers } = await getRoomInfo({ uuid });
 

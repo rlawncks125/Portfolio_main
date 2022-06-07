@@ -400,7 +400,7 @@ export default defineComponent({
       } else {
         isSuperUser.value = false;
       }
-      console.log(viewData.value);
+      // console.log(viewData.value);
     };
 
     const onClose = () => {

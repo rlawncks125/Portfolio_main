@@ -1,6 +1,7 @@
 import { computed } from "vue";
 import { store } from "@/store/index";
 import { io, Socket } from "socket.io-client";
+import { Restaurant } from "@/assets/swagger";
 
 const wsUrl =
   process.env.NODE_ENV === "production"
@@ -95,13 +96,39 @@ export const updateRestaurant = (data: {
 
 type FuncUpdateRestaurant = (data: {
   uuid: string;
-  restaurantId: number;
+  restaurant: Restaurant;
 }) => void;
 export const catchUpdateRestaurant = (catchWs: FuncUpdateRestaurant) => {
   socket.off("updateRestaurant");
   socket.on(
     "updateRestaurant",
-    (data: { uuid: string; restaurantId: number }) => {
+    (data: { uuid: string; restaurant: Restaurant }) => {
+      catchWs(data);
+    }
+  );
+};
+
+// 댓글 업데이트
+export const updateRestaurantComment = (data: {
+  uuid: string;
+  restaurantId: number;
+  commentId: number;
+}) => {
+  socket.emit("updateRestaurant", data);
+};
+
+type FuncUpdateRestaurantComment = (data: {
+  uuid: string;
+  restaurantId: number;
+  comment: Comment;
+}) => void;
+export const catchUpdateRestaurantComment = (
+  catchWs: FuncUpdateRestaurantComment
+) => {
+  socket.off("updateRestaurantComment");
+  socket.on(
+    "updateRestaurantComment",
+    (data: { uuid: string; restaurantId: number; comment: Comment }) => {
       catchWs(data);
     }
   );
