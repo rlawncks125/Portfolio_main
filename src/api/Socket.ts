@@ -1,7 +1,7 @@
 import { computed } from "vue";
 import { store } from "@/store/index";
 import { io, Socket } from "socket.io-client";
-import { Restaurant } from "@/assets/swagger";
+import { Restaurant, RestaurantInfoDto } from "@/assets/swagger";
 
 const wsUrl =
   process.env.NODE_ENV === "production"
@@ -68,10 +68,12 @@ export const createMaker = (data: { uuid: string; restaurantId: number }) => {
   socket.emit("createMaker", data);
 };
 
-export const catchCreateMaker = (catchWs: (restaurantId: number) => void) => {
+export const catchCreateMaker = (
+  catchWs: (restaurant: RestaurantInfoDto) => void
+) => {
   socket.off("createMaker");
-  socket.on("createMaker", (restaurantId: number) => {
-    catchWs(restaurantId);
+  socket.on("createMaker", (restaurant: RestaurantInfoDto) => {
+    catchWs(restaurant);
   });
 };
 

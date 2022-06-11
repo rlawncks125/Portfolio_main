@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="px-2 h-full mb-[5rem] sm:mb-0 overflow-y-auto max-w-7xl mx-auto sm:translate-x-[-4rem]"
-  >
+  <div class="px-2 h-full mb-[5rem] sm:mb-0 overflow-y-auto max-w-7xl mx-auto">
     <div>FoodChat Home</div>
     <button @click.prevent="router.push('/foodChat/myRoomList')">
       포트폴리오 가기

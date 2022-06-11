@@ -34,7 +34,7 @@
   </details>
 
   <!-- 맵 -->
-  <div id="map" class="w-full h-full mx-auto relative">
+  <div ref="mapRef" class="w-full h-full mx-auto relative">
     <!-- 맵 하단에 서치 버튼 추가  -->
     <div class="absolute bottom-10 right-4" style="z-index: 101">
       <transition name="acodi">
@@ -313,6 +313,7 @@ import { deleteRestaurant, getRestaurantById } from "@/api/Restaurant";
 import { useStore } from "@/store/index";
 import axios from "axios";
 import * as webSocket from "@/api/Socket";
+import { CustomNaverMaps } from "@/plugin/naverMaps";
 
 enum EnumFilter {
   RestaurantName = "레스토랑 이름",
@@ -347,11 +348,12 @@ export default defineComponent({
     const isOptionsCheckd = ref(false);
 
     // 네이버 api
-    let map = ref<naver.maps.Map>();
+    let naverMaps: CustomNaverMaps;
+    const mapRef = ref();
 
     // 마커 & 레스토랑 데이터
     const makerInfoWindow = new naver.maps.InfoWindow({ content: "" });
-    let mainMarker: naver.maps.Marker;
+
     let makers: Array<{
       maker: naver.maps.Marker;
       restaurantData: RestaurantInfoDto;
@@ -400,25 +402,6 @@ export default defineComponent({
     };
 
     // 마커 이벤트
-
-    const rednerMainMarker = () => {
-      mainMarker = new naver.maps.Marker({
-        position: {
-          x: roomInfoData.value!.lating.x,
-          y: roomInfoData.value!.lating.y,
-        },
-        map: map.value,
-        icon: {
-          url: "https://res.cloudinary.com/dhdq4v4ar/image/upload/v1644527647/back-Portfolio/Company_building_free_icon_4_sd6q06.png",
-          size: new naver.maps.Size(30, 40),
-          scaledSize: new naver.maps.Size(30, 40),
-          origin: new naver.maps.Point(0, 0),
-          anchor: new naver.maps.Point(12, 40),
-        },
-        clickable: false,
-      });
-    };
-
     const markerCommonEvent = (maker: naver.maps.Marker) => {
       maker.addListener("click", () => {
         if (makerInfoWindow.getMap()) {
@@ -441,7 +424,7 @@ export default defineComponent({
 
       makerInfoWindow.setContent(infoContent);
 
-      makerInfoWindow.open(map.value!, maker);
+      makerInfoWindow.open(naverMaps.map, maker);
       openViewRestaurantInfo(restaurant);
     };
 
@@ -510,8 +493,11 @@ export default defineComponent({
       const { ok, roomInfo } = await getRoomInfo({ uuid });
       if (ok) {
         roomInfoData.value = roomInfo;
-        mainMarker.onRemove();
-        rednerMainMarker();
+
+        naverMaps.renderMainMarker({
+          lat: roomInfoData.value!.lating.y,
+          lng: roomInfoData.value!.lating.x,
+        });
         if (!isWebsocket) {
           webSocket.updateRoom(uuid);
         }
@@ -622,8 +608,9 @@ export default defineComponent({
 
       const makerPosition = maker.getPosition();
 
-      map.value!.setCenter(makerPosition);
-      map.value!.setZoom(15, false);
+      // map.value!.setCenter(makerPosition);
+      // map.value!.setZoom(15, false);
+      naverMaps.mapCenterZoom(makerPosition, { number: 15, effect: false });
       activeMakerinfoWindow(maker);
 
       isActiveFilterSearch.value = false;
@@ -685,7 +672,7 @@ export default defineComponent({
         onEditRoom(uuid, true);
       });
 
-      webSocket.catchUpdateRestaurant(({ uuid: updateUUID, restaurant }) => {        
+      webSocket.catchUpdateRestaurant(({ uuid: updateUUID, restaurant }) => {
         updateRestaurant(updateUUID, restaurant);
       });
 
@@ -694,22 +681,19 @@ export default defineComponent({
 
         ApprovalWaitUserLists.value = ApprovalWaitUsers;
       });
-      webSocket.catchCreateMaker(async (restaurntId) => {
-        const { ok, restaurant } = await getRestaurantById(restaurntId);
+      // 이름 변경 할까 말까
+      // 레스토랑 생성
+      webSocket.catchCreateMaker(async (restaurant) => {
+        const maker = naverMaps.renderMarker({
+          x: restaurant.lating.x,
+          y: restaurant.lating.y,
+        });
 
-        if (ok) {
-          const maker = new naver.maps.Marker({
-            position: {
-              x: restaurant.lating.x,
-              y: restaurant.lating.y,
-            },
-            map: map.value,
-          });
-          markerCommonEvent(maker);
-          makers.push({ maker, restaurantData: restaurant });
-        }
+        markerCommonEvent(maker);
+        makers.push({ maker, restaurantData: restaurant });
       });
-
+      // 이름 변경 할까 말까
+      // 레스토랑 삭제
       webSocket.catchRemoveMaker((restaurantId) => {
         makers = makers.filter((v) => {
           const isRemove = v.restaurantData.id === restaurantId;
@@ -747,31 +731,24 @@ export default defineComponent({
         isSpuerUser.value = true;
       }
 
-      const mapOptions = {
-        center: new naver.maps.LatLng(roomInfo.lating.y, roomInfo.lating.x),
-        zoom: 14,
-        // 지도 줌 컨트롤러
-        scaleControl: false,
-        logoControl: false,
-        mapDataControl: false,
-        zoomControl: true,
-        minZoom: 6,
-        //
-      } as naver.maps.MapOptions;
-
-      const mapEl = document.getElementById("map");
-      map.value = new naver.maps.Map(mapEl!, mapOptions);
+      naverMaps = new CustomNaverMaps(
+        mapRef,
+        new naver.maps.LatLng(
+          roomInfoData.value!.lating.x,
+          roomInfoData.value!.lating.y
+        )
+      );
 
       // 방 초기 줌 위치 마커
-      rednerMainMarker();
+      naverMaps.renderMainMarker({
+        lat: roomInfoData.value!.lating.y,
+        lng: roomInfoData.value!.lating.x,
+      });
 
       RestaurantInfo.forEach((v) => {
-        const maker = new naver.maps.Marker({
-          position: {
-            x: v.lating.x,
-            y: v.lating.y,
-          },
-          map: map.value,
+        const maker = naverMaps.renderMarker({
+          x: v.lating.x,
+          y: v.lating.y,
         });
         markerCommonEvent(maker);
         makers.push({ maker, restaurantData: v });
@@ -779,17 +756,17 @@ export default defineComponent({
 
       // 마커 클릭(추가) 리스너 ( 폼에 보낼 데이터 설정 )
       // 지도에서 빈곳 클릭시 레스토랑 챗 addFrom Active
-      naver.maps.Event.addListener(map.value, "click", (e) => {
+      naver.maps.Event.addListener(naverMaps.map, "click", (e) => {
         if (!isActiveAdd.value) return;
         isAddFormActive.value = true;
 
         refCompoAddForm.value?.setOpenData({
           uuid: route.params.uuid as string,
-          map: map.value,
+          map: naverMaps.map,
           position: e.coord,
         });
       });
-      naver.maps.Event.addListener(map.value, "drag", () => {
+      naver.maps.Event.addListener(naverMaps.map, "drag", () => {
         makerInfoWindow.close();
         closeViewRestaurantInfo();
       });
@@ -798,6 +775,7 @@ export default defineComponent({
     };
 
     return {
+      mapRef,
       refCompoViewForm,
       refCompoAddForm,
       isLoding,

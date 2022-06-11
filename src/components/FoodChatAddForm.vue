@@ -112,7 +112,7 @@ import Loding from "./Loding.vue";
 import InputFile, {
   FileDataType,
 } from "@/components/common/Input/File-one.vue";
-import { ImageGetURLByFormData } from "@/api/file";
+import { getImageURLByFormData } from "@/api/file";
 
 export default defineComponent({
   components: { Loding, InputFile },
@@ -173,15 +173,7 @@ export default defineComponent({
         const postForm = new FormData();
         postForm.append("file", imageFile.value.file, imageFile.value.fileName);
 
-        // 이미지 url 작업
-        // imageUrl = await axios
-        //   .post(`/api/file`, postForm, {
-        //     headers: {
-        //       "Content-Type": "multipart/form-data",
-        //     },
-        //   })
-        //   .then((res) => res.data.url);
-        imageUrl = await ImageGetURLByFormData(postForm);
+        imageUrl = await getImageURLByFormData(postForm);
       }
 
       const { ok, err, restaurant } = await createRestaurant({

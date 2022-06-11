@@ -76,16 +76,6 @@ export const routes: Array<RouteRecordRaw> = [
     },
   },
   {
-    path: "/foodChatHome",
-    name: "foodChatHome",
-    component: () =>
-      import(/* webpackChunkName: "foodChat" */ "../views/FoodChat/Home.vue"),
-    meta: {
-      title: "설명",
-    },
-  },
-
-  {
     path: "/SubWay",
     name: "SubWay",
     component: () =>

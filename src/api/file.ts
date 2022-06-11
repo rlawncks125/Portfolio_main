@@ -16,7 +16,7 @@ export const deleteFile = async (fileName: string) => {
   return isDeleted;
 };
 
-export const ImageGetURLByFormData = async (form: FormData) => {
+export const getImageURLByFormData = async (form: FormData) => {
   return await axios
     .post(`/api/file`, form, {
       headers: {

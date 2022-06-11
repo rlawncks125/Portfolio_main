@@ -59,7 +59,7 @@ import InputFile, {
 import { EditRoomInPutDto, Lating, RoominfoDto } from "@/assets/swagger";
 import { useRoute } from "vue-router";
 import { editRoom } from "@/api/Room";
-import { deleteFile, ImageGetURLByFormData } from "@/api/file";
+import { deleteFile, getImageURLByFormData } from "@/api/file";
 import axios from "axios";
 
 export default defineComponent({
@@ -101,7 +101,7 @@ export default defineComponent({
         postForm.append("file", imageFile.value.file, imageFile.value.fileName);
 
         // 이미지 url 작업
-        imageUrl = await ImageGetURLByFormData(postForm);
+        imageUrl = await getImageURLByFormData(postForm);
 
         if (imageUrl && dataInfo.markeImageUrl) {
           const isDeleted = await deleteFile(dataInfo.markeImageUrl);

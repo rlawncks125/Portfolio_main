@@ -62,14 +62,14 @@ import InputFile, {
 
 import Loding from "@/components/Loding.vue";
 import { createRoom } from "@/api/Room";
-import { ImageGetURLByFormData } from "@/api/file";
-import { naverMapsFindAddress } from "@/plugin/naverMaps";
+import { getImageURLByFormData } from "@/api/file";
+import { CustomNaverMaps, naverMapsFindAddress } from "@/plugin/naverMaps";
 
 export default defineComponent({
   emits: ["onCreated", "onClose"],
   components: { InputFile, Loding },
   setup(props, { emit }) {
-    let map: naver.maps.Map;
+    let naverMaps: CustomNaverMaps;
     let marker: naver.maps.Marker;
 
     const mapRef = ref();
@@ -101,9 +101,10 @@ export default defineComponent({
         //     },
         //   })
         //   .then((res) => res.data.url);
-        markeImageUrl = await ImageGetURLByFormData(postForm);
+        markeImageUrl = await getImageURLByFormData(postForm);
       }
 
+      console.log(marker.getPosition());
       const { ok, room } = await createRoom({
         roomName: roomName.value,
         lating: marker.getPosition(),
@@ -137,45 +138,23 @@ export default defineComponent({
         marker.onRemove();
       }
 
-      map.setCenter({
-        x,
-        y,
-      });
-      map.setZoom(15, true);
-
-      marker = new naver.maps.Marker({
-        position: {
-          x,
-          y,
-        },
-        map,
-      });
+      naverMaps.mapCenterZoom({ x, y }, { number: 15, effect: true });
+      marker = naverMaps.renderMarker({ x, y } as naver.maps.LatLng);
     };
 
     onMounted(() => {
-      const mapOptions = {
-        center: new naver.maps.LatLng(37.4592758, 126.6838396),
-        zoom: 11,
-        // 지도 줌 컨트롤러
-        scaleControl: false,
-        logoControl: false,
-        mapDataControl: false,
-        zoomControl: true,
-        minZoom: 6,
-        //
-      } as naver.maps.MapOptions;
+      naverMaps = new CustomNaverMaps(
+        mapRef,
+        // new naver.maps.LatLng(37.4592758, 126.6838396)
+        new naver.maps.LatLng(126.6838396, 37.4592758)
+      );
 
-      map = new naver.maps.Map(mapRef.value, mapOptions);
-
-      naver.maps.Event.addListener(map, "click", (e) => {
+      naver.maps.Event.addListener(naverMaps.map, "click", (e) => {
         if (marker) {
           marker.onRemove();
         }
 
-        marker = new naver.maps.Marker({
-          position: e.coord,
-          map,
-        });
+        marker = naverMaps.renderMarker(e.coord);
       });
     });
 

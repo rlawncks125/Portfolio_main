@@ -3,6 +3,8 @@
     "target": "esnext",
     "module": "CommonJS",
     "strict": true,
+    // 클래스 내의 멤버 변수 초기화 해야함
+    "strictPropertyInitialization": false,
     "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",

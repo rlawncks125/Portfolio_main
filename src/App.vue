@@ -5,8 +5,18 @@
   >
     <!-- cheked icon -->
     <div class="w-full h-full flex flex-col justify-center">
-      <fa-icon v-if="isCehckd" class="w-full h-full" :icon="['fa', 'xmark']" />
-      <fa-icon v-else class="w-full h-4/6" :icon="['fa', 'align-justify']" />
+      <fa-icon
+        v-if="isCehckd"
+        class="w-full h-full"
+        :icon="['fa', 'xmark']"
+        :size="'2x'"
+      />
+      <fa-icon
+        v-else
+        class="w-full h-4/6"
+        :icon="['fa', 'align-justify']"
+        :size="'2x'"
+      />
     </div>
   </label>
 
@@ -25,7 +35,7 @@
     </div>
     <div class="nav-wrap text-three-dot" @click="changePage">
       <router-link
-        to="/foodChatHome"
+        to="/foodChat"
         :class="{ '!text-green-400': route.path.includes('foodChat') }"
         >음식 채팅방</router-link
       >
