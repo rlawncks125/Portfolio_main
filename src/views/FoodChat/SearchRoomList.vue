@@ -30,11 +30,29 @@
         @onClose="isCreateRoom = false"
       />
     </transition>
+    <!-- 페이지 번호 -->
+    <div class="flex gap-[5px] py-[0.5rem]">
+      <div v-for="item in paginationLists" :key="item">
+        <input
+          type="radio"
+          :id="`pag${item}`"
+          :value="item"
+          v-model="pagination"
+          class="w-0"
+        />
+        <label
+          class="border px-[2rem] py-[0.5rem] cursor-pointer"
+          :class="pagination === item ? 'text-white' : ''"
+          :for="`pag${item}`"
+          >{{ item }}</label
+        >
+      </div>
+    </div>
     <!-- 찾은 방리스트 랜더 -->
     <div
-      v-for="item in roomLists"
+      v-for="item in rnederLists"
       :key="item.id"
-      class="flex flex-col border-2 mt-4"
+      class="flex flex-col border-2 mt-4 mb-10"
     >
       <div class="room-info">
         <div class="room-marke">
@@ -96,12 +114,19 @@ export default defineComponent({
     const data = reactive({
       roomLists: [] as Array<roomInfoDto>,
       myJoinRoomLists: [] as Array<MyRoomsinfoDto>,
+      rnederLists: [] as Array<roomInfoDto>,
       isLoading: false,
       isLoadingBtn: false,
       approvalWaitRooms: [] as Array<{ id: number }>,
     });
 
     const isCreateRoom = ref(false);
+    // 페이지 번호
+    const pagination = ref(1);
+    const paginationRenderNumber = 4;
+    const paginationLists = ref(
+      Array.from(new Array(1), (v, index) => index + 1)
+    );
 
     // 서치 필터
     const searchValue = ref("");
@@ -136,7 +161,29 @@ export default defineComponent({
         (v) => !data.myJoinRoomLists.find((f) => f.uuid === v.uuid)
       );
 
+      // trunc 정수값만 사용
+      const listsNumber = Math.trunc(
+        data.roomLists.length / paginationRenderNumber
+      );
+
+      // 페이지 번호 작업
+      paginationLists.value = Array.from(
+        new Array(listsNumber + 1),
+        (v, index) => index + 1
+      );
+
+      renderLists();
+
       data.isLoadingBtn = false;
+    };
+
+    const renderLists = () => {
+      data.rnederLists = data.roomLists.filter((v, index) => {
+        const min = (pagination.value - 1) * paginationRenderNumber;
+        const max = pagination.value * paginationRenderNumber;
+
+        return min <= index && index < max;
+      });
     };
 
     const joinReqRoom = async (uuid: string) => {
@@ -181,6 +228,11 @@ export default defineComponent({
       await getRoomLists();
       await updateApprovalWaitRooms();
     };
+
+    watch(pagination, () => {
+      renderLists();
+    });
+
     onMounted(async () => {
       await UpdateRoomLists();
       webSocket.catchApprovaWait(async () => {
@@ -197,6 +249,8 @@ export default defineComponent({
       getRoomLists,
       joinReqRoom,
       onCreateRoom,
+      pagination,
+      paginationLists,
     };
   },
 });

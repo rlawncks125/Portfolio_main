@@ -9,6 +9,7 @@
         새로고침
       </button>
     </div>
+
     <!-- 방목록 랜더 -->
     <div class="grid gap-4 mb-10 mt-[1rem]">
       <div
@@ -39,7 +40,7 @@
 <script lang="ts">
 import { getJoinRoomList } from "@/api/Room";
 import { MyRoomsinfoDto } from "@/assets/swagger";
-import { defineComponent, onMounted, reactive, toRefs } from "vue";
+import { defineComponent, onMounted, reactive, ref, toRefs } from "vue";
 import { useRouter } from "vue-router";
 import * as webSocket from "@/api/Socket";
 
