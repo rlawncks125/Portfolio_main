@@ -4,7 +4,7 @@
 
 /** Generate by swagger-axios-codegen */
 /* eslint-disable */
-
+// @ts-nocheck
 import axiosStatic, { AxiosInstance, AxiosRequestConfig } from "axios";
 
 export interface IRequestOptions extends AxiosRequestConfig {}
@@ -1379,6 +1379,9 @@ export interface GetSubWayScheduleInPutDto {
 
   /** 지하철역 */
   station: string;
+
+  /** 얻을시간 */
+  getTime: number;
 
   /** 인천 1호선 */
   station1?: EnumGetSubWayScheduleInPutDtoStation1;

@@ -353,7 +353,6 @@ export default defineComponent({
 
     // 마커 & 레스토랑 데이터
     const makerInfoWindow = new naver.maps.InfoWindow({ content: "" });
-
     let makers: Array<{
       maker: naver.maps.Marker;
       restaurantData: RestaurantInfoDto;
@@ -608,8 +607,6 @@ export default defineComponent({
 
       const makerPosition = maker.getPosition();
 
-      // map.value!.setCenter(makerPosition);
-      // map.value!.setZoom(15, false);
       naverMaps.mapCenterZoom(makerPosition, { number: 15, effect: false });
       activeMakerinfoWindow(maker);
 

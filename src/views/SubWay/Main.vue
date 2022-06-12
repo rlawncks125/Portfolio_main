@@ -92,7 +92,6 @@ import {
 } from "@/assets/swagger";
 import axios from "axios";
 
-
 import { defineComponent, reactive, ref } from "vue";
 
 export default defineComponent({
@@ -197,15 +196,12 @@ export default defineComponent({
       const postData = {
         type,
         station,
+        getTime: data.getTime,
       } as GetSubWayScheduleInPutDto;
 
-      const res = await axios
-        .post(`/api/subway`, postData)
-        .then((res: any) => {
-          return res.data;
-        });
-
-      result.value = filterGetTimes(res, data.getTime);
+      await axios.post(`/api/subway`, postData).then((res: any) => {
+        result.value = res.data;
+      });
     };
 
     return {
@@ -226,39 +222,6 @@ export default defineComponent({
 const enumToObject = (enumme: any) => {
   // enum 순서값(키index값) 을 제외한 값을 추출
   return Object.keys(enumme).map((key) => enumme[key]);
-};
-
-const filterGetTimes = (data: [], time: number) => {
-  return data
-    .filter((v: any) => {
-      const isArrival = v["열차도착시간"] || null;
-      const isDeparture = v["열차출발시간"] || null;
-
-      const arrival = isArrival //
-        ? v["열차도착시간"].split(":")[0]
-        : null;
-      const departure = isDeparture
-        ? v["열차출발시간"].split(":")[0] || null
-        : null;
-
-      if (isArrival) return +arrival === time;
-      else if (isDeparture) return +departure === time;
-      return false;
-    })
-    .sort((a: any, b: any) => {
-      const isArrival = b["열차도착시간"] || null;
-      const isDeparture = b["열차출발시간"] || null;
-
-      if (isArrival)
-        return (
-          +a["열차도착시간"].split(":")[1] - +b["열차도착시간"].split(":")[1]
-        );
-      else if (isDeparture)
-        return (
-          +a["열차출발시간"].split(":")[1] - +b["열차출발시간"].split(":")[1]
-        );
-      return 0;
-    });
 };
 </script>
 
