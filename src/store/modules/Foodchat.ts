@@ -8,40 +8,64 @@ import {
 import { State as rootState } from "../index";
 
 export interface IState {
-  name: string;
+  pickRestaurant: RestaurantInfoDto | null;
+  roomInfo: RoominfoDto | null;
 }
 
 const state: IState = {
-  name: "",
+  pickRestaurant: null,
+  roomInfo: null,
 };
 
 const getters: GetterTree<IState, rootState> & GettersTypes = {
-  test:
-    (state) =>
-    ({ name }) => {
-      return name;
-    },
+  pickRestaurantInfo: (state) => () => {
+    const dumy = {
+      id: 999999,
+      resturantSuperUser: {
+        id: 999999,
+        nickName: "",
+      },
+      restaurantName: "",
+      restaurantImageUrl: "",
+      location: "",
+      comments: [],
+      avgStar: 0,
+      lating: {
+        x: 0,
+        y: 0,
+      },
+      hashTags: [],
+      specialization: [],
+    } as RestaurantInfoDto;
+
+    return state.pickRestaurant || dumy;
+  },
+  getRoomInfo: (state) => () => {
+    return state.roomInfo;
+  },
 };
 
 const mutations: MutationTree<IState> & MutationsTypes = {
-  test: (state, { name }) => {
-    return;
+  setRestaurantInfo(state, { restaurnt }) {
+    state.pickRestaurant = restaurnt;
   },
-  ds: () => {
-    return;
+  cleanRestaurantInfo(state) {
+    state.pickRestaurant = null;
+  },
+  setRoomInfo: (state, { room }) => {
+    state.roomInfo = room;
+  },
+  cleanRoomInfo: () => {
+    state.roomInfo = null;
   },
 };
 
-const actions: ActionTree<IState, rootState> & ActionTypes = {
-  test: (context, { tile }) => {
-    return;
-  },
-};
+const actions: ActionTree<IState, rootState> & ActionTypes = {};
 
 const module: Module<IState, rootState> = {
   // 호출할떄 [moduleName/호출] 로 호출
   // moduleName 은 modules에 정의된 모듈이름 따라감
-  //  namespaced: true,
+  // namespaced: true,
   state,
   getters,
   mutations,
@@ -80,6 +104,7 @@ import {
   FoodCahtActionsReturnsMaps,
   ActionType,
 } from "../actions";
+import { RestaurantInfoDto, RoominfoDto } from "@/assets/swagger";
 type myActionsContext = {
   commit<K extends keyof MutationsTypes>(
     key: K,

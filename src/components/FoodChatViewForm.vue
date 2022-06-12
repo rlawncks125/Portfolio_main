@@ -244,6 +244,7 @@ import {
 import StarFill from "@/components/common/StarFill.vue";
 import StarTouchEvent from "@/components/common/StarTouchEvent.vue";
 import {
+  computed,
   defineComponent,
   onMounted,
   PropType,
@@ -279,24 +280,7 @@ export default defineComponent({
       "https://res.cloudinary.com/dhdq4v4ar/image/upload/v1603952836/sample.jpg"
     );
 
-    const viewData = ref<RestaurantInfoDto>({
-      id: 999999,
-      resturantSuperUser: {
-        id: 999999,
-        nickName: "",
-      },
-      restaurantName: "",
-      restaurantImageUrl: "",
-      location: "",
-      comments: [],
-      avgStar: 0,
-      lating: {
-        x: 0,
-        y: 0,
-      },
-      hashTags: [],
-      specialization: [],
-    });
+    const viewData = computed(() => store.getters["pickRestaurantInfo"]());
 
     const addFormData = reactive({
       message: "",
@@ -378,9 +362,10 @@ export default defineComponent({
       return outPutTime;
     };
 
-    const setOpenViewData = (data: RestaurantInfoDto) => {
-      if (!data) return;
-      viewData.value = data;
+    const setOpenViewData = (restaurnt: RestaurantInfoDto) => {
+      if (!restaurnt) return;
+      store.commit("setRestaurantInfo", { restaurnt });
+      // viewData.value.value = data;
 
       if (
         viewData.value.restaurantImageUrl !== null &&
@@ -400,7 +385,7 @@ export default defineComponent({
       } else {
         isSuperUser.value = false;
       }
-      // console.log(viewData.value);
+      // console.log(viewData.value.value);
     };
 
     const onClose = () => {

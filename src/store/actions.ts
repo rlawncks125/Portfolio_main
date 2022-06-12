@@ -3,9 +3,5 @@ export type ActionType<C, P, R> = {
 };
 
 // 음식 채팅
-export interface FoodCahtActionsPayloadMaps {
-  test: { tile: string };
-}
-export interface FoodCahtActionsReturnsMaps {
-  test: void;
-}
+export interface FoodCahtActionsPayloadMaps {}
+export interface FoodCahtActionsReturnsMaps {}

@@ -51,7 +51,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, ref, toRefs } from "vue";
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  reactive,
+  ref,
+  toRefs,
+  watch,
+} from "vue";
 import LodingBtn from "@/components/common/Input/LoadingBtn.vue";
 import InputFile, {
   FileDataType,
@@ -60,23 +68,27 @@ import { EditRoomInPutDto, Lating, RoominfoDto } from "@/assets/swagger";
 import { useRoute } from "vue-router";
 import { editRoom } from "@/api/Room";
 import { deleteFile, getImageURLByFormData } from "@/api/file";
-import axios from "axios";
+import { useStore } from "@/store";
+import { CustomNaverMaps } from "@/plugin/naverMaps";
 
 export default defineComponent({
   emits: ["close", "edit"],
   components: { LodingBtn, InputFile },
   setup(_, { emit }) {
     const uuid = useRoute().params.uuid as string;
+    const store = useStore();
 
-    let map: naver.maps.Map;
+    // let map: naver.maps.Map;
+    let map: CustomNaverMaps;
     let marker: naver.maps.Marker;
 
     const mapRef = ref();
 
-    const dataInfo = reactive({
+    const dataForm = reactive({
       roomName: "",
       markeImageUrl: "",
     });
+    const roomInfo = computed(() => store.getters["getRoomInfo"]());
 
     const isLoadingChange = ref(false);
 
@@ -86,6 +98,11 @@ export default defineComponent({
     const imageFile = ref<FileDataType>();
 
     const onChangeRoom = async () => {
+      if (!roomInfo.value) {
+        alert("제대로된 방정보가 아니다");
+        return;
+      }
+
       isLoadingChange.value = true;
       let lating = undefined;
       let imageUrl = undefined;
@@ -103,8 +120,8 @@ export default defineComponent({
         // 이미지 url 작업
         imageUrl = await getImageURLByFormData(postForm);
 
-        if (imageUrl && dataInfo.markeImageUrl) {
-          const isDeleted = await deleteFile(dataInfo.markeImageUrl);
+        if (imageUrl && dataForm.markeImageUrl) {
+          const isDeleted = await deleteFile(dataForm.markeImageUrl);
           if (isDeleted) {
             console.log("기존 이미지 삭제");
           }
@@ -113,7 +130,7 @@ export default defineComponent({
 
       const updateData = {
         uuid,
-        roomName: dataInfo.roomName,
+        roomName: dataForm.roomName,
         ...(imageUrl && { markeImageUrl: imageUrl }),
         ...(lating && { lating }),
       } as EditRoomInPutDto;
@@ -129,48 +146,37 @@ export default defineComponent({
       }
     };
 
-    const setRoomInfo = (data: RoominfoDto) => {
+    const setRoomInfo = () => {
       inputFileComponet.value?.resetFile();
-      if (data) {
-        dataInfo.roomName = data.roomName!;
-        dataInfo.markeImageUrl = data.markeImageUrl;
+
+      if (!roomInfo.value) return;
+
+      dataForm.roomName = roomInfo.value.roomName;
+      dataForm.markeImageUrl = roomInfo.value.markeImageUrl;
+
+      if (marker) {
+        marker.onRemove();
       }
-      if (data.lating) {
-        if (marker) {
-          marker.onRemove();
-        }
-        marker = new naver.maps.Marker({
-          position: data.lating,
-          map,
-        });
-        map.setCenter(data.lating);
-      }
+      marker = map.renderMarker(roomInfo.value.lating);
+      map.mapCenterZoom(roomInfo.value.lating, { number: 16 });
     };
 
+    watch(roomInfo, () => {
+      setRoomInfo();
+    });
+
     onMounted(() => {
-      const mapOptions = {
-        center: new naver.maps.LatLng(37.4592758, 126.6838396),
-        zoom: 15,
-        // 지도 줌 컨트롤러
-        scaleControl: false,
-        logoControl: false,
-        mapDataControl: false,
-        zoomControl: true,
-        minZoom: 6,
-        //
-      } as naver.maps.MapOptions;
+      map = new CustomNaverMaps(
+        mapRef,
+        new naver.maps.LatLng(126.6838396, 37.4592758)
+      );
 
-      map = new naver.maps.Map(mapRef.value, mapOptions);
-
-      naver.maps.Event.addListener(map, "click", (e) => {
+      naver.maps.Event.addListener(map.map, "click", (e) => {
         if (marker) {
           marker.onRemove();
         }
-        console.log(e.coord);
-        marker = new naver.maps.Marker({
-          position: e.coord,
-          map,
-        });
+
+        marker = map.renderMarker(e.coord);
       });
     });
 
@@ -181,8 +187,7 @@ export default defineComponent({
       imageFile,
       isChangeMake,
       onChangeRoom,
-      ...toRefs(dataInfo),
-      setRoomInfo,
+      ...toRefs(dataForm),
     };
   },
 });

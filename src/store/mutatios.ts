@@ -1,3 +1,5 @@
+import { RestaurantInfoDto, RoominfoDto } from "@/assets/swagger";
+
 export type MutationType<S, P, R> = {
   [K in keyof (P | R)]: (state: S, payload: P[K]) => R[K];
 };
@@ -12,10 +14,14 @@ export interface IndexMutationsReturnsMaps {
 
 // 음식 채팅
 export interface FoodCahtMutationsPayloadMaps {
-  test: { name: string };
-  ds: { ds: string };
+  setRestaurantInfo: { restaurnt: RestaurantInfoDto };
+  cleanRestaurantInfo: null;
+  setRoomInfo: { room: RoominfoDto };
+  cleanRoomInfo: null;
 }
 export interface FoodCahtMutationsReturnsMaps {
-  test: void;
-  ds: void;
+  setRestaurantInfo: void;
+  cleanRestaurantInfo: void;
+  setRoomInfo: void;
+  cleanRoomInfo: void;
 }

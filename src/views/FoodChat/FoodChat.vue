@@ -380,7 +380,7 @@ export default defineComponent({
     const refCompoEditRoom = ref<InstanceType<typeof EditRoom>>();
 
     const openEditRoom = () => {
-      refCompoEditRoom.value?.setRoomInfo(roomInfoData.value!);
+      // refCompoEditRoom.value?.setRoomInfo(roomInfoData.value!);
       isEditRoomAcitve.value = true;
     };
 
@@ -707,6 +707,7 @@ export default defineComponent({
 
     onUnmounted(() => {
       webSocket.leaveRoom(uuid);
+      store.commit("cleanRoomInfo", null);
     });
 
     // 방들어 올때 초기설정
@@ -721,6 +722,7 @@ export default defineComponent({
       // console.log(RestaurantInfo);
       // console.log(ApprovalWaitUsers);
 
+      store.commit("setRoomInfo", { room: roomInfo });
       roomInfoData.value = roomInfo;
       ApprovalWaitUserLists.value = ApprovalWaitUsers;
 
