@@ -1,5 +1,5 @@
 <template>
-  <div class="px-4">
+  <div class="px-4 dark:bg-blue-900 dark:text-white">
     <div>자기소개하기</div>
 
     <section class="자기소개">
@@ -11,7 +11,7 @@
     </section>
     <section class="포토폴리오 소개">
       <div class="mb-4">포토폴리오 소개</div>
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div
           class="border"
           v-for="(pofol, index) in pofolItems"
@@ -24,7 +24,7 @@
           <img
             :src="pofol.image"
             alt=""
-            class="w-full h-[30rem] bg-yellow-50 object-contain"
+            class="w-full bg-yellow-50 object-contain"
           />
 
           <!-- 설명 랜더 -->

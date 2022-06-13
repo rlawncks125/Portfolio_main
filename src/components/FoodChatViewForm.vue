@@ -8,15 +8,14 @@
         class="form-full sticky py-3 px-5 left-0 top-0 mx-auto flex justify-between bg-white items-center shadow-lg"
         style="z-index: 103"
       >
-        <button class="none-btn text-5xl font-bold" @click.prevent="onClose">
+        <button class="none-btn text-4xl font-bold" @click.prevent="onClose">
           &lt;
         </button>
-        <p class="w-auto flex-1 text-center">{{ viewData.restaurantName }}</p>
-        <div class="w-[9rem]">
-          <button v-if="isSuperUser" @click.prevent="onDeleteRestaurnt">
-            삭제 버튼
-          </button>
-          <div v-else></div>
+        <p class="w-auto flex-1 text-center text-2xl text-three-dot">
+          {{ viewData.restaurantName }}
+        </p>
+        <div v-if="isSuperUser" class="w-[7rem] md:w-[9rem] text-right">
+          <button @click.prevent="onDeleteRestaurnt">삭제 버튼</button>
         </div>
       </div>
       <!-- <button class="hidden sm:block absolute top-2 right-2" @click.prevent="onClose">

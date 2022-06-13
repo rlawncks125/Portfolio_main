@@ -33,6 +33,12 @@
     <!-- 페이지 번호 -->
     <div class="flex gap-[5px] py-[0.5rem]">
       <div v-for="item in paginationLists" :key="item">
+        <label
+          class="border px-[2rem] py-[0.5rem] cursor-pointer"
+          :class="pagination === item ? 'text-white' : ''"
+          :for="`pag${item}`"
+          >{{ item }}</label
+        >
         <input
           type="radio"
           :id="`pag${item}`"
@@ -40,16 +46,15 @@
           v-model="pagination"
           class="w-0"
         />
-        <label
-          class="border px-[2rem] py-[0.5rem] cursor-pointer"
-          :class="pagination === item ? 'text-white' : ''"
-          :for="`pag${item}`"
-          >{{ item }}</label
-        >
       </div>
     </div>
     <!-- 찾은 방리스트 랜더 -->
+    <p v-if="rnederLists && rnederLists.length === 0">
+      <!-- 방층 찾을 못찾았을시 -->
+      해당 하는 조건으로 찾은 있는 방의 결과가 없습니다.
+    </p>
     <div
+      v-else
       v-for="item in rnederLists"
       :key="item.id"
       class="flex flex-col border-2 mt-4 mb-10"
@@ -161,6 +166,18 @@ export default defineComponent({
         (v) => !data.myJoinRoomLists.find((f) => f.uuid === v.uuid)
       );
 
+      renderLists();
+
+      data.isLoadingBtn = false;
+    };
+
+    const renderLists = () => {
+      if (data.roomLists.length === 0) {
+        paginationLists.value = [];
+        data.rnederLists = [];
+        return;
+      }
+
       // trunc 정수값만 사용
       const listsNumber = Math.trunc(
         data.roomLists.length / paginationRenderNumber
@@ -172,12 +189,6 @@ export default defineComponent({
         (v, index) => index + 1
       );
 
-      renderLists();
-
-      data.isLoadingBtn = false;
-    };
-
-    const renderLists = () => {
       data.rnederLists = data.roomLists.filter((v, index) => {
         const min = (pagination.value - 1) * paginationRenderNumber;
         const max = pagination.value * paginationRenderNumber;

@@ -1,5 +1,6 @@
 module.exports = {
   content: ["./src/**/*.{html,vue}"],
+  darkMode: "class",
   theme: {
     extend: {
       mapHeight: {

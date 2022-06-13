@@ -42,6 +42,7 @@
       <router-link to="/SubWay">지하철 도착 시간</router-link>
       <router-link to="/">준비중</router-link>
       <router-link to="/">준비중</router-link>
+      <div class="py-4 cursor-pointer" @click="changeDarkmode">다크 모드</div>
     </div>
   </div>
 
@@ -79,9 +80,26 @@ export default defineComponent({
       document.documentElement.style.setProperty("--mobile--full", `${dh}px`);
     };
 
+    const changeDarkmode = () => {
+      document.documentElement.classList.toggle("dark");
+    };
+
+    const setDarkmode = () => {
+      if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    };
+
     onMounted(async () => {
       window.addEventListener("load", mobileHeightSize);
       window.addEventListener("resize", mobileHeightSize);
+
+      // 다크모드 감지
+      window
+        .matchMedia("(prefers-color-scheme: dark)")
+        .addEventListener("change", setDarkmode);
 
       await axios.get("/api").then((res) => console.log(res.data));
     });
@@ -104,6 +122,7 @@ export default defineComponent({
       isCehckd,
       changePage,
       route,
+      changeDarkmode,
     };
   },
 });
