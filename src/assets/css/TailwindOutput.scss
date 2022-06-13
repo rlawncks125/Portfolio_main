@@ -1087,6 +1087,11 @@ Ensure the default browser behavior of the `hidden` attribute.
   --tw-border-opacity: 0.4;
 }
 
+.bg-slate-50 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(248 250 252 / var(--tw-bg-opacity));
+}
+
 .bg-yellow-400 {
   --tw-bg-opacity: 1;
   background-color: rgb(250 204 21 / var(--tw-bg-opacity));
@@ -1179,11 +1184,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 .bg-red-200 {
   --tw-bg-opacity: 1;
   background-color: rgb(254 202 202 / var(--tw-bg-opacity));
-}
-
-.bg-blue-900 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(30 58 138 / var(--tw-bg-opacity));
 }
 
 .bg-opacity-50 {
@@ -1282,6 +1282,11 @@ Ensure the default browser behavior of the `hidden` attribute.
   padding: 1rem;
 }
 
+.py-4 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
 .py-20 {
   padding-top: 5rem;
   padding-bottom: 5rem;
@@ -1330,11 +1335,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 .px-2 {
   padding-left: 0.5rem;
   padding-right: 0.5rem;
-}
-
-.py-4 {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
 }
 
 .py-\[2rem\] {
@@ -1649,6 +1649,11 @@ button:focus {
   background-color: rgb(29 78 216 / var(--tw-bg-opacity));
 }
 
+.dark button {
+  --tw-bg-opacity: 1;
+  background-color: rgb(29 78 216 / var(--tw-bg-opacity));
+}
+
 button.red-btn {
   border-style: none;
   --tw-bg-opacity: 1;
@@ -1735,6 +1740,14 @@ svg {
   padding: 0.5rem;
   outline-style: solid;
   outline-width: 4px;
+}
+
+.dark .foodChat-form-main {
+  --tw-bg-opacity: 1;
+  background-color: rgb(30 58 138 / var(--tw-bg-opacity));
+}
+
+.foodChat-form-main {
   outline-color: rgba(243, 238, 225, 0.2);
   @include mdUp() {
     &::-webkit-scrollbar {
@@ -1763,14 +1776,28 @@ svg {
   transform: var(--tw-transform);
 }
 
+.dark .dark\:\!bg-blue-800 {
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(30 64 175 / var(--tw-bg-opacity)) !important;
+}
+
 .dark .dark\:bg-blue-900 {
   --tw-bg-opacity: 1;
   background-color: rgb(30 58 138 / var(--tw-bg-opacity));
 }
 
+.dark .dark\:bg-transparent {
+  background-color: transparent;
+}
+
 .dark .dark\:text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.dark .dark\:text-black {
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
 }
 
 @media (min-width: 640px) {

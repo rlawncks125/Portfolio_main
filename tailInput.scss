@@ -15,6 +15,7 @@ input {
 
 button {
   @apply py-1 px-4 border-2 text-white bg-blue-400 border-gray-200 rounded-md hover:bg-blue-700 focus:bg-blue-700;
+  @apply dark:bg-blue-700;
 }
 
 button.red-btn {
@@ -37,6 +38,7 @@ svg {
 .foodChat-form-main {
   @apply relative overflow-auto w-[98vw] max-w-3xl m-auto top-[1vh] p-2 rounded-2xl bg-white inset-0;
   @apply outline outline-4;
+  @apply dark:bg-blue-900;
   outline-color: rgba(243, 238, 225, 0.2);
 
   @include mdUp() {

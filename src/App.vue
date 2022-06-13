@@ -4,7 +4,7 @@
     for="checkd-menu"
   >
     <!-- cheked icon -->
-    <div class="w-full h-full flex flex-col justify-center">
+    <div class="w-full h-full flex flex-col justify-center dark:text-white">
       <fa-icon
         v-if="isCehckd"
         class="w-full h-full"
@@ -33,7 +33,10 @@
         <span class="web-acc-hidden">Home</span>
       </router-link>
     </div>
-    <div class="nav-wrap text-three-dot" @click="changePage">
+    <div
+      class="nav-wrap text-three-dot bg-slate-50 dark:!bg-blue-800 dark:text-white"
+      @click="changePage"
+    >
       <router-link
         to="/foodChat"
         :class="{ '!text-green-400': route.path.includes('foodChat') }"
@@ -47,7 +50,7 @@
   </div>
 
   <div
-    class="render-view mb-12 border-t-2 border-black border-opacity-50"
+    class="render-view mb-12 border-t-2 border-black border-opacity-50 dark:bg-blue-900 dark:text-white"
     :class="{ 'sm:pl-20': route.path.includes('foodChat') }"
   >
     <router-view />
@@ -135,6 +138,14 @@ $max-width: 1280px;
 $checkd-width: 50px;
 $checkd-height: 5rem;
 
+:root {
+  --shadow-fill-food-bottom: drop-shadow(0px -1px rgb(0 0 0 / 0.1))
+    drop-shadow(0px -2px rgb(0 0 0 / 0.06));
+}
+:root.dark {
+  --shadow-fill-food-bottom: drop-shadow(0px -1px rgb(255 255 255 / 0.1))
+    drop-shadow(0px -2px rgb(255 255 255 / 0.2));
+}
 * {
   margin: 0;
   padding: 0;
@@ -231,7 +242,6 @@ a:-webkit-any-link {
       border: 1px solid black;
       height: 100%;
       font-weight: bold;
-      color: #2c3e50;
       padding: 0.3rem;
     }
     a.router-link-exact-active {
@@ -254,7 +264,6 @@ a:-webkit-any-link {
       flex-direction: column;
       flex-wrap: wrap;
       z-index: 1000;
-      background-color: aliceblue;
 
       transform: translateX(-1000px);
       transition: transform 0.2s ease-in-out;

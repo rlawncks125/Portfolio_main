@@ -1,5 +1,5 @@
 <template>
-  <div class="px-4 dark:bg-blue-900 dark:text-white">
+  <div class="px-4">
     <div>자기소개하기</div>
 
     <section class="자기소개">

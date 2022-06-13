@@ -86,7 +86,7 @@
 
   <!-- 로그인 됐을시 -->
   <div
-    class="relative"
+    class="relative dark:bg-transparent"
     :style="[route.params.uuid ? mapViewStyles : {}]"
     v-else
   >
@@ -95,7 +95,7 @@
 
     <!-- 모바일 하단-->
     <div
-      class="shadow-top fixed bottom-0 left-0 py-2 w-full h-[4.5rem] bg-blue-400 sm:hidden"
+      class="shadow-top fixed bottom-0 left-0 py-2 w-full h-[4.5rem] bg-blue-400 sm:hidden dark:bg-blue-900"
       style="z-index: 101"
     >
       <div class="flex w-full justify-around h-full text-center">
@@ -435,7 +435,6 @@ export default defineComponent({
 
 <style lang="scss">
 .shadow-top {
-  filter: drop-shadow(0px -1px rgb(0 0 0 / 0.1))
-    drop-shadow(0px -2px rgb(0 0 0 / 0.06));
+  filter: var(--shadow-fill-food-bottom);
 }
 </style>

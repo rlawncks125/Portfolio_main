@@ -5,10 +5,13 @@
       style="height: calc(var(--mobile--full) - 2vh)"
     >
       <div
-        class="form-full sticky py-3 px-5 left-0 top-0 mx-auto flex justify-between bg-white items-center shadow-lg"
+        class="form-full sticky py-3 px-5 left-0 top-0 mx-auto flex justify-between bg-white items-center shadow-lg dark:bg-blue-900"
         style="z-index: 103"
       >
-        <button class="none-btn text-4xl font-bold" @click.prevent="onClose">
+        <button
+          class="none-btn text-4xl font-bold dark:text-white"
+          @click.prevent="onClose"
+        >
           &lt;
         </button>
         <p class="w-auto flex-1 text-center text-2xl text-three-dot">

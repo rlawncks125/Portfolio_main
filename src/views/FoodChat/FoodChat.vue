@@ -2,15 +2,17 @@
   <loding :isLoding="isLoding" />
 
   <!-- 현재 접속 중인방 정보  -->
-  <div class="bg-blue-400 text-center pt-2">
+  <div class="bg-blue-400 dark:bg-blue-900 text-center pt-2">
     <span v-if="isSpuerUser" class="text-red-800">👑 </span>
     <span v-if="roomInfoData">{{ roomInfoData.roomName }} 방</span>
   </div>
   <!-- 기타 등등 우선 토글에 넣어놓음 -->
-  <details class="block relative w-full h-10 bg-blue-400">
+  <details class="block relative w-full h-10 bg-blue-400 dark:bg-blue-900">
     <summary class="cursor-pointer px-4">기타 등등</summary>
     <div class="absolute top-10 z-[101] bg-white w-full h-auto">
-      <div class="grid sm:grid-cols-2 gap-2 py-4 px-4 bg-blue-400">
+      <div
+        class="grid sm:grid-cols-2 gap-2 py-4 px-4 bg-blue-400 dark:bg-blue-900"
+      >
         <button @click.prevent="onLeaveRoom">방 나가기</button>
         <button @click.prevent="router.push('/foodChat/myRoomList')">
           방으로 돌아가기
@@ -34,7 +36,7 @@
   </details>
 
   <!-- 맵 -->
-  <div ref="mapRef" class="w-full h-full mx-auto relative">
+  <div ref="mapRef" class="w-full h-full mx-auto relative dark:text-black">
     <!-- 맵 하단에 서치 버튼 추가  -->
     <div class="absolute bottom-10 right-4" style="z-index: 101">
       <transition name="acodi">
@@ -155,7 +157,7 @@
   <!-- 레스토랑 정보 창 -->
   <div
     v-show="isOpenRestaurantInfo"
-    class="absolute bottom-0 w-full flex justify-center"
+    class="absolute bottom-0 w-full flex justify-center dark:text-black"
   >
     <div
       class="bg-slate-100 w-4/6 max-w-3xl h-32 text-center rounded-xl flex flex-col justify-center cursor-pointer shadow-lg shadow-black/40 hover:scale-110"
@@ -181,15 +183,15 @@
   <!-- 레스토랑 필터  -->
   <div v-show="isActiveFilterSearch" class="foodChat-form">
     <div
-      class="foodChat-form-main scrollbar-clean px-8 !py-0"
+      class="foodChat-form-main scrollbar-clean px-8 !py-0 dark:bg-blue-900"
       style="height: calc(var(--mobile--full) - 2vh)"
     >
-      <div class="sticky top-0 bg-white z-[101] py-2">
+      <div class="sticky top-0 bg-white z-[101] py-2 dark:bg-blue-900">
         <div
           class="flex justify-between items-center px-2 border-b-2 border-b-gray-500 border-opacity-50"
         >
           <button
-            class="none-btn text-3xl cursor-pointer px-[1rem] font-bold"
+            class="none-btn text-3xl cursor-pointer px-[1rem] font-bold dark:text-white"
             @click.prevent="isActiveFilterSearch = !isActiveFilterSearch"
           >
             <!-- <fa-icon :icon="['fa', 'arrow-left']" /> -->
