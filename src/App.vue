@@ -29,12 +29,12 @@
   <div id="nav" :class="{ 'sm:pl-20 ': route.path.includes('foodChat') }">
     <div class="nav-home" @click="changePage">
       <router-link to="/">
-        <img class="object-cover" src="@/assets/images/HOME.png" alt="" />
+        <img class="object-contain" src="@/assets/images/HOME.png" alt="" />
         <span class="web-acc-hidden">Home</span>
       </router-link>
     </div>
     <div
-      class="nav-wrap text-three-dot bg-slate-50 dark:!bg-blue-800 dark:text-white"
+      class="nav-wrap text-three-dot bg-slate-100 sm:items-center sm:bg-transparent sm:dark:bg-transparent dark:bg-blue-800 dark:text-white"
       @click="changePage"
     >
       <router-link
@@ -99,12 +99,12 @@ export default defineComponent({
       window.addEventListener("load", mobileHeightSize);
       window.addEventListener("resize", mobileHeightSize);
 
+      await axios.get("/api").then((res) => console.log(res.data));
+
       // 다크모드 감지
       window
         .matchMedia("(prefers-color-scheme: dark)")
         .addEventListener("change", setDarkmode);
-
-      await axios.get("/api").then((res) => console.log(res.data));
     });
 
     watch(
@@ -205,7 +205,7 @@ body {
   }
   @include tablet() {
     grid-template:
-      "nav nav nav nav" 4rem
+      "nav nav nav nav" minmax(4rem, auto)
       "render-view render-view render-view render-view" minmax(
         calc(var(--mobile--full) - 5rem),
         auto
@@ -232,7 +232,6 @@ a:-webkit-any-link {
     height: 100%;
 
     img {
-      width: 100%;
       height: 100%;
     }
   }

@@ -709,7 +709,7 @@ export default defineComponent({
 
     onUnmounted(() => {
       webSocket.leaveRoom(uuid);
-      store.commit("cleanRoomInfo", null);
+      store.commit("cleanRoomInfo", undefined);
     });
 
     // 방들어 올때 초기설정

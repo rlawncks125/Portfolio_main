@@ -15,9 +15,9 @@ export interface IndexMutationsReturnsMaps {
 // 음식 채팅
 export interface FoodCahtMutationsPayloadMaps {
   setRestaurantInfo: { restaurnt: RestaurantInfoDto };
-  cleanRestaurantInfo: null;
+  cleanRestaurantInfo: undefined;
   setRoomInfo: { room: RoominfoDto };
-  cleanRoomInfo: null;
+  cleanRoomInfo: undefined;
 }
 export interface FoodCahtMutationsReturnsMaps {
   setRestaurantInfo: void;

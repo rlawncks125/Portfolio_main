@@ -8,6 +8,15 @@
     <br />
     <br />
     <section>
+      <div>기술 스택</div>
+      <div>- 프론트 :</div>
+      <badge stack="vue" />
+
+      <div>- 백엔드 :</div>
+      <badge stack="nest" />
+    </section>
+    <br />
+    <section>
       <h4>
         내 주변의 음식점 리뷰 기능을 구현 해봤습니다.
         <br />
@@ -35,7 +44,9 @@
 
 <script>
 import { useRouter } from "vue-router";
+import badge from "@/components/common/badge.vue";
 export default {
+  components: { badge },
   setup() {
     const router = useRouter();
     return { router };
