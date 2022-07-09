@@ -151,7 +151,7 @@
               <div
                 class="ml-6 pl-4 flex flex-col border-2 border-t-0 gap-1"
                 v-for="(childMessages, index) in comment.childMessages"
-                :key="childMessages.id"
+                :key="index"
                 :class="index === 0 ? '!border-t-2' : ''"
               >
                 <div class="whitespace-pre-wrap">
@@ -173,7 +173,7 @@
                         store.state.userName === childMessages.userInfo.nickName
                       "
                       @click.prevent="
-                        setChildCommentCreateTime(childMessages.CreateTime)
+                        setChildCommentCreateTime(childMessages.CreateTime + '')
                       "
                     >
                       수정
@@ -185,7 +185,9 @@
                 </div>
                 <div
                   class="border my-2 p-1"
-                  v-show="editActiveChildMessage === childMessages.CreateTime"
+                  v-show="
+                    editActiveChildMessage === childMessages.CreateTime + ''
+                  "
                 >
                   <label class="block text-blue-500" for="edit-child-message"
                     >수정할 내용</label
@@ -201,7 +203,10 @@
                     <button
                       class="flex-none h-full"
                       @click.prevent="
-                        onEditChildComment(comment.id, childMessages.CreateTime)
+                        onEditChildComment(
+                          comment.id,
+                          childMessages.CreateTime + ''
+                        )
                       "
                     >
                       수정

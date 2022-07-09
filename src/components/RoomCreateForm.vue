@@ -33,9 +33,9 @@
           <button class="p-1" @click.prevent="serachAddr">찾기</button>
         </div>
         <div class="w-full text-left">
-          <template v-for="addr in findAddrs" :key="addr.id">
+          <template v-for="(addr, index) in findAddrs" :key="index">
             <div class="cursor-pointer border mt-1">
-              <p @click="onMoveMarkerAddress(addr.x, addr.y)">
+              <p @click="onMoveMarkerAddress(+addr.x, +addr.y)">
                 {{ addr.roadAddress }}
               </p>
             </div>
@@ -63,7 +63,7 @@ import InputFile, {
 import Loding from "@/components/Loding.vue";
 import { createRoom } from "@/api/Room";
 import { getImageURLByFormData } from "@/api/file";
-import { CustomNaverMaps, naverMapsFindAddress } from "@/plugin/naverMaps";
+import { CustomNaverMaps, naverMapsFindAddress } from "@/lib/naverMaps";
 
 export default defineComponent({
   emits: ["onCreated", "onClose"],

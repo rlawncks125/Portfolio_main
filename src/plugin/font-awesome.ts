@@ -17,6 +17,8 @@ import {
   faArrowLeft,
   faUserPlus,
   faList,
+  faSun,
+  faMoon,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -35,7 +37,9 @@ library.add(
   faArrowRight,
   faArrowLeft,
   faUserPlus,
-  faList
+  faList,
+  faSun,
+  faMoon
 );
 
 export { FontAwesomeIcon };

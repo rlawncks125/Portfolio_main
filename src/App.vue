@@ -45,7 +45,10 @@
       <router-link to="/SubWay">지하철 도착 시간</router-link>
       <router-link to="/">준비중</router-link>
       <router-link to="/">준비중</router-link>
-      <div class="py-4 cursor-pointer" @click="changeDarkmode">다크 모드</div>
+      <div class="py-4 cursor-pointer" @click="changeDarkmode">
+        <fa-icon v-if="isDarkMode" :icon="['fa', 'sun']" />
+        <fa-icon v-else :icon="['fa', 'moon']" />
+      </div>
     </div>
   </div>
 
@@ -68,6 +71,7 @@ export default defineComponent({
   components: {},
   setup() {
     const store = useStore();
+    const isDarkMode = ref(false);
     const isCehckd = ref();
 
     const route = useRoute();
@@ -83,15 +87,26 @@ export default defineComponent({
       document.documentElement.style.setProperty("--mobile--full", `${dh}px`);
     };
 
+    watch(isCehckd, () => {
+      // 토글 버튼 활성화시 scroll 방지
+      isCehckd.value
+        ? (document.documentElement.style.overflow = "hidden")
+        : (document.documentElement.style.overflow = "auto");
+    });
+
     const changeDarkmode = () => {
       document.documentElement.classList.toggle("dark");
+      isDarkMode.value =
+        document.documentElement.classList.value.includes("dark");
     };
 
     const setDarkmode = () => {
       if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
         document.documentElement.classList.add("dark");
+        isDarkMode.value = true;
       } else {
         document.documentElement.classList.remove("dark");
+        isDarkMode.value = false;
       }
     };
 
@@ -126,6 +141,7 @@ export default defineComponent({
       changePage,
       route,
       changeDarkmode,
+      isDarkMode,
     };
   },
 });
@@ -136,7 +152,7 @@ export default defineComponent({
 
 $max-width: 1280px;
 $checkd-width: 50px;
-$checkd-height: 5rem;
+$checkd-height: 4.5rem;
 
 :root {
   --shadow-fill-food-bottom: drop-shadow(0px -1px rgb(0 0 0 / 0.1))
@@ -195,7 +211,7 @@ body {
 
   @include mobile() {
     grid-template:
-      "out-checkd nav nav" 5rem
+      "out-checkd nav nav" 4.5rem
       "render-view render-view render-view" minmax(
         calc(var(--mobile--full) - 5rem),
         auto
@@ -205,7 +221,7 @@ body {
   }
   @include tablet() {
     grid-template:
-      "nav nav nav nav" minmax(4rem, auto)
+      "nav nav nav nav" 4rem
       "render-view render-view render-view render-view" minmax(
         calc(var(--mobile--full) - 5rem),
         auto
@@ -224,7 +240,7 @@ a:-webkit-any-link {
   width: 100%;
   max-width: $max-width;
   text-align: center;
-  position: relative;
+  // position: relative;
 
   // background-color: $color-blue-2;
 
@@ -259,7 +275,8 @@ a:-webkit-any-link {
       position: fixed;
       top: $checkd-height;
       left: 0;
-      width: 100%;
+      right: 0;
+
       flex-direction: column;
       flex-wrap: wrap;
       z-index: 1000;

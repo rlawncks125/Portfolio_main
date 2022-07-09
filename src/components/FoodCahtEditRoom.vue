@@ -69,7 +69,7 @@ import { useRoute } from "vue-router";
 import { editRoom } from "@/api/Room";
 import { deleteFile, getImageURLByFormData } from "@/api/file";
 import { useStore } from "@/store";
-import { CustomNaverMaps } from "@/plugin/naverMaps";
+import { CustomNaverMaps } from "@/lib/naverMaps";
 
 export default defineComponent({
   emits: ["close", "edit"],

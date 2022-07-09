@@ -14,7 +14,7 @@
           class="border-2 p-2 mx-4 rounded-2xl grid max-w-full grid-cols-1 justify-items-start"
         >
           <legend class="text-center px-4">대기 중인 유저들</legend>
-          <template v-if="lists.length > 0">
+          <template v-if="lists && lists.length > 0">
             <div v-for="item in lists" :key="item.id" class="flex">
               <p>
                 {{ item.username }}

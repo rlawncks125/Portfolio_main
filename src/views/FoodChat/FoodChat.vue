@@ -201,8 +201,8 @@
             type="text"
             class="flex-1 w-1/3"
             @input="
-              (e) => {
-                filterName = e.target.value;
+              (e ) => {                
+                filterName = (e.target as HTMLInputElement).value;
               }
             "
             :value="filterName"
@@ -315,7 +315,7 @@ import { deleteRestaurant, getRestaurantById } from "@/api/Restaurant";
 import { useStore } from "@/store/index";
 import axios from "axios";
 import * as webSocket from "@/api/Socket";
-import { CustomNaverMaps } from "@/plugin/naverMaps";
+import { CustomNaverMaps } from "@/lib/naverMaps";
 
 enum EnumFilter {
   RestaurantName = "레스토랑 이름",
@@ -601,7 +601,7 @@ export default defineComponent({
 
     const filterResult = reactive({
       filterName: "",
-      fillterArry: [] as (RestaurantInfoDto | undefined)[],
+      fillterArry: [] as RestaurantInfoDto[],
     });
 
     const goRestaurantPostionById = (id: number) => {

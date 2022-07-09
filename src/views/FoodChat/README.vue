@@ -42,9 +42,10 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { useRouter } from "vue-router";
 import badge from "@/components/common/badge.vue";
+
 export default {
   components: { badge },
   setup() {

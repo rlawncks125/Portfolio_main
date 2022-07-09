@@ -145,7 +145,7 @@
         >
           HOME
         </div>
-        <div v-for="item in sideBarInfo" :key="item.id">
+        <div v-for="(item, index) in sideBarInfo" :key="index">
           <div
             class="cursor-pointer h-16 mx-auto w-full"
             @click.prevent="
@@ -206,7 +206,7 @@
       </div>
       <!-- 콘텐츠 랜더 -->
       <div class="overflow-auto h-full">
-        <div v-for="item in sideBarInfo" :key="item.id">
+        <div v-for="(item, index) in sideBarInfo" :key="index">
           <div
             class="w-full p-2"
             v-show="sideBarClickedText === item.eventTrigger"
@@ -312,7 +312,7 @@ export default defineComponent({
     });
 
     const setViewStyles = () => {
-      if (window.innerWidth < 640) {
+      if (window.innerWidth < 700) {
         // 모바일 지도
         mapViewStyles.value = {
           height: "calc(var(--mobile--full) - 13.4rem)",

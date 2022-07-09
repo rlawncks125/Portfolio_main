@@ -12,14 +12,10 @@
     <section class="포토폴리오 소개">
       <div class="mb-4">포토폴리오 소개</div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div
-          class="border"
-          v-for="(pofol, index) in pofolItems"
-          :key="pofol.id"
-        >
+        <div class="border" v-for="(pofol, index) in pofolItems" :key="index">
           <div class="pl-2 flex justify-between items-center">
             <span>{{ pofol.name }}</span>
-            <button @click="openViewIndex = index">보기</button>
+            <button @click="openViewIndex = index + ''">보기</button>
           </div>
           <img
             :src="pofol.image"
@@ -29,7 +25,7 @@
 
           <!-- 설명 랜더 -->
           <div
-            v-show="openViewIndex === index"
+            v-show="openViewIndex === index + ''"
             class="fixed bg-gray-600 bg-opacity-60 inset-0 w-screen h-screen text-2xl sm:text-base z-[1001]"
           >
             <div
