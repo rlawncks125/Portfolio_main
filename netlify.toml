@@ -1,6 +1,6 @@
 [[redirects]]
   from = "/api/*"
-  to = "https://pofol-backend.herokuapp.com/:splat"
+  to = "https://juchan-back-server.herokuapp.com/:splat"
   status = 200
   
 
