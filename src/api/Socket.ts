@@ -5,7 +5,7 @@ import { Restaurant, RestaurantInfoDto } from "@/assets/swagger";
 
 const wsUrl =
   process.env.NODE_ENV === "production"
-    ? "wss://pofol-backend.herokuapp.com"
+    ? "wss://juchan-back-server.herokuapp.com"
     : "wss://myapi.kimjuchan97.xyz";
 const nameSpace = "foodMapChat";
 
