@@ -3,9 +3,14 @@
   to = "https://juchan-back-server.herokuapp.com/:splat"
   status = 200
   
+[[redirects]]
+  from = "/robots.txt"
+  to = "/robots.txt"
+  status = 200
 
 
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+
