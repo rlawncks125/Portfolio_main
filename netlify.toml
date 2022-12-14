@@ -1,6 +1,6 @@
 [[redirects]]
   from = "/api/*"
-  to = "https://juchan-back-server.herokuapp.com/:splat"
+  to = "https://api.kimjuchan97.xyz/:splat"
   status = 200
   
 [[redirects]]
